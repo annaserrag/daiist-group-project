@@ -1,0 +1,178 @@
+{
+  "scope": "Post-grading routing simulation on the 14 written questions other than Q32. Candidates refer a numerical proposal at or below a cutoff. A review has no mark or assumed improvement. Error counts cover only proposals with numeric teacher marks.",
+  "source_sha256": {
+    "frozen-pilot-0.40.json": "6089ccc7726b2eeecdbb6741aa4faf47b89228aa17fc0a00d31eaf8ca88c9aaf",
+    "frozen-fresh-0.40.json": "628f7123a517575a14458c13f1f280bbd27f9bab89045cdfedd6f84ceffceb4f",
+    "current-independent-0.40.json": "cb483d7a8f750d876cc44e431890a1655947a02e566f3df44f1cf2f14acf0850",
+    "finalized-independent-0.40.json": "8f14b48023c7b03c695a09ba9744cbd704ba30ff4810d531348c95bb370f9b83"
+  },
+  "development": {
+    "existing_rule": {
+      "slots": 56,
+      "proposals": 37,
+      "reviews": 19,
+      "additional_reviews": 0,
+      "paired_marks": 36,
+      "exact": 20,
+      "mean_absolute_error": 0.5555555555555556,
+      "under_by_at_least_one": 14,
+      "over_by_at_least_one": 1
+    },
+    "refer_zero": {
+      "slots": 56,
+      "proposals": 24,
+      "reviews": 32,
+      "additional_reviews": 13,
+      "paired_marks": 23,
+      "exact": 16,
+      "mean_absolute_error": 0.30434782608695654,
+      "under_by_at_least_one": 5,
+      "over_by_at_least_one": 1
+    },
+    "refer_at_most_one": {
+      "slots": 56,
+      "proposals": 15,
+      "reviews": 41,
+      "additional_reviews": 22,
+      "paired_marks": 15,
+      "exact": 14,
+      "mean_absolute_error": 0.06666666666666667,
+      "under_by_at_least_one": 0,
+      "over_by_at_least_one": 1
+    },
+    "teacher_by_proposal": {
+      "2": {
+        "2": 14,
+        "review": 8,
+        "1": 4,
+        "0": 4,
+        "0.5": 1
+      },
+      "1": {
+        "0": 5,
+        "1": 2,
+        "review": 2,
+        "0.5": 1,
+        "2": 1
+      },
+      "0": {
+        "0": 4
+      },
+      "no_reference": {
+        "review": 9,
+        "1": 1
+      }
+    }
+  },
+  "independent": {
+    "existing_rule": {
+      "slots": 28,
+      "proposals": 13,
+      "reviews": 15,
+      "additional_reviews": 0,
+      "paired_marks": 13,
+      "exact": 5,
+      "mean_absolute_error": 0.6538461538461539,
+      "under_by_at_least_one": 7,
+      "over_by_at_least_one": 0
+    },
+    "refer_zero": {
+      "slots": 28,
+      "proposals": 6,
+      "reviews": 22,
+      "additional_reviews": 7,
+      "paired_marks": 6,
+      "exact": 2,
+      "mean_absolute_error": 0.5833333333333334,
+      "under_by_at_least_one": 3,
+      "over_by_at_least_one": 0
+    },
+    "refer_at_most_one": {
+      "slots": 28,
+      "proposals": 2,
+      "reviews": 26,
+      "additional_reviews": 11,
+      "paired_marks": 2,
+      "exact": 2,
+      "mean_absolute_error": 0.0,
+      "under_by_at_least_one": 0,
+      "over_by_at_least_one": 0
+    },
+    "teacher_by_proposal": {
+      "2": {
+        "1": 3,
+        "0": 1,
+        "review": 3,
+        "2": 2
+      },
+      "1": {
+        "review": 7,
+        "0": 3,
+        "0.5": 1
+      },
+      "0": {
+        "review": 1,
+        "0": 3
+      },
+      "no_reference": {
+        "review": 4
+      }
+    }
+  },
+  "revised_same_independent_papers": {
+    "existing_rule": {
+      "slots": 28,
+      "proposals": 15,
+      "reviews": 13,
+      "additional_reviews": 0,
+      "paired_marks": 15,
+      "exact": 8,
+      "mean_absolute_error": 0.5,
+      "under_by_at_least_one": 6,
+      "over_by_at_least_one": 0
+    },
+    "refer_zero": {
+      "slots": 28,
+      "proposals": 8,
+      "reviews": 20,
+      "additional_reviews": 7,
+      "paired_marks": 8,
+      "exact": 5,
+      "mean_absolute_error": 0.3125,
+      "under_by_at_least_one": 2,
+      "over_by_at_least_one": 0
+    },
+    "refer_at_most_one": {
+      "slots": 28,
+      "proposals": 4,
+      "reviews": 24,
+      "additional_reviews": 11,
+      "paired_marks": 4,
+      "exact": 3,
+      "mean_absolute_error": 0.125,
+      "under_by_at_least_one": 0,
+      "over_by_at_least_one": 0
+    },
+    "teacher_by_proposal": {
+      "2": {
+        "1": 2,
+        "1.5": 1,
+        "2": 3,
+        "review": 2,
+        "0": 1
+      },
+      "1": {
+        "review": 6,
+        "0": 3,
+        "1": 2
+      },
+      "0": {
+        "0": 3,
+        "review": 1
+      },
+      "no_reference": {
+        "review": 4
+      }
+    }
+  }
+}

@@ -155,6 +155,16 @@ class Contract(unittest.TestCase):
             out=result(a(21,"labels"),index=Search(),agent=Fake(**change),allow_remote=True)
             self.assertIsNone(get(out,21)["mark"])
             self.assertEqual(out["record"]["tokens"],10)
+    def test_optional_written_cutoff_keeps_reviewed_marks_out_of_totals(self):
+        out = result(a(21,"labels"), a(1,KEY[1]), a(23,"",state="confirmed_blank"),
+                     index=Search(), agent=Fake(), allow_remote=True, policy=Policy(written_review_at_or_below=1.5))
+        proposed = get(out,21)
+        self.assertEqual((proposed["reason"],proposed["mark"],proposed["candidate_mark"]),
+                         ("written_mark_review",None,1.5))
+        self.assertTrue(proposed["citation"] and proposed["deductions"])
+        self.assertEqual((get(out,1)["mark"],get(out,23)["mark"],out["teacher"]["proposed_subtotal"]),(1,0,1))
+        with self.assertRaises(ValueError):
+            Policy(written_review_at_or_below=True)
     def test_low_read_confidence_stays_review_after_strong_retrieval(self):
         agent=Fake()
         out=result(a(21,"labels",confidence=.3),index=Search(),agent=agent,allow_remote=True)
@@ -205,6 +215,19 @@ class Contract(unittest.TestCase):
                 self.assertTrue(any(hit["source"]=="scales" and
                                     all(term in hit["text"] for term in ("proline","hue","distances between samples"))
                                     for hit in hits), (design, answer))
+
+    def test_semantic_outlier_question_covers_detection_and_treatment(self):
+        for design in ("section","paragraph"):
+            original = Index(design, True, multipart=False)
+            revised = Index(design, True)
+            for text in ("", KEY[27]):
+                before = original.search(27,text)
+                after = revised.search(27,text)
+                self.assertEqual(before[:2],after[:2])
+                self.assertTrue(any("detect" in r["text"].lower() for r in after[:2]))
+                self.assertTrue(any("robust to outliers" in r["text"] or "Clipping is a technique" in r["text"] for r in after))
+            for q in set(range(21,36)) - {27}:
+                self.assertEqual(original.search(q),revised.search(q))
 
     def test_top_three_explain_both_fitting_failures_and_illustrate_discretization(self):
         for design in ("paragraph","section"):

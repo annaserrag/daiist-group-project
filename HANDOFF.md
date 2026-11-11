@@ -55,6 +55,14 @@ From the combined checkout, run this command on one PDF and its independently ve
 uv run --locked --no-dev python -m exam_grader.check_reader "private/exam.pdf" "private/checked-export.json" --module vision
 ```
 
+### Exercise the PDF route before the handwriting reader arrives
+
+This optional engineering check generates an image-only printed PDF using three existing fixture readings. RapidOCR reads each question number and answer in a separate crop. The normal PDF entry point passes those readings into the grader. It runs locally. Adding `--live` permits Gemini to grade the single synthetic written answer. In the recorded live run, all three readings matched, Q1 earned 1/1, the invalid Q17 selection went to review, and Q21 earned 2/2. The PDF is temporary. The printed reader accepts only its generated fixture. [Measured run](eval/printed_pdf_integration.json)
+
+```powershell
+uv run --locked --no-dev --with rapidocr-onnxruntime==1.4.4 --with pypdfium2==5.15.2 python -m exam_grader.printed_smoke
+```
+
 1. Anna runs her exporter on a vetted sample; both of you inspect the question IDs, texts, blank states and confidence semantics. Have her run the offline CLI on that JSON before submitting a PR.
 2. Pass that same PDF through read_exam → connect. Inspect Q1 and one short answer against the actual sheet. Without Gemini a readable written answer must route to review.
 3. On a vetted file with the semantic index and Gemini enabled, inspect the cited passage and proposed mark. Confirm the same source ID appears in the safe log; the student's text must not.

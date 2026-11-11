@@ -1,0 +1,25 @@
+{
+  "scope": "Four selected missing responses on development papers. Two configurations share one passage lookup and two model calls per answer. Order alternates by item.",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3",
+  "n": 4,
+  "original": {
+    "version": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a",
+    "routes": {
+      "provider_failure": 4
+    },
+    "calls": 8,
+    "cache_hits": 0,
+    "paired": 0,
+    "exact": 0
+  },
+  "final_after_lookup": {
+    "version": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+    "routes": {
+      "grounded_proposal": 4
+    },
+    "calls": 8,
+    "cache_hits": 0,
+    "paired": 4,
+    "exact": 3
+  }
+}

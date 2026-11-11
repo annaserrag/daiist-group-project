@@ -31,7 +31,12 @@ class AppFlow(unittest.TestCase):
             with self.assertRaises(gr.Error):
                 app.sign_off(context,marks)
             corrected = [[q, 1 if q==1 else .5 if q==21 else 0] for q,_ in marks]
-            self.assertEqual(app.sign_off(context,corrected)["total"],1.5)
+            signed = app.sign_off(context,corrected)
+            self.assertEqual(signed["total"],1.5)
+            self.assertEqual(signed["review_session"]["initially_referred"],33)
+            self.assertEqual(signed["review_session"]["accepted_proposals"],2)
+            self.assertEqual(signed["review_session"]["changed_proposals"],0)
+            self.assertGreaterEqual(signed["review_session"]["elapsed_seconds_since_proposals_shown"],0)
             app.rate(context,1)
             self.assertEqual(logbook.load().iloc[0]["feedback"],1)
             self.assertNotIn("known target labels",next(Path(directory).glob("requests-*")).read_text())

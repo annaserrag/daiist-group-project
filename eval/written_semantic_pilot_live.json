@@ -1,0 +1,167 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 2,
+  "cohort": "pilot",
+  "baseline_training_exams": 48,
+  "scope": "All 30 written slots on two papers. Visible answers were manually transcribed and assigned confidence 1. Unlocated answers go to review.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3",
+  "q32_rule": "distinct-count-v5",
+  "response_mode": "live-with-cache",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 11,
+      "review_share": 0.36666666666666664,
+      "reasons": {
+        "grounded_proposal": 18,
+        "context_check": 4,
+        "provider_failure": 5,
+        "unverified_citation": 1,
+        "ambiguous_duplicate": 1,
+        "counted_hyperparameters": 1
+      },
+      "evaluation_workload": [
+        {
+          "paper": "paper-a",
+          "elapsed_seconds_including_pacing": 173.7942,
+          "tokens_billed_this_run": 26927,
+          "calls": 23,
+          "cache_hits": 0,
+          "uncached_tokens": 26927,
+          "uncached_cost_eur": null,
+          "usage_complete": false
+        },
+        {
+          "paper": "paper-b",
+          "elapsed_seconds_including_pacing": 206.6815,
+          "tokens_billed_this_run": 29539,
+          "calls": 24,
+          "cache_hits": 0,
+          "uncached_tokens": 29539,
+          "uncached_cost_eur": null,
+          "usage_complete": false
+        }
+      ],
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 11,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 19,
+        "exact": 0.3157894736842105,
+        "within_half": 0.9473684210526315,
+        "mean_absolute_error": 0.3684210526315789
+      },
+      "grader_on_matched_answers": {
+        "n": 19,
+        "exact": 0.47368421052631576,
+        "within_half": 0.47368421052631576,
+        "mean_absolute_error": 0.6842105263157895
+      },
+      "feedback_check": {
+        "below_full_credit": 13,
+        "fully_accounted_for": 13
+      },
+      "change_on_same_answers": {
+        "paired_marks": 2,
+        "original": {
+          "exact": 0,
+          "within_half": 0,
+          "mae": 1.0
+        },
+        "revised": {
+          "exact": 2,
+          "within_half": 2,
+          "mae": 0.0
+        },
+        "closer": 2,
+        "further": 0,
+        "unchanged_error": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "review": 9,
+      "review_share": 0.3,
+      "reasons": {
+        "grounded_proposal": 20,
+        "context_check": 4,
+        "provider_failure": 3,
+        "unverified_citation": 1,
+        "ambiguous_duplicate": 1,
+        "counted_hyperparameters": 1
+      },
+      "evaluation_workload": [
+        {
+          "paper": "paper-a",
+          "elapsed_seconds_including_pacing": 53.914,
+          "tokens_billed_this_run": 7482,
+          "calls": 6,
+          "cache_hits": 9,
+          "uncached_tokens": 30805,
+          "uncached_cost_eur": null,
+          "usage_complete": true
+        },
+        {
+          "paper": "paper-b",
+          "elapsed_seconds_including_pacing": 31.1317,
+          "tokens_billed_this_run": 5173,
+          "calls": 4,
+          "cache_hits": 10,
+          "uncached_tokens": 31020,
+          "uncached_cost_eur": null,
+          "usage_complete": true
+        }
+      ],
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 9,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 21,
+        "exact": 0.2857142857142857,
+        "within_half": 0.9523809523809523,
+        "mean_absolute_error": 0.38095238095238093
+      },
+      "grader_on_matched_answers": {
+        "n": 21,
+        "exact": 0.42857142857142855,
+        "within_half": 0.42857142857142855,
+        "mean_absolute_error": 0.7619047619047619
+      },
+      "feedback_check": {
+        "below_full_credit": 15,
+        "fully_accounted_for": 15
+      },
+      "change_on_same_answers": {
+        "paired_marks": 15,
+        "original": {
+          "exact": 2,
+          "within_half": 3,
+          "mae": 1.1
+        },
+        "revised": {
+          "exact": 5,
+          "within_half": 5,
+          "mae": 0.9333333333333333
+        },
+        "closer": 3,
+        "further": 0,
+        "unchanged_error": 12
+      }
+    }
+  ]
+}

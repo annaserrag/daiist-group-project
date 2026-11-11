@@ -4,6 +4,10 @@
 
 **The grading branch is ready for joint integration testing. The complete course submission still needs team evidence.**
 
+The additional two-paper test is the strongest check of written marking on previously unseen non-Q32 responses. At 0.40, the first run proposed 13/28 marks, matched the teacher on 5/13 and referred 15/28. Its mean absolute error was 0.65/2. After the tool and retrieval revisions, a replay of those same papers proposed 15/28, matched on 8/15 and referred 13/28. Mean absolute error was 0.50/2, equal to the question-mean baseline on the same proposals. Six marks were still at least one point below the teacher. The revised result is a development comparison on the same papers. [First run](eval/written_independent_semantic.json) · [Revised replay](eval/written_independent_revised.json)
+
+The teacher can require a second check of model-proposed scores at or below 1/2. On the revised replay this would refer 24/28 questions and leave four proposals, three exact and one half a point from the teacher. It is an optional policy choice. [Routing comparison and score matrices](eval/written_review_policies.json)
+
 | Area | Verified on the grading branch | Remaining action |
 |---|---|---|
 | Retrieval | Both bundled semantic indexes reached a team-approved page in the first three results for all 14 answerable written questions. Paragraphs ranked an approved page first on all 14. Sections ranked one first on 11. | Q34 needs the original figure. Relevance is labeled at page level. Inspect whether each selected passage supports every part of a multi-part answer. [Results](eval/written_retrieval_semantic.json) |
@@ -13,7 +17,13 @@
 | Operations | Three uncached synthetic requests returned 2/2 for Q21 in 2.12–3.75 seconds. The monitor detected all 100 controlled missing-slot shifts across overlapping splits. Its current estimator also triggered 54 ordinary-window alerts. Half-count smoothing gave one ordinary alert at the same threshold. | Team selects and justifies the production alert after testing actual reader outputs. Time complete PDFs and teacher review. [Timing](eval/component2_live_smoke.json) · [Drift](eval/monitoring_mcq_replay.json) |
 | Integration and submission | The PDF acceptance command compares Anna's reader with a checked export and reports mismatched slots. The course evaluation accepts separate usage measurements from both components. | Anna supplies the reader and paired sample. Team writes 30 course cases, supplies 30 reference and at least 10 shifted inputs, labels feedback, completes business and presentation decisions, and verifies the deployed Space. [Handoff](HANDOFF.md) |
 
+The grading branch installs from the lockfile. The clean-checkout checks cover the no-key Gradio `/run` endpoint, the expected mark and review rows, one safe log per request, and the saved retrieval ranks. A separate printed-PDF run exercised real OCR and live written grading through the same PDF entry point. The professor's checker currently stops at the empty team case file. [Current printed-PDF evidence](eval/printed_pdf_finalized.json)
+
+Q27 initially retrieved three detection passages. The revised top three include detection and treatment in both semantic designs. On the two-paper replay, one actual Q27 reading still went to review for an unverified citation and the other was unreadable. Improved source coverage alone did not establish a grade for either. [Updated retrieval](eval/written_retrieval_multipart.json)
+
 ## Earlier audit and development history
+
+The Q22 question states both accuracies. Removing its context gate on four development papers yielded two proposals, one of which had a numeric teacher reference and matched it. One other request failed and one paper had no located answer. The production policy continues to refer Q22 and Q34 pending the team's decision. [Q22 comparison](eval/q22_context_comparison.json)
 
 **Component 2 is ready for integration testing.** The multiple-choice replay covers 50 published exams. The revised written rubric awards two points for a complete answer and itemizes deductions. At 0.25 on the two pilot papers, both versions marked 14 of the same answers. Exact teacher matches rose from three to six, and mean absolute error fell from 0.96 to 0.71 points. The semantic index, broader grading validation and an end-to-end trial with Anna’s reader remain open. [Original pilot](eval/heldout_written_pilot.json) · [Revised pilot](eval/written_rubric_v2_pilot.json)
 

@@ -103,6 +103,17 @@ def fit_written_baseline(exams, training_ids, evaluation_ids):
         baseline[q] = int(mean(valid)*2+.5)/2 if valid else None
     return baseline
 
+def mark_matrix(rows):
+    """Rows are teacher marks. Columns are proposals or review. Unlabelled slots remain visible."""
+    matrix = {}
+    for row in rows:
+        teacher = "no_reference" if row["teacher_mark"] == "" else f"{float(row['teacher_mark']):g}"
+        proposed = "review" if row["proposed_mark"] == "" else f"{float(row['proposed_mark']):g}"
+        cells = matrix.setdefault(teacher, {})
+        cells[proposed] = cells.get(proposed,0) + 1
+    return matrix
+
+
 def compare_written(pairs):
     written = [row for row in pairs if row["question_id"] > 20]
     labelled = [row for row in written if row["teacher_mark"] != ""]
@@ -113,7 +124,7 @@ def compare_written(pairs):
         return {"n":len(errors),"exact":mean(e==0 for e in errors) if errors else None,
                 "within_half":mean(e<=.5 for e in errors) if errors else None,
                 "mean_absolute_error":mean(errors) if errors else None}
-    return {"written_slots":len(written),"valid_teacher_marks":len(labelled),
+    return {"written_slots":len(written),"valid_teacher_marks":len(labelled),"teacher_by_proposal":mark_matrix(written),
             "labelled_questions_without_training_marks":len(labelled)-len(baseline_rows),
             "sent_to_review_with_valid_reference":sum(r["proposed_mark"]=="" for r in labelled),
             "baseline_on_all_scorable":scores(baseline_rows,"baseline_mark"),

@@ -9,21 +9,25 @@ uv run --locked --no-dev python -m exam_grader.metrics retrieval eval/retrieval_
 uv run --locked --no-dev python -m exam_grader.monitor_replay
 ```
 
-The component owner can reproduce the private feedback packet from the four redacted exports and their archived evaluation cache. On this workstation, the private archive lives in `$env:LOCALAPPDATA/daiist-component2/heldout`. Open `feedback-review.html` and fill in `feedback-labels.csv` independently. Rebuilding the packet preserves edits to that CSV. After labeling, copy the completed IDs, labels and comments to the course's `human_labels.csv` and use the judge command below. Keep the case manifest, marked-up texts and private paths outside the repository. The packet excludes the superseded model-based Q32 proposal.
+The component owner can reproduce the private feedback packet from the four redacted exports and their archived evaluation cache. On this workstation, the private archive lives in `$env:LOCALAPPDATA/daiist-component2/heldout`. Open `feedback-review.html`, choose Pass or Fail independently, and click **Download labels CSV**. Put the completed `human_labels.csv` in `eval/` and use the judge command below. The form can save progress in the browser. A blank `feedback-labels.csv` is also provided for offline editing. Rebuilding the packet preserves edits to that CSV. Keep the case manifest, marked-up texts and private paths outside the repository. The packet excludes the superseded model-based Q32 proposal.
 
 ```powershell
 $archive = "$env:LOCALAPPDATA/daiist-component2/heldout"
 uv run --locked --no-dev python -m exam_grader.feedback_packet "$archive"
 # Set GRADE_APPROVED_HASHES to the four vetted export hashes before judging.
-uv run --locked --no-dev python -m exam_grader.judge "$archive/feedback-items.csv" "$archive/feedback-labels.csv" "$archive/judge-results.csv"
+uv run --locked --no-dev python -m exam_grader.judge "$archive/feedback-items.csv" eval/human_labels.csv "$archive/judge-results.csv"
 ```
 
 The judge can freeze its predictions with `--predict-only` before human annotation. It checkpoints and resumes successful requests by exact prompt and evidence fingerprint. Keep its output separate from the human worksheet until labeling is finished. Copy the final judge output to `eval/judge_results.csv` for the course runner. For a controlled threshold comparison on the private two-paper comparison cohort, run the following after populating the response cache.
 
 ```powershell
 $env:GRADE_RETRIEVAL_MODE = "semantic"
+$env:GRADE_EVIDENCE_RANKING = "original"
+$env:GRADE_PASSAGE_STRATEGY = "original"
 uv run --locked --no-dev python -m exam_grader.heldout_written "$archive" --cohort fresh --frozen --output "$archive/replayed-thresholds.json"
 ```
+
+The original 0.40 independent test fixed two additional papers by deterministic ordering before grading. Q32 was excluded because it had already been examined across all 50 papers. Only redacted answer transcriptions went to the grader. Decisions were saved locally before joining to the published teacher marks. To reproduce a saved run, use its matching retrieval and passage settings. The current runtime defaults are `multipart` and `finalize`. A new `--run-label` preserves earlier private per-answer results when comparing versions. To reproduce the large-deduction review comparison, run `python -m exam_grader.review_policies "$archive"`. [Original independent run](written_independent_semantic.json)
 
 Inputs are written the same way as in the App tab: text, or the path of a file under `eval/inputs/` (an image, a document…), written from the repo root, e.g. `eval/inputs/case_07.jpg`.
 

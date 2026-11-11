@@ -1,0 +1,65 @@
+{
+  "status": "complete",
+  "search": "semantic",
+  "scope": "written",
+  "questions_in_scope": 15,
+  "reviewed": 15,
+  "supported": 14,
+  "open_questions": [],
+  "corpus_gaps": [],
+  "missing_exam_context_excluded": [
+    34
+  ],
+  "paragraph": {
+    "index": "paragraph:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+    "first_supporting_chunk_rank_in_top5": {
+      "21": 1,
+      "22": 1,
+      "23": 1,
+      "24": 1,
+      "25": 1,
+      "26": 1,
+      "27": 1,
+      "28": 1,
+      "29": 1,
+      "30": 1,
+      "31": 1,
+      "32": 1,
+      "33": 1,
+      "35": 1
+    },
+    "vectors_sha256": "e8983437e3a3238bd528559e5803fa112d645d7cfe9def2a0993f9e3626707de",
+    "hit@1": 1.0,
+    "hit@1_including_reviewed_gaps": 1.0,
+    "hit@3": 1.0,
+    "hit@3_including_reviewed_gaps": 1.0,
+    "hit@5": 1.0,
+    "hit@5_including_reviewed_gaps": 1.0
+  },
+  "section": {
+    "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+    "first_supporting_chunk_rank_in_top5": {
+      "21": 1,
+      "22": 3,
+      "23": 1,
+      "24": 1,
+      "25": 2,
+      "26": 1,
+      "27": 1,
+      "28": 2,
+      "29": 1,
+      "30": 1,
+      "31": 1,
+      "32": 1,
+      "33": 1,
+      "35": 1
+    },
+    "vectors_sha256": "bb3a28617fb8ffc6bfdcdae8ccb4cf21490f574207aebe5e51f326ae086cee6f",
+    "hit@1": 0.7857142857142857,
+    "hit@1_including_reviewed_gaps": 0.7857142857142857,
+    "hit@3": 1.0,
+    "hit@3_including_reviewed_gaps": 1.0,
+    "hit@5": 1.0,
+    "hit@5_including_reviewed_gaps": 1.0
+  }
+}

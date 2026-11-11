@@ -30,15 +30,20 @@ class ProviderContract(unittest.TestCase):
                 {"id":ident,"name":name,"args":args,"type":"tool_call"}],
                 usage_metadata={"input_tokens":12,"output_tokens":3,"total_tokens":15}))])
         responses=[message("open_course_passage",{"passage_id":"p1"},"a"),message("Proposal",data,"b")]
+        responses[0].generations[0].message.tool_calls.append(
+            {"id":"extra","name":"open_course_passage","args":{"passage_id":"p2"},"type":"tool_call"})
         with patch.dict(os.environ,{"GEMINI_API_KEY":"offline-test-only"}), patch.object(
                 ChatGoogleGenerativeAI,"_generate",side_effect=responses) as transport:
-            session=Gemini().open_session()
+            session=Gemini(finalize_lookup=True).open_session()
             self.assertEqual(session.grade("Q","key","synthetic",[hit,other]),data)
             self.assertEqual(session.last_opened,["p1"])
             self.assertNotIn(data["quote"],str(transport.call_args_list[0].args[0]))
             self.assertIn(data["quote"],str(transport.call_args_list[1].args[0]))
             self.assertEqual([data["quote"] in h["text"] for h in session.visible_evidence([hit,other])],[True,False])
             self.assertEqual(session.usage()["calls"],2)
+            self.assertIn("open_course_passage", str(transport.call_args_list[0].kwargs["tools"]))
+            self.assertNotIn("open_course_passage", str(transport.call_args_list[1].kwargs["tools"]))
+            self.assertIn("Proposal", str(transport.call_args_list[1].kwargs["tools"]))
 
     def test_schema_roundtrip_and_meter(self):
         data=dict(feedback="Identifies the target.",passage_id="test",

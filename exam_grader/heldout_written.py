@@ -3,8 +3,10 @@ import argparse
 from collections import Counter
 import json
 import os
+import re
 from pathlib import Path
 from statistics import mean
+from tempfile import NamedTemporaryFile
 from time import monotonic, sleep
 
 import pipeline
@@ -21,6 +23,10 @@ PAPERS = {
 FRESH_PAPERS = {
     "paper-c": ("Student_8", "2ab4594302bbba54b3244f90fe0b719695f2caee6ec26fa82193f02ef88f4991"),
     "paper-d": ("Student_36", "05b6e6dcc25a8e3cbb98611dfa2deb0aff11c293ffa1077be495c1212db499a7"),
+}
+INDEPENDENT_PAPERS = {
+    "paper-e": ("Student_41", "0a56f1f88acf63799a8825a39cfa5bf7068bed7dfa4c24cce344699ec6e8e067"),
+    "paper-f": ("Student_7", "0e5a12234c7739a253d65511138efbb36135a9163f7b06c51c5ceb94be57b5c3"),
 }
 
 class PacedCache(EvaluationCache):
@@ -41,6 +47,26 @@ class PacedCache(EvaluationCache):
             finally:
                 self.next_request = monotonic() + 12
         return super().get_or_generate(signature, request, paced_generate)
+
+
+def save_snapshot(path, rows):
+    """Publish a complete private file once. A revised run needs its own label."""
+    if path.is_file():
+        if json.loads(path.read_bytes()) != rows:
+            raise ValueError(f"Existing {path.name} differs. Choose a new --run-label to preserve both runs.")
+        return
+    with NamedTemporaryFile("w", dir=path.parent, encoding="utf-8", delete=False) as pending:
+        temporary = Path(pending.name)
+        json.dump(rows,pending,indent=2)
+    try:
+        # Hard-link publication gives simultaneous runs a single winner without overwriting it.
+        try:
+            os.link(temporary, path)
+        except FileExistsError:
+            if json.loads(path.read_bytes()) != rows:
+                raise ValueError(f"A different run just published {path.name}. Choose a new --run-label.") from None
+    finally:
+        temporary.unlink(missing_ok=True)
 
 def compare_revisions(original, revised):
     previous = {(r["paper"], r["question_id"]): r for r in original}
@@ -90,9 +116,85 @@ def replay_q32(folder):
             "mean_absolute_error": mean(errors) if errors else None,
             "scope": "Replay of four previously evaluated papers using fixed manual transcriptions."}
 
-def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None):
-    papers = FRESH_PAPERS if cohort == "fresh" else PAPERS
-    thresholds = (0.40, 0.25)
+def compare_lookup(folder, teacher_csv=None):
+    """Paired diagnostic on the four missing responses identified in the frozen development replays."""
+    from .gemini import Gemini
+    index, configured, _ = pipeline.resources()
+    if configured is None:
+        raise ValueError("Enable Gemini for the tool-policy diagnostic.")
+    cache = PacedCache(folder / "responses.sqlite")
+    agents = {"original":Gemini(finalize_lookup=False).for_evaluation(cache), "final_after_lookup":Gemini(finalize_lookup=True).for_evaluation(cache)}
+    papers = PAPERS | FRESH_PAPERS
+    trials = []
+    for i, (name,q) in enumerate((("paper-a",24), ("paper-a",25), ("paper-b",30), ("paper-c",25))):
+        path = folder / f"{name}.json"
+        if pipeline.file_sha256(path) != papers[name][1]:
+            raise ValueError(f"Changed transcription for {name}.")
+        sheet = pipeline.read_export(path)
+        sheet["answers"] = [a for a in sheet["answers"] if a["question_id"] == q]
+        row = {"paper":name, "q":q}
+        for method in (tuple(agents) if i % 2 == 0 else tuple(reversed(agents))):
+            out = grade_exam(sheet, index=index, agent=agents[method], allow_remote=True)
+            item = out["teacher"]["answers"][q - 1]
+            meter = out["record"]["outputs"]["component_b"]
+            row[method] = {"mark":item["mark"], "route":item["reason"], "calls":meter["calls"], "hits":meter["cache_hits"]}
+        trials.append(row)
+    exams = teacher_data(teacher_csv)
+    for row in trials:
+        row["teacher_mark"] = reference_mark(row["q"], exams[papers[row["paper"]][0]][row["q"]])
+    (folder/"lookup-comparison.json").write_text(json.dumps(trials,indent=2),encoding="utf-8")
+    report = {"scope":"Four selected missing responses on development papers. Two configurations share "
+                      "one passage lookup and two model calls per answer. Order alternates by item.",
+              "index":index.version, "n":len(trials)}
+    for method, agent in agents.items():
+        paired = [r for r in trials if r[method]["mark"] is not None and r["teacher_mark"] is not None]
+        report[method] = {"version":agent.version, "routes":dict(Counter(r[method]["route"] for r in trials)),
+                          "calls":sum(r[method]["calls"] for r in trials), "cache_hits":sum(r[method]["hits"] for r in trials),
+                          "paired":len(paired), "exact":sum(r[method]["mark"] == r["teacher_mark"] for r in paired)}
+    return report
+
+
+def compare_q22_context(folder, teacher_csv=None):
+    """Evaluate the explicit-numbers variant on four development papers, holding the Q34 gate fixed."""
+    papers = PAPERS | FRESH_PAPERS
+    exports = {}
+    for name, (_, expected) in papers.items():
+        path = folder / f"{name}.json"
+        if pipeline.file_sha256(path) != expected:
+            raise ValueError(f"Changed transcription for {name}.")
+        payload = pipeline.read_export(path)
+        exports[name] = payload | {"answers":[row for row in payload["answers"] if row["question_id"] == 22]}
+    index, provider, _ = pipeline.resources()
+    if provider is None:
+        raise ValueError("Set GEMINI_API_KEY to evaluate the self-contained Q22 variant.")
+    provider = provider.for_evaluation(PacedCache(folder / "responses.sqlite"))
+    rows = []
+    for name, payload in exports.items():
+        default = grade_exam(payload, index=index, agent=provider, allow_remote=True)["teacher"]["answers"][21]
+        variant = grade_exam(payload, policy=Policy(figure_questions=(34,)), index=index,
+                             agent=provider, allow_remote=True)["teacher"]["answers"][21]
+        rows.append({"paper":name,"default_route":default["reason"],"default_mark":default["mark"],
+                     "candidate_route":variant["reason"],"candidate_mark":variant["mark"]})
+    exams = teacher_data(teacher_csv)
+    for row in rows:
+        row["teacher_mark"] = reference_mark(22, exams[papers[row["paper"]][0]][22])
+    (folder / "q22-context-comparison.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
+    paired = [r for r in rows if r["candidate_mark"] is not None and r["teacher_mark"] is not None]
+    return {"scope":"Q22 only on four previously evaluated transcriptions. Candidate permits grading when the "
+                    "fixed question supplies the train/test accuracies. Q34 remains gated in both configurations.",
+            "index":index.version, "model":provider.version, "threshold":Policy().min_similarity,
+            "papers":len(rows), "default_review":sum(r["default_mark"] is None for r in rows),
+            "candidate_review":sum(r["candidate_mark"] is None for r in rows),
+            "paired_candidate_marks":len(paired), "exact":sum(r["candidate_mark"] == r["teacher_mark"] for r in paired),
+            "candidate_routes":dict(Counter(r["candidate_route"] for r in rows))}
+
+
+def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=None):
+    papers = {"pilot":PAPERS, "fresh":FRESH_PAPERS, "independent":INDEPENDENT_PAPERS}[cohort]
+    independent = cohort == "independent"
+    thresholds = (0.40,) if independent else (0.40, 0.25)
+    if run_label and not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,39}", run_label):
+        raise ValueError("Use a short lowercase run label containing letters, numbers or hyphens.")
     folder = folder.resolve()
     if folder.is_relative_to(Path(__file__).resolve().parents[1]):
         raise ValueError("Use the private transcription directory outside the repository.")
@@ -107,17 +209,24 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None):
     cache = EvaluationCache(folder / "responses.sqlite", read_only=True) if frozen else PacedCache(folder / "responses.sqlite")
     if agent is None:
         from .gemini import Gemini
-        agent = Gemini(frozen_cache=cache)
-    exams = teacher_data(teacher_csv)
+        agent = Gemini(frozen_cache=cache, finalize_lookup=pipeline.final_after_lookup())
     holdout = {source for source, _ in papers.values()}
-    if cohort == "fresh":
+    if cohort in {"fresh","independent"}:
         holdout.update(source for source, _ in PAPERS.values())
-    baseline = fit_written_baseline(exams, sorted(exams.keys() - holdout), holdout)
+    if independent:
+        holdout.update(source for source, _ in FRESH_PAPERS.values())
     report = {"dataset": "10.17632/sf3kvjwknt.1", "exams": len(papers), "cohort": cohort,
-              "baseline_training_exams": len(exams) - len(holdout),
               "scope": "All 30 written slots on two papers. Visible answers were manually transcribed and assigned confidence 1. Unlocated answers go to review.",
               "model": agent.version, "index": index.version, "q32_rule": Q32_VERSION,
               "response_mode": "frozen-cache-only" if frozen else "live-with-cache", "thresholds": []}
+    if run_label:
+        report["run_label"] = run_label
+    if independent:
+        report["scope"] = ("28 written slots on two additional papers. Q32 excluded because all 50 Q32 responses "
+                           "were examined in development. Answer-only transcriptions. Uncertain readings withheld.")
+        report["selection"] = ("First two remaining paper IDs sorted by SHA-256 of "
+                               "component2-independent-written-v1/{id}, excluding the four earlier papers.")
+        report["transcription_sha256"] = {name:digest for name, (_,digest) in papers.items()}
     for threshold in thresholds:
         pairs = []
         workload = []
@@ -131,15 +240,25 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None):
                                  "calls", "cache_hits", "uncached_tokens", "uncached_cost_eur", "usage_complete")}})
             for row in result["teacher"]["answers"]:
                 q = row["question_id"]
-                if q <= 20:
+                if q <= 20 or (independent and q == 32):
                     continue
-                teacher = reference_mark(q, exams[source][q])
                 pairs.append({"paper": name, "question_id": q,
-                              "teacher_mark": teacher if teacher is not None else "",
-                              "baseline_mark": baseline[q], "reason": row["reason"],
+                              "reason": row["reason"],
                               "feedback": row["feedback"], "deductions": row.get("deductions", []),
                               "proposed_mark": row["mark"] if row["mark"] is not None else "",
                               "retrieval_score": row["retrieval_score"]})
+        if independent:
+            snapshot = folder / f"{run_label or ('frozen' if frozen else 'live')}-independent-blind.json"
+            save_snapshot(snapshot, pairs)
+            report["blind_proposals_sha256"] = pipeline.file_sha256(snapshot)
+        exams = teacher_data(teacher_csv)
+        baseline = fit_written_baseline(exams, sorted(exams.keys() - holdout), holdout)
+        report["baseline_training_exams"] = len(exams) - len(holdout)
+        for pair in pairs:
+            q = pair["question_id"]
+            teacher = reference_mark(q, exams[papers[pair["paper"]][0]][q])
+            pair["teacher_mark"] = teacher if teacher is not None else ""
+            pair["baseline_mark"] = baseline[q]
         reasons = Counter(row["reason"] for row in pairs)
         review = sum(row["proposed_mark"] == "" for row in pairs)
         summary = {"threshold": threshold, "review": review, "review_share": review / len(pairs),
@@ -153,23 +272,30 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None):
             original = json.loads((folder / f"comparison-{threshold:.2f}.json").read_text(encoding="utf-8"))
             summary["change_on_same_answers"] = compare_revisions(original, pairs)
         report["thresholds"].append(summary)
-        prefix = "frozen" if frozen else "current"
-        (folder / f"{prefix}-{cohort}-{threshold:.2f}.json").write_text(json.dumps(pairs, indent=2), encoding="utf-8")
+        prefix = run_label or ("frozen" if frozen else "current")
+        save_snapshot(folder / f"{prefix}-{cohort}-{threshold:.2f}.json", pairs)
         print(f"{threshold:.2f}: {dict(reasons)}", flush=True)
     return report
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("private_folder", type=Path)
-    parser.add_argument("--cohort", choices=("pilot", "fresh", "q32"), default="pilot")
+    parser.add_argument("--cohort", choices=("pilot", "fresh", "independent", "q22", "q32", "lookup"), default="pilot")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--frozen", action="store_true", help="Use saved model responses only across both thresholds.")
     parser.add_argument("--teacher-csv",type=Path, help="Local copy of the published, checksum-pinned reference.")
+    parser.add_argument("--run-label",help="Keep private per-answer files from distinct experimental runs separate.")
     args = parser.parse_args()
     archive = Path(__file__).resolve().parents[1] / "eval"
-    if args.output.resolve() in {archive / name for name in (
-            "heldout_written_pilot.json", "written_rubric_v2_pilot.json", "written_rubric_v2_fresh.json")}:
-        parser.error("Choose a new output path to preserve the earlier evaluations.")
-    result = replay_q32(args.private_folder) if args.cohort == "q32" else run(args.private_folder, cohort=args.cohort,
-                                                                             frozen=args.frozen, teacher_csv=args.teacher_csv)
+    if args.output.exists() and args.output.resolve().parent == archive.resolve():
+        parser.error("Choose a new output path to preserve the published evaluation.")
+    if args.cohort == "q32":
+        result = replay_q32(args.private_folder)
+    elif args.cohort == "q22":
+        result = compare_q22_context(args.private_folder, args.teacher_csv)
+    elif args.cohort == "lookup":
+        result = compare_lookup(args.private_folder, args.teacher_csv)
+    else:
+        result = run(args.private_folder, cohort=args.cohort, frozen=args.frozen, teacher_csv=args.teacher_csv,
+                     run_label=args.run_label)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

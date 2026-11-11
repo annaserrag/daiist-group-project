@@ -7,10 +7,12 @@ from copy import copy
 from typing import TypedDict
 
 from langchain.agents import create_agent
-from langchain.agents.middleware import ModelCallLimitMiddleware, ToolCallLimitMiddleware
+from langchain.agents.middleware import ModelCallLimitMiddleware, ToolCallLimitMiddleware, wrap_model_call
+from langchain.agents.middleware.model_call_limit import ModelCallLimitExceededError
+from langchain.agents.middleware.tool_call_limit import ToolCallLimitExceededError
 from langchain.tools import tool, ToolRuntime
 from langchain_core.messages import ToolMessage
-from langchain.agents.structured_output import ToolStrategy
+from langchain.agents.structured_output import StructuredOutputValidationError, ToolStrategy
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langsmith import tracing_context
@@ -36,6 +38,13 @@ class Proposal(BaseModel):
     mark: float | None = Field(ge=0, le=2)
 
 PREVIEW = 260
+
+@wrap_model_call
+def finalize_after_lookup(request, handler):
+    if any(isinstance(m, ToolMessage) and m.name == "open_course_passage" for m in request.messages):
+        # The framework still binds the structured Proposal tool. A second lookup cannot be selected.
+        request = request.override(tools=[])
+    return handler(request)
 
 class PassageContext(TypedDict):
     passages: dict[str,str]
@@ -67,7 +76,7 @@ class Meter(BaseCallbackHandler):
 
 class Gemini:
     def __init__(self, *, model="gemini-3.5-flash-lite", input_eur_per_million=None, output_eur_per_million=None,
-                 frozen_cache=None):
+                 frozen_cache=None, finalize_lookup=False):
         rates = (input_eur_per_million, output_eur_per_million)
         self.rates = tuple(float(r) for r in rates) if all(r is not None and str(r).strip() for r in rates) else None
         if self.rates is not None and not all(math.isfinite(x) and x >= 0 for x in self.rates):
@@ -75,6 +84,8 @@ class Gemini:
         prompt = (DATA/"instructions.txt").read_text(encoding="utf-8")
         rubric_version = hashlib.sha256(json.dumps(CRITERIA, sort_keys=True).encode()).hexdigest()[:12]
         self.version = model+":prompt-"+hashlib.sha256(prompt.encode()).hexdigest()[:12]+":rubric-"+rubric_version
+        if finalize_lookup:
+            self.version += ":final-after-lookup-v1"
         self.cache = frozen_cache
         self.signature = [self.version, Proposal.model_json_schema(), {"temperature":0,"max_tokens":700,"preview":PREVIEW,"format_version":2}]
         if frozen_cache is not None:
@@ -87,10 +98,13 @@ class Gemini:
             raise ValueError("Set GEMINI_API_KEY before enabling live grading.")
         llm = ChatGoogleGenerativeAI(model=model,api_key=key,vertexai=False,temperature=0,
                                     max_tokens=700,max_retries=0,timeout=40)
+        middleware = [ModelCallLimitMiddleware(run_limit=2,exit_behavior="error"),
+                      ToolCallLimitMiddleware(tool_name="open_course_passage",run_limit=1,
+                                              exit_behavior="continue" if finalize_lookup else "error")]
+        if finalize_lookup:
+            middleware.append(finalize_after_lookup)
         self.app = create_agent(llm, tools=[open_course_passage], system_prompt=prompt,context_schema=PassageContext,
-                                response_format=ToolStrategy(Proposal,handle_errors=False),
-                                middleware=[ModelCallLimitMiddleware(run_limit=2,exit_behavior="error"),
-                                    ToolCallLimitMiddleware(tool_name="open_course_passage",run_limit=1,exit_behavior="error")])
+                                response_format=ToolStrategy(Proposal,handle_errors=False), middleware=middleware)
     def open_session(self):
         return Session(self)
 
@@ -103,6 +117,20 @@ class Session:
     def __init__(self, owner):
         self.owner, self.meter = owner, Meter()
         self.cached_inputs = self.cached_outputs = self.cache_hits = 0
+    @staticmethod
+    def failure_reason(error):
+        if isinstance(error, ToolCallLimitExceededError):
+            return "lookup_limit"
+        if isinstance(error, ModelCallLimitExceededError):
+            return "model_call_limit"
+        if isinstance(error, StructuredOutputValidationError):
+            return "structured_response_invalid"
+        code = getattr(error.__cause__ or error, "code", None)
+        if code == 429:
+            return "provider_rate_limit"
+        if code in (500, 502, 503, 504):
+            return "provider_unavailable"
+        return None
     def grade(self, question,key,text,hits):
         self.last_opened = []
         if self.meter.calls >= 30:

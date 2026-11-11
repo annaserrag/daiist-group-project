@@ -18,12 +18,16 @@ class Policy:
     figure_questions: tuple = (22,34)  # Conservative team draft until Q22 is adjudicated.
     pass_mark: float | None = None     # The dataset does not establish a pass rule.
     pass_band: float = 0.0
+    written_review_at_or_below: float | None = None
 
     def __post_init__(self):
         if not all(_prob(x) for x in (self.min_read,self.min_id,self.min_similarity)):
             raise ValueError("Thresholds must be finite numbers in [0,1].")
         if (self.pass_mark is not None and not 0 <= self.pass_mark <= 50) or not 0 <= self.pass_band <= 50:
             raise ValueError("Invalid pass boundary for a 50-point exam.")
+        cutoff = self.written_review_at_or_below
+        if cutoff is not None and (type(cutoff) not in (float,int) or cutoff not in (0,.5,1,1.5,2)):
+            raise ValueError("Written review cutoff must be a valid half-point mark out of two.")
 
 def _prob(v):
     return type(v) in (float,int) and math.isfinite(v) and 0 <= v <= 1
@@ -156,11 +160,19 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
             answer = session.grade(QUESTIONS[q],KEY[q],txt,hits)
         except MissingFrozenResponse:
             return row(q,"missing_frozen_response",**fields)
-        except Exception:
+        except Exception as error:
             # Do not persist provider error strings; they can echo the prompt.
-            return row(q,"provider_failure",**fields)
+            failed = row(q,"provider_failure",**fields)
+            if hasattr(session,"failure_reason") and (detail := session.failure_reason(error)):
+                failed["execution_issue"] = detail
+            return failed
         visible = session.visible_evidence(hits) if hasattr(session,"visible_evidence") else hits
-        return checked(q,answer,visible,searches) | {"opened_passages":list(getattr(session,"last_opened",[]))}
+        proposal = checked(q,answer,visible,searches) | {"opened_passages":list(getattr(session,"last_opened",[]))}
+        if p.written_review_at_or_below is not None and proposal["mark"] is not None and proposal["mark"] <= p.written_review_at_or_below:
+            candidate = proposal["mark"]
+            proposal.update(mark=None, status="review", reason="written_mark_review", candidate_mark=candidate,
+                            feedback=f"Teacher check requested for the suggested {candidate:g}/2. " + proposal["feedback"])
+        return proposal
 
     out = [decide(q) for q in sorted(KEY)]
     for item in out:
@@ -179,8 +191,11 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
     sims = [r["retrieval_score"] for r in out if r["retrieval_score"] is not None]
     # Only derived finite counts, trusted catalogue IDs and controlled reason codes enter logs.
     a_summary = {str(q):{"detections":len(items),"mean_confidence":avg([a["confidence"] for a in items if _prob(a.get("confidence"))])} for q,items in buckets.items()}
-    b_summary = [{k:r[k] for k in ("question_id","mark","reason","searches")} |
-                 {"source_id":r["citation"]["id"] if r["citation"] else None} for r in out]
+    b_summary = []
+    for answer in out:
+        summary = {k:answer[k] for k in ("question_id","mark","reason","searches","execution_issue") if k in answer}
+        summary["source_id"] = answer["citation"]["id"] if answer["citation"] else None
+        b_summary.append(summary)
     elapsed = time.perf_counter()-started
     usage = session.usage() if session else {"tokens":0,"cost_eur":0.,"usage_complete":True,"calls":0}
     record = {"input_summary":f"Exam OCR: {len(answers)} records, {len(buckets)} recognized question IDs.",

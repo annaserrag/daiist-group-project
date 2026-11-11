@@ -105,7 +105,7 @@ def evaluate(cases, out_dir, *, links=None, reference=None, teacher_dir=None, po
         b = record["outputs"]["component_b"]
         total_usage = record["outputs"]["total_usage"]
         reader_usage = record["outputs"]["reader_usage"]
-        failures = sorted({r["reason"] for r in teacher["answers"] if r["reason"] in UNAVAILABLE})
+        failures = sorted({r.get("execution_issue",r["reason"]) for r in teacher["answers"] if r["reason"] in UNAVAILABLE})
         if teacher.get("reader_failed") or b["input_type"] == "pdf_awaiting_reader":
             failures.append("reader_failure" if teacher.get("reader_failed") else "reader_unavailable")
         results.append({"run_id":run_id,"id":case["id"],"kind":case["kind"],"correct":match_expected(case["expected"],teacher),

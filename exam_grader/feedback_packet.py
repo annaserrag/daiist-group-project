@@ -8,7 +8,7 @@ from contextlib import closing
 from html import escape
 from pathlib import Path
 
-from .catalog import KEY, QUESTIONS
+from .catalog import DATA, KEY, QUESTIONS
 from .gemini import PREVIEW, Proposal
 from .grading import checked
 from .heldout_written import FRESH_PAPERS, PAPERS
@@ -52,7 +52,7 @@ def build(folder):
     folder = folder.resolve()
     if folder.is_relative_to(PROJECT):
         raise ValueError("Use the private archive outside the repository.")
-    index = Index("section", semantic=False)
+    index = Index("section", semantic=False, multipart=False)
     manifests, views = [], {}
     approved = {digest for _, digest in (PAPERS | FRESH_PAPERS).values()}
     with closing(sqlite3.connect((folder / "responses.sqlite").as_uri() + "?mode=ro", uri=True)) as db:
@@ -86,16 +86,9 @@ def build(folder):
         writer = csv.DictWriter(f, fieldnames=list(manifests[0]))
         writer.writeheader()
         writer.writerows(manifests)
-    # Plain HTML opens locally and keeps the team's saved labels in a separate file.
-    parts = ['<!doctype html><html lang="en"><meta charset="utf-8"><title>Written feedback review</title>',
-             '<style>body{font:18px/1.5 system-ui;max-width:82ch;margin:3em auto;padding:0 1em}'
-             'article{border-top:1px solid #999;padding:1em 0}dt{font-weight:bold}dd{margin:0 0 .7em}</style>',
-             '<h1>Written feedback review</h1><p>For each item, enter pass or fail and an optional reason '
-             'in the accompanying feedback-labels.csv. Pass when the feedback describes the answer accurately, '
-             'explains the proposed credit, and is supported by the quoted passage. Use fail for incorrect, '
-             'vague, unsupported or misleading feedback. Keep your labels independent of the automated judge.</p>']
+    parts = []
     for ident, item in items:
-        parts.append(f"<article><h2>{escape(ident)}</h2><dl>")
+        parts.append(f'<article data-id="{escape(ident)}"><h2>{escape(ident)}</h2><dl>')
         for label, field in (("Question", "question"), ("Student answer", "answer"), ("Official reference", "reference"),
                              ("Proposed mark out of two", "mark"), ("Feedback", "feedback"),
                              ("Quoted evidence", "quote"), ("Source passage", "source")):
@@ -103,8 +96,15 @@ def build(folder):
         parts.append("<dt>Marking guide</dt><dd><ul>")
         for points, description in item["marking_guide"].values():
             parts.append(f"<li>{points:g} points. {escape(description)}</li>")
-        parts.append("</ul></dd></dl></article>")
-    (folder / "feedback-review.html").write_text("".join(parts) + "</html>", encoding="utf-8")
+        parts.append(f'</ul></dd></dl><fieldset><legend>Your assessment</legend>'
+                     f'<label><input type="radio" name="{escape(ident)}" value="pass"> Pass</label>'
+                     f'<label><input type="radio" name="{escape(ident)}" value="fail"> Fail</label>'
+                     '<label class="comment">Comment (optional)<textarea rows="2"></textarea></label>'
+                     '</fieldset></article>')
+    packet_id = hashlib.sha256(json.dumps(items, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    template = (DATA / "feedback_review.html").read_text(encoding="utf-8")
+    html = template.replace("{{PACKET_ID}}", packet_id).replace("{{ARTICLES}}", "".join(parts))
+    (folder / "feedback-review.html").write_text(html, encoding="utf-8")
     labels = folder / "feedback-labels.csv"
     if not labels.exists():
         with labels.open("x", newline="", encoding="utf-8") as f:

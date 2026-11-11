@@ -13,6 +13,13 @@ def words(s):
 NEIGHBORS = re.compile(r"\b(?:k[\s-]*nn|(?:k[\s-]*)?(?:nearest[\s-]*)?neighbou?rs?(?:classifier|regressor)?)\b", re.I)
 SCALING = re.compile(r"\b(?:scaling|scaled|rescal(?:e[ds]?|ing)|normali[sz](?:ation|e[ds]?|ing)|standardi[sz](?:ation|e[ds]?|ing)|standardscaler|feature scales?)\b", re.I)
 DISTANCE = re.compile(r"\bdistances?\b", re.I)
+OUTLIER = re.compile(r"\boutliers?\b", re.I)
+TREATMENT = re.compile(r"\b(?:clipping|capping|trimming|winsori[sz]\w*|retain\w*|discard\w*)\b", re.I)
+
+
+def covers_treatment(hit):
+    return any(OUTLIER.search(sentence) and TREATMENT.search(sentence)
+               for sentence in re.split(r"[.!?]\s+", hit["text"]))
 
 # The teaching notes use names for the concepts behind these broader exam prompts.
 # Expand only the published question so student wording cannot select a topic.
@@ -38,11 +45,12 @@ def topic_terms(topic, *, distance_evidence):
     return terms
 
 class Index:
-    def __init__(self, design="section", semantic=False):
+    def __init__(self, design="section", semantic=False, *, multipart=True):
         if design not in ("section","paragraph"):
             raise ValueError("Unknown chunking design")
         raw = (DATA/"corpus.json").read_bytes()
         self.rows = chunks(json.loads(raw),design)
+        self.multipart = multipart
         self.vectors = None
         self.version = f"{design}:{digest(raw)[:12]}:lexical-v3"
         if semantic:
@@ -52,6 +60,8 @@ class Index:
                     or self.vectors["design"] != design):
                 raise ValueError("Rebuild index: manifest does not match")
             self.version = f"{design}:{digest(raw)[:12]}:{MODEL}:hybrid-v3"
+        if multipart:
+            self.version += ":multipart-v1"
         bags = []
         for row in self.rows:
             topic = " ".join((row["title"], row["heading"], row["text"]))
@@ -79,7 +89,14 @@ class Index:
                 sem = sum(x*y for x,y in zip(vec,self.vectors["queries"][str(qid)],strict=True))
                 score = (0.8*sem + 0.2*lex) if answer else sem
             results.append(dict(row,score=score))
-        return sorted(results,key=lambda r:(-r["score"],r["id"]))[:k]
+        ranked = sorted(results,key=lambda r:(-r["score"],r["id"]))
+        if (self.multipart and OUTLIER.search(question) and re.search(r"\b(?:detect|identif|find)\w*", question, re.I)
+                and re.search(r"\b(?:handl|treat|manag)\w*", question, re.I)
+                and not any(covers_treatment(hit) for hit in ranked[:3])):
+            position = next((i for i, hit in enumerate(ranked[3:30], start=3) if covers_treatment(hit)), None)
+            if position is not None:
+                ranked.insert(2, ranked.pop(position))
+        return ranked[:k]
 
 if __name__ == "__main__":
     import argparse

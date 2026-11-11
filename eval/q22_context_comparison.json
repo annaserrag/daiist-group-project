@@ -1,0 +1,16 @@
+{
+  "scope": "Q22 only on four previously evaluated transcriptions. Candidate permits grading when the fixed question supplies the train/test accuracies. Q34 remains gated in both configurations.",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a",
+  "threshold": 0.4,
+  "papers": 4,
+  "default_review": 4,
+  "candidate_review": 2,
+  "paired_candidate_marks": 1,
+  "exact": 1,
+  "candidate_routes": {
+    "provider_failure": 1,
+    "grounded_proposal": 2,
+    "missing_detection": 1
+  }
+}

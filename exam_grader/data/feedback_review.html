@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Written feedback review</title>
+<style>
+  :root { color-scheme: light; font: 17px/1.55 system-ui, sans-serif; color: #172c35; background: #fafbf9 }
+  body { max-width: 79ch; margin: 2rem auto; padding: 0 1rem }
+  h1, h2, dt, legend { color: #153b4b }
+  h2 { margin: 0 0 1rem }
+  dt, legend { font-weight: 650 }
+  dd { margin: 0 0 .85rem; white-space: pre-wrap; overflow-wrap: anywhere }
+  article { padding: 1.3rem; margin: 1rem 0; border: 1px solid #c9d2ce; background: white }
+  fieldset { border: 1px solid #a5b8b4; padding: .7rem 1rem }
+  label { margin-right: 1rem }
+  .comment { display: block; margin: .6rem 0 0 }
+  textarea { display: block; width: 100%; box-sizing: border-box; font: inherit }
+  header { position: sticky; top: 0; display: flex; flex-wrap: wrap; gap: .7rem; align-items: center;
+           padding: .65rem 0; background: #fafbf9; border-bottom: 2px solid #376458 }
+  button { padding: .55rem .9rem; font: inherit; cursor: pointer; border: 1px solid #376458;
+           background: #174c41; color: white; border-radius: .25rem }
+  :focus-visible { outline: 3px solid #b65d20; outline-offset: 2px }
+  @media print { header { position: static } button { display: none } }
+</style>
+</head>
+<body>
+<h1>Written feedback review</h1>
+<p>Read the answer, proposed mark, marking guide and citation. Choose <strong>Pass</strong> if the feedback accurately describes the answer, explains the proposed credit and is supported by the passage. Choose <strong>Fail</strong> for incorrect, vague, unsupported or misleading feedback.</p>
+<header><span id="progress" aria-live="polite"></span><button id="export">Download labels CSV</button></header>
+<p id="save-status">Choices are saved in this browser when local storage is available. Download the CSV before changing devices. A partial export includes blank rows for unfinished items.</p>
+<main>{{ARTICLES}}</main>
+<script>
+const storageKey = "exam-feedback-{{PACKET_ID}}";
+const items = Array.from(document.querySelectorAll("article[data-id]"));
+const statusText = document.getElementById("save-status");
+function currentRows() {
+  return items.map(item => ({
+    id: item.dataset.id,
+    label: item.querySelector("input:checked")?.value || "",
+    comment: item.querySelector("textarea").value
+  }));
+}
+function updateProgress() {
+  const completed = currentRows().filter(row => row.label).length;
+  document.getElementById("progress").textContent = completed + " of " + items.length + " labeled";
+}
+try {
+  const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+  const byId = new Map(saved.map(row => [row.id, row]));
+  for (const item of items) {
+    const row = byId.get(item.dataset.id);
+    if (!row) continue;
+    if (row.label === "pass" || row.label === "fail") item.querySelector('input[value="' + row.label + '"]').checked = true;
+    item.querySelector("textarea").value = row.comment || "";
+  }
+} catch {
+  statusText.textContent = "Browser saving is unavailable. Download the CSV to keep your work.";
+}
+document.querySelector("main").addEventListener("input", () => {
+  updateProgress();
+  try { localStorage.setItem(storageKey, JSON.stringify(currentRows())); }
+  catch { statusText.textContent = "Browser saving is unavailable. Download the CSV to keep your work."; }
+});
+document.getElementById("export").addEventListener("click", () => {
+  const quote = value => '"' + String(value).replaceAll('"', '""') + '"';
+  const rows = [["id", "label", "comment"], ...currentRows().map(row => [row.id, row.label, row.comment])];
+  const csv = rows.map(row => row.map(quote).join(",")).join("\r\n") + "\r\n";
+  const href = URL.createObjectURL(new Blob(["\uFEFF", csv], {type: "text/csv;charset=utf-8"}));
+  const link = document.createElement("a");
+  link.href = href;
+  link.download = "human_labels.csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(href), 1500);
+});
+updateProgress();
+</script>
+</body>
+</html>

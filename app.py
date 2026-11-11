@@ -9,6 +9,36 @@ import logbook
 import monitor
 import pipeline
 
+REVIEW_ACTIONS = {
+    "missing_detection": "Check whether this question has a response on the original page.",
+    "duplicate_detection": "Compare the readings with the page and identify the answer for this question.",
+    "unassigned_answer": "Assign the unnumbered reading before signing off the exam.",
+    "uncertain_question_id": "Check the question number against the original page.",
+    "unreadable": "Inspect the original or request a clearer scan.",
+    "low_read_confidence": "Verify the transcription against the handwritten answer.",
+    "invalid_answer": "Check the reading, confidence and state in the vision export.",
+    "empty_transcription": "Check the answer area and confirm whether it was left blank.",
+    "unverified_blank": "Inspect the answer area before assigning zero for a blank.",
+    "invalid_choice": "Check the marked option against the choices printed on the exam.",
+    "context_check": "Consult the original question and its accompanying context before marking.",
+    "weak_retrieval": "Use the official key and check a teaching passage that supports this answer.",
+    "no_index": "Open the official key or load the course index before grading.",
+    "provider_disabled": "Grade from the key, or run the written grader on an approved input.",
+    "provider_failure": "The written grader could not finish. Retry or mark from the key.",
+    "lookup_limit": "The grader requested extra evidence beyond its lookup limit. Consult the course source.",
+    "model_call_limit": "The grader reached its call limit. Inspect the answer against the key.",
+    "provider_rate_limit": "The grading service reached its request limit. Retry later or mark manually.",
+    "provider_unavailable": "The grading service was unavailable. Retry or use the official key.",
+    "missing_frozen_response": "This evaluation has no saved response for the exact request.",
+    "invalid_model_output": "Check the rubric and enter a mark on the question's scale.",
+    "structured_response_invalid": "The model response failed validation. Check the answer against the rubric.",
+    "unexplained_deduction": "Assess each rubric criterion and explain the points deducted.",
+    "unverified_citation": "Check the claimed support in the course material before awarding credit.",
+    "insufficient_evidence": "Read the student's answer with the key and decide which criteria it meets.",
+    "out_of_scope": "Check that the correct exam was uploaded.",
+    "invalid_contract": "Validate the vision export before grading this exam.",
+}
+
 def process_once(raw_input):
     started = perf_counter()
     views = pipeline.run_views(raw_input)
@@ -26,8 +56,9 @@ def display(raw_input):
     evidence, marks = [], []
     for item in teacher["answers"]:
         source = item["citation"] or {}
+        feedback = item["feedback"] or REVIEW_ACTIONS.get(item.get("execution_issue",item["reason"]), "")
         evidence.append([item["question_id"], item["question"], " | ".join(item["readings"]), item["max_mark"], item["mark"],
-                         item["reason"].replace("_", " "), item["feedback"],
+                         item["reason"].replace("_", " "), feedback,
                          source.get("title", ""), source.get("url", ""), source.get("quote", ""),
                          ", ".join(item.get("opened_passages",[])) or ""])
         marks.append([item["question_id"], item["mark"]])
@@ -42,7 +73,8 @@ def display(raw_input):
         status = f"{35-count} of 35 questions have a proposed mark. {count} require review."
         if teacher["near_pass_boundary"]:
             status += " Check the total against the configured pass boundary."
-    context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope"}
+    context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
+               "review_started":perf_counter(), "proposals":[point for _,point in marks]}
     return status, evidence, marks, context, None
 
 def sign_off(context, marks):
@@ -63,8 +95,16 @@ def sign_off(context, marks):
         except (TypeError, ValueError, OverflowError) as exc:
             raise gr.Error(f"Check Q{question}. Enter a valid teacher mark from 0 to {maximum}.") from exc
         final_marks.append({"question_id": question, "mark": point})
-    return {"request_id": context["id"], "teacher_signed_off": True, "maximum": 50,
-            "total": sum(row["mark"] for row in final_marks), "marks": final_marks}
+    signed = {"request_id": context["id"], "teacher_signed_off": True, "maximum": 50,
+              "total": sum(row["mark"] for row in final_marks), "marks": final_marks}
+    if "review_started" in context and "proposals" in context:
+        previous = context["proposals"]
+        signed["review_session"] = {
+            "elapsed_seconds_since_proposals_shown":round(perf_counter() - context["review_started"], 2),
+            "initially_referred":sum(p is None for p in previous),
+            "accepted_proposals":sum(p == r["mark"] for p,r in zip(previous, final_marks, strict=True)),
+            "changed_proposals":sum(p is not None and p != r["mark"] for p,r in zip(previous, final_marks, strict=True))}
+    return signed
 
 def rate(ctx, value):
     if not ctx:

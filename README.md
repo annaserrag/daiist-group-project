@@ -15,6 +15,14 @@ uv run --locked --no-dev python -m unittest discover -s tests -v
 uv run --locked --no-dev python -m exam_grader
 ~~~
 
+## Demonstrate the grading component
+
+1. Start the app and click **Try synthetic OCR example**. Show why Q1 is a valid proposal and why Q17 needs a teacher to inspect its selected option. With Gemini enabled, inspect the Q21 mark, citation and quoted text.
+2. Complete all 35 marks on this synthetic sheet and click **Sign off all 35 marks**. The signed sheet shows how many proposals the teacher accepted or changed, how many referrals they completed, and the elapsed time since the proposals appeared. Open Monitoring to check the single grading request.
+3. Show the printed-PDF check and the independent written evaluation. One verifies that OCR can feed the grader. The other compares actual written proposals with published teacher marks, including the 13/28 referrals on the revised replay. For the final class demo, repeat the PDF path with Anna's reader and a vetted handwritten sample. [Printed check](HANDOFF.md) · [Written evidence](eval/written_independent_revised.json)
+
+For a time-saving claim, have the team time manual grading and assisted sign-off on comparable exams. Record question counts, whether a teacher had seen each paper, and any interruptions. The app's sign-off timer measures elapsed time. The business calculation separately needs the teacher's actual hourly rate and the team's intended volume. [Business assumptions](REPORT.md#business-case)
+
 ## Your branch, separate from Anna's
 
 This checkout uses `component-2-grading`, based on commit `490638f` shared by Anna's `vision_model` and `main` at setup. Confirm the target branch with Anna before opening the component PR and coordinate the changes to app.py, pipeline.py, evaluate.py and monitor.py. [Team fork](https://github.com/annaserrag/daiist-group-project)
@@ -26,6 +34,12 @@ This checkout uses `component-2-grading`, based on commit `490638f` shared by An
 3. Written answers use cached question embeddings and local lexical overlap with the reading. Weak retrieval triggers a question-only retry. Low reading confidence still requires review. Q32 uses its distinct-hyperparameter rule. Both saved indexes support local search without an API key.
 4. A bounded LangChain create_agent call sees the official reference answer and the best passages. Its structured response contains feedback, passage ID, evidence quote, review flag and mark. A mark outside {0, 0.5, 1, 1.5, 2}, a fabricated ID or a quote absent from its passage is blocked. Quote matching verifies provenance, not whether the feedback is substantively correct; that needs human evaluation.
 5. No model call is required for deterministic or review-only routes. One model call for a direct proposal, or two if the model requests a full passage; no automatic generation retries, up to 30 calls per exam. The teacher signs off; this package supplies a proposal, not a gradebook write.
+
+The active grader offers one passage lookup on its first model call. After a lookup the second call can return a structured mark or request review. In a paired diagnostic on four earlier failures, the original configuration reached its limit on all four. The revised configuration produced four cited marks using the same eight calls and three matched the teacher. [Paired lookup trial](eval/written_lookup_comparison.json)
+
+For questions asking about both outlier detection and handling, the ranker reserves one of the top three positions for treatment evidence if the initial three omit it and an explicit treatment occurs among the first 30 candidates. Q27 now retrieves both detection and handling. The other 14 written question-only top-three lists remained identical. [Retrieval results](eval/written_retrieval_multipart.json)
+
+Teachers can try an optional second check for large deductions with `written_review_at_or_below` in their policy JSON. A value of 1 sends otherwise valid model proposals of 0, 0.5 or 1 out of 2 to review. The evidence and suggested mark remain visible in feedback, and the total waits for a teacher. This option applies to model-graded written answers. It defaults to disabled. The final signed sheet records elapsed review time, proposals accepted or changed, and referrals completed. Elapsed time includes interruptions. Use a separate timed manual run to estimate time saved. [Routing comparison](eval/written_review_policies.json)
 
 ## Run a real written-answer grade
 

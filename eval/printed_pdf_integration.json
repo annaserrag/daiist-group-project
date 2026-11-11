@@ -1,0 +1,34 @@
+{
+  "scope": "Generated printed, raster-only PDF in a fixed layout. OCR reads each ID and answer independently. This checks the PDF connector and grader. No handwritten student exams.",
+  "reader": "printed-fixture-rapidocr-1.4.4",
+  "renderer": "5.15.2",
+  "live_written_grading": true,
+  "pdf_path_used": "pdf",
+  "contract_valid": true,
+  "exact_readings": [
+    1,
+    17,
+    21
+  ],
+  "expected_readings": 3,
+  "routes": {
+    "1": {
+      "mark": 1,
+      "reason": "matches_key"
+    },
+    "17": {
+      "mark": null,
+      "reason": "invalid_choice"
+    },
+    "21": {
+      "mark": 2.0,
+      "reason": "grounded_proposal"
+    }
+  },
+  "seconds": 4.7172,
+  "ocr_seconds": 0.6065,
+  "grader_seconds": 4.110574199999974,
+  "tokens": 2360,
+  "cost_eur": 0.0008478475779635121,
+  "passed": true
+}

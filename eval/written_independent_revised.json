@@ -1,0 +1,81 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 2,
+  "cohort": "independent",
+  "scope": "28 written slots on two additional papers. Q32 excluded because all 50 Q32 responses were examined in development. Answer-only transcriptions. Uncertain readings withheld.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+  "q32_rule": "distinct-count-v5",
+  "response_mode": "live-with-cache",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 13,
+      "review_share": 0.4642857142857143,
+      "reasons": {
+        "grounded_proposal": 15,
+        "context_check": 4,
+        "unverified_citation": 2,
+        "missing_detection": 4,
+        "provider_failure": 2,
+        "unreadable": 1
+      },
+      "evaluation_workload": [
+        {
+          "paper": "paper-e",
+          "elapsed_seconds_including_pacing": 138.1211,
+          "tokens_billed_this_run": 22740,
+          "calls": 18,
+          "cache_hits": 0,
+          "uncached_tokens": 22740,
+          "uncached_cost_eur": 0.009298463197627392,
+          "usage_complete": true
+        },
+        {
+          "paper": "paper-f",
+          "elapsed_seconds_including_pacing": 147.4601,
+          "tokens_billed_this_run": 22531,
+          "calls": 19,
+          "cache_hits": 0,
+          "uncached_tokens": 22531,
+          "uncached_cost_eur": null,
+          "usage_complete": false
+        }
+      ],
+      "written_slots": 28,
+      "valid_teacher_marks": 24,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 9,
+      "baseline_on_all_scorable": {
+        "n": 24,
+        "exact": 0.16666666666666666,
+        "within_half": 0.875,
+        "mean_absolute_error": 0.5208333333333334
+      },
+      "baseline_on_matched_answers": {
+        "n": 15,
+        "exact": 0.26666666666666666,
+        "within_half": 0.8666666666666667,
+        "mean_absolute_error": 0.5
+      },
+      "grader_on_matched_answers": {
+        "n": 15,
+        "exact": 0.5333333333333333,
+        "within_half": 0.6,
+        "mean_absolute_error": 0.5
+      },
+      "feedback_check": {
+        "below_full_credit": 12,
+        "fully_accounted_for": 12
+      }
+    }
+  ],
+  "run_label": "finalized",
+  "selection": "First two remaining paper IDs sorted by SHA-256 of component2-independent-written-v1/{id}, excluding the four earlier papers.",
+  "transcription_sha256": {
+    "paper-e": "0a56f1f88acf63799a8825a39cfa5bf7068bed7dfa4c24cce344699ec6e8e067",
+    "paper-f": "0e5a12234c7739a253d65511138efbb36135a9163f7b06c51c5ceb94be57b5c3"
+  },
+  "blind_proposals_sha256": "754156e6eaba0ceaa11aac0c085b4128264f6ef96f2eb0da4ad78ec5bee164f1",
+  "baseline_training_exams": 44
+}
