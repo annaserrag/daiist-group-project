@@ -1,0 +1,124 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 4,
+  "cohort": "validation",
+  "scope": "56 written slots across four additional uncorrected papers, manually transcribed. Q32 excluded. Unlocated responses count toward review. Grader fixed at c4b76bb.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+  "q32_rule": "distinct-count-v5",
+  "response_mode": "live-with-cache",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 25,
+      "review_share": 0.44642857142857145,
+      "reasons": {
+        "grounded_proposal": 31,
+        "context_check": 5,
+        "unverified_citation": 3,
+        "missing_detection": 17
+      },
+      "evaluation_workload": [
+        {
+          "paper": "paper-g",
+          "elapsed_seconds_including_pacing": 175.9966,
+          "tokens_billed_this_run": 30678,
+          "calls": 24,
+          "cache_hits": 0,
+          "uncached_tokens": 30678,
+          "uncached_cost_eur": 0.012069380785476768,
+          "usage_complete": true
+        },
+        {
+          "paper": "paper-h",
+          "elapsed_seconds_including_pacing": 60.0907,
+          "tokens_billed_this_run": 10060,
+          "calls": 8,
+          "cache_hits": 0,
+          "uncached_tokens": 10060,
+          "uncached_cost_eur": 0.004080524849465264,
+          "usage_complete": true
+        },
+        {
+          "paper": "paper-i",
+          "elapsed_seconds_including_pacing": 145.8217,
+          "tokens_billed_this_run": 25184,
+          "calls": 20,
+          "cache_hits": 0,
+          "uncached_tokens": 25184,
+          "uncached_cost_eur": 0.010123483418711244,
+          "usage_complete": true
+        },
+        {
+          "paper": "paper-j",
+          "elapsed_seconds_including_pacing": 118.0771,
+          "tokens_billed_this_run": 20329,
+          "calls": 16,
+          "cache_hits": 0,
+          "uncached_tokens": 20329,
+          "uncached_cost_eur": 0.008300440370270513,
+          "usage_complete": true
+        }
+      ],
+      "written_slots": 56,
+      "valid_teacher_marks": 38,
+      "teacher_by_proposal": {
+        "2": {
+          "2": 10,
+          "review": 5,
+          "0": 3,
+          "1": 1
+        },
+        "1": {
+          "1": 3,
+          "0": 8,
+          "review": 3,
+          "0.5": 1
+        },
+        "0": {
+          "0": 3,
+          "1": 1
+        },
+        "no_reference": {
+          "review": 17,
+          "2": 1
+        }
+      },
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 8,
+      "baseline_on_all_scorable": {
+        "n": 38,
+        "exact": 0.18421052631578946,
+        "within_half": 0.8421052631578947,
+        "mean_absolute_error": 0.5131578947368421
+      },
+      "baseline_on_matched_answers": {
+        "n": 30,
+        "exact": 0.23333333333333334,
+        "within_half": 0.8,
+        "mean_absolute_error": 0.5166666666666667
+      },
+      "grader_on_matched_answers": {
+        "n": 30,
+        "exact": 0.5333333333333333,
+        "within_half": 0.5666666666666667,
+        "mean_absolute_error": 0.55
+      },
+      "execution_issues": {},
+      "feedback_check": {
+        "below_full_credit": 20,
+        "fully_accounted_for": 20
+      }
+    }
+  ],
+  "run_label": "sealed",
+  "selection": "Next four IDs in the original component2-independent-written-v1/{id} SHA-256 order after the first two, excluding the original four development papers.",
+  "transcription_sha256": {
+    "paper-g": "6dbe03d7fd76353225909c623fadde65a48e8772822c20b3fca18f09541039aa",
+    "paper-h": "f1552526218433976d63ac7b1b445495b686ee7a69b6a4975b62bfc678858b12",
+    "paper-i": "22d31a4b7eb26093de4e860cab832e0c2f4d1a5bcd37212644fd610bc1833a0a",
+    "paper-j": "5e1a9c357d4351c2f838e08a10597d21cd30e3b6507f07e97b580ffb61202e0b"
+  },
+  "blind_proposals_sha256": "81f783b1bb8dacde89073d0c6d1038839785b932066084e76c247f00b1f96dfe",
+  "baseline_training_exams": 40
+}

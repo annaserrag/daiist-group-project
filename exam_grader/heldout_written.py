@@ -1,4 +1,4 @@
-"""Replay two fixed, de-identified sets of written responses through the Component 2 pipeline."""
+"""Compare fixed, de-identified written cohorts through the Component 2 pipeline."""
 import argparse
 from collections import Counter
 import json
@@ -27,6 +27,13 @@ FRESH_PAPERS = {
 INDEPENDENT_PAPERS = {
     "paper-e": ("Student_41", "0a56f1f88acf63799a8825a39cfa5bf7068bed7dfa4c24cce344699ec6e8e067"),
     "paper-f": ("Student_7", "0e5a12234c7739a253d65511138efbb36135a9163f7b06c51c5ceb94be57b5c3"),
+}
+
+VALIDATION_PAPERS = {
+    "paper-g": ("Student_13", "6dbe03d7fd76353225909c623fadde65a48e8772822c20b3fca18f09541039aa"),
+    "paper-h": ("Student_18", "f1552526218433976d63ac7b1b445495b686ee7a69b6a4975b62bfc678858b12"),
+    "paper-i": ("Student_35", "22d31a4b7eb26093de4e860cab832e0c2f4d1a5bcd37212644fd610bc1833a0a"),
+    "paper-j": ("Student_22", "5e1a9c357d4351c2f838e08a10597d21cd30e3b6507f07e97b580ffb61202e0b"),
 }
 
 class PacedCache(EvaluationCache):
@@ -190,8 +197,9 @@ def compare_q22_context(folder, teacher_csv=None):
 
 
 def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=None):
-    papers = {"pilot":PAPERS, "fresh":FRESH_PAPERS, "independent":INDEPENDENT_PAPERS}[cohort]
-    independent = cohort == "independent"
+    papers = {"pilot":PAPERS, "fresh":FRESH_PAPERS, "independent":INDEPENDENT_PAPERS,
+              "validation":VALIDATION_PAPERS}[cohort]
+    independent = cohort in {"independent", "validation"}
     thresholds = (0.40,) if independent else (0.40, 0.25)
     if run_label and not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,39}", run_label):
         raise ValueError("Use a short lowercase run label containing letters, numbers or hyphens.")
@@ -211,10 +219,12 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=Non
         from .gemini import Gemini
         agent = Gemini(frozen_cache=cache, finalize_lookup=pipeline.final_after_lookup())
     holdout = {source for source, _ in papers.values()}
-    if cohort in {"fresh","independent"}:
+    if cohort == "fresh" or independent:
         holdout.update(source for source, _ in PAPERS.values())
     if independent:
         holdout.update(source for source, _ in FRESH_PAPERS.values())
+    if cohort == "validation":
+        holdout.update(source for source, _ in INDEPENDENT_PAPERS.values())
     report = {"dataset": "10.17632/sf3kvjwknt.1", "exams": len(papers), "cohort": cohort,
               "scope": "All 30 written slots on two papers. Visible answers were manually transcribed and assigned confidence 1. Unlocated answers go to review.",
               "model": agent.version, "index": index.version, "q32_rule": Q32_VERSION,
@@ -227,6 +237,15 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=Non
         report["selection"] = ("First two remaining paper IDs sorted by SHA-256 of "
                                "component2-independent-written-v1/{id}, excluding the four earlier papers.")
         report["transcription_sha256"] = {name:digest for name, (_,digest) in papers.items()}
+    if cohort == "validation":
+        frozen_model = "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1"
+        frozen_index = "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1"
+        if (agent.version, index.version) != (frozen_model, frozen_index):
+            raise ValueError("This validation cohort requires the archived model, rubric and retrieval index from c4b76bb.")
+        report["scope"] = ("56 written slots across four additional uncorrected papers, manually transcribed. "
+                           "Q32 excluded. Unlocated responses count toward review. Grader fixed at c4b76bb.")
+        report["selection"] = ("Next four IDs in the original component2-independent-written-v1/{id} "
+                               "SHA-256 order after the first two, excluding the original four development papers.")
     for threshold in thresholds:
         pairs = []
         workload = []
@@ -244,11 +263,12 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=Non
                     continue
                 pairs.append({"paper": name, "question_id": q,
                               "reason": row["reason"],
+                              **({"execution_issue":row["execution_issue"]} if cohort == "validation" and "execution_issue" in row else {}),
                               "feedback": row["feedback"], "deductions": row.get("deductions", []),
                               "proposed_mark": row["mark"] if row["mark"] is not None else "",
                               "retrieval_score": row["retrieval_score"]})
         if independent:
-            snapshot = folder / f"{run_label or ('frozen' if frozen else 'live')}-independent-blind.json"
+            snapshot = folder / f"{run_label or ('frozen' if frozen else 'live')}-{cohort}-blind.json"
             save_snapshot(snapshot, pairs)
             report["blind_proposals_sha256"] = pipeline.file_sha256(snapshot)
         exams = teacher_data(teacher_csv)
@@ -265,6 +285,8 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=Non
                    "reasons": dict(reasons), "evaluation_workload":workload, **compare_written(pairs)}
         marked = [row for row in pairs if row["proposed_mark"] != ""]
         partial = [row for row in marked if row["proposed_mark"] < 2]
+        if cohort == "validation":
+            summary["execution_issues"] = dict(Counter(r["execution_issue"] for r in pairs if "execution_issue" in r))
         summary["feedback_check"] = {"below_full_credit": len(partial), "fully_accounted_for": sum(
             sum(d["points"] for d in row["deductions"]) == 2 - row["proposed_mark"]
             and all(d["reason"].strip() in row["feedback"] for d in row["deductions"]) for row in partial)}
@@ -280,7 +302,7 @@ def run(folder, *, cohort="pilot", frozen=False, teacher_csv=None, run_label=Non
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("private_folder", type=Path)
-    parser.add_argument("--cohort", choices=("pilot", "fresh", "independent", "q22", "q32", "lookup"), default="pilot")
+    parser.add_argument("--cohort", choices=("pilot", "fresh", "independent", "validation", "q22", "q32", "lookup"), default="pilot")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--frozen", action="store_true", help="Use saved model responses only across both thresholds.")
     parser.add_argument("--teacher-csv",type=Path, help="Local copy of the published, checksum-pinned reference.")

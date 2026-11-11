@@ -58,6 +58,8 @@ For a separate test, two further papers were selected by a fixed ordering before
 
 On a subsequent replay of the same 28 independent-test slots, the revised agent and passage selection produced 15 marks, matched the teacher on 8/15 and referred 13 slots. Five answers left review and three entered review. Of ten answers marked in both runs, two moved closer to the teacher and eight had the same absolute error. The revised grader's mean absolute error and that of the baseline on the same 15 were both 0.50/2. Six revised proposals under-awarded by at least one point. This is a repeat comparison on the same papers. [Revised replay](eval/written_independent_revised.json) · [Score matrix](eval/written_review_policies.json)
 
+The final Component 2 test froze the revised grader at `c4b76bb` and used four further papers from the existing sampling order. Across 56 written slots excluding Q32, 31 received proposals and 25 went to review. Of 30 paired proposals, 16 matched the teacher and 17 were within half a point. The question-mean baseline, trained on 40 other papers, achieved 7 exact matches and 24 within half a point on the same 30. Respective mean absolute errors were 0.55/2 and 0.52/2. Twelve proposals were at least one point below the teacher and one was at least a point above. All 20 below-full-credit proposals accounted for their deductions. The test used manual transcriptions to isolate the grading component. [Four-paper test](eval/written_validation_four.json)
+
 ### End to end
 
 *How you wrote `eval/cases.csv` (counts by kind, two examples). Results against the baseline. Where the output is free text: the judge's rubric and your agreement with it on your own labels.*
@@ -88,7 +90,7 @@ In the first independent written run, the 15 reviews comprised six incomplete pr
 
 *Which cases go to a person: the rule, and how many cases a day that would be. Go / no-go / go with conditions: the conditions, and the evidence behind them.*
 
-On the original 28-slot independent run, a candidate policy that also referred proposed marks of 1/2 or lower would have sent 26/28 slots to review, up from 15. Both remaining marks matched the teacher. The prototype lets the team select this rule. The extra 11 reviews have a workload cost. Team members should supply their measured review time and decide whether that trade-off is acceptable. [Policy simulation](eval/written_review_policies.json)
+On the four new papers, ordinary routing referred 25/56 written slots (45%). Also referring proposed zeros raised that to 39/56 (70%) and retained 13 exact matches on 16 paired marks. Referring proposals at or below 1/2 raised reviews to 45/56 (80%) and retained ten exact matches on ten paired marks. The latter policy retained one additional proposal without a numerical teacher reference. Running the actual policy on the archived model outputs reproduced the simulated routes. The team still needs to time teacher review and select the operating policy. [Policy comparison](eval/written_review_policies.json)
 
 ## Bonus: reinforcement learning
 

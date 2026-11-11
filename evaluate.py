@@ -172,12 +172,8 @@ def component_evidence(base, cases_path):
             report["retrieval"]["semantic"]={"status":"not run","missing":[p.name for p in vectors if not p.is_file()]}
     human,judged=base/"human_labels.csv",base/"judge_results.csv"
     if judged.is_file() and human.is_file():
-        from exam_grader.judge import compare_labels
-        paired=rows(judged)
-        by_id={r["id"]:r["judge_label"] for r in paired}
-        if len(paired)!=len(by_id):
-            raise ValueError("Duplicate judge result ID.")
-        report["feedback_judge"]=compare_labels(by_id,rows(human))
+        from exam_grader.metrics import frozen_agreement
+        report["feedback_judge"]=frozen_agreement(rows(human),rows(judged))
         files.extend([human,judged])
     report["input_sha256"]={p.name:file_sha256(p) for p in files}
     return report

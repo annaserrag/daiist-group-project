@@ -80,10 +80,25 @@ def agreement(rows):
     return {"n":len(rows),"exact_agreement":sum(r["human_label"]==r["judge_label"] for r in rows)/len(rows),
             "human/judge":dict(matrix)}
 
+def compare_labels(judged, human):
+    ids = [r["id"].strip() for r in human]
+    if len(ids) != len(set(ids)) or set(ids) != set(judged):
+        raise ValueError("Judge items and human labels must contain the same unique IDs.")
+    paired = [{"id":ident,"human_label":r["label"].strip().lower(),"judge_label":judged[ident]}
+              for ident,r in zip(ids,human)]
+    return agreement(paired)
+
+def frozen_agreement(human, predictions):
+    by_id = {r["id"]:r["judge_label"] for r in predictions}
+    if len(predictions) != len(by_id):
+        raise ValueError("Duplicate judge result ID.")
+    return compare_labels(by_id,human)
+
 if __name__ == "__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("mode",choices=["retrieval","grading","agreement"])
     p.add_argument("csv")
+    p.add_argument("--judge-results",help="Join frozen judge predictions to a completed human-label CSV by ID, offline.")
     p.add_argument("--semantic",action="store_true")
     p.add_argument("--legacy-ranking",action="store_true",help="Reproduce rankings before multipart evidence selection.")
     p.add_argument("--partial",action="store_true",help="Diagnostic for reviewed questions only; no full-set conclusion.")
@@ -92,5 +107,12 @@ if __name__ == "__main__":
     rows=load(a.csv)
     if a.written_only and a.mode != "retrieval":
         p.error("--written-only applies to retrieval")
-    result=retrieval(rows,a.semantic,a.partial,written_only=a.written_only,multipart=not a.legacy_ranking) if a.mode=="retrieval" else (grading if a.mode=="grading" else agreement)(rows)
+    if a.judge_results and a.mode != "agreement":
+        p.error("--judge-results applies to agreement")
+    if a.mode == "retrieval":
+        result = retrieval(rows,a.semantic,a.partial,written_only=a.written_only,multipart=not a.legacy_ranking)
+    elif a.mode == "grading":
+        result = grading(rows)
+    else:
+        result = frozen_agreement(rows,load(a.judge_results)) if a.judge_results else agreement(rows)
     print(json.dumps(result,indent=2))

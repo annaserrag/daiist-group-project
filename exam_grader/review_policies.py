@@ -31,13 +31,18 @@ def compare(folder):
     configs = (("development", ("pilot", "fresh")), ("independent", ("independent",)))
     if (ROOT / "eval/written_independent_revised.json").exists():
         configs += (("revised_same_independent_papers", ("independent",)),)
+    if (ROOT / "eval/written_validation_four.json").exists():
+        configs += (("frozen_grader_four_new_papers", ("validation",)),)
     for label, cohorts in configs:
         rows = []
         for cohort in cohorts:
             snapshot = ROOT / "eval" / {
                 "pilot":"written_semantic_pilot_frozen.json", "fresh":"written_semantic_frozen_thresholds.json",
-                "independent":"written_independent_semantic.json"}[cohort]
+                "independent":"written_independent_semantic.json",
+                "validation":"written_validation_four.json"}[cohort]
             prefix = "current" if cohort == "independent" else "frozen"
+            if cohort == "validation":
+                prefix = "sealed"
             if label == "revised_same_independent_papers":
                 snapshot = ROOT / "eval/written_independent_revised.json"
                 prefix = "finalized"
@@ -47,10 +52,15 @@ def compare(folder):
             observations = json.loads(path.read_bytes())
             if len(observations) != run["written_slots"] or sum(r["proposed_mark"] == "" for r in observations) != run["review"]:
                 raise ValueError(f"The private {cohort} run does not match its archived totals.")
-            if cohort == "independent":
-                blind = folder / f"{'live' if prefix == 'current' else prefix}-independent-blind.json"
+            if cohort in {"independent","validation"}:
+                blind = folder / f"{'live' if prefix == 'current' else prefix}-{cohort}-blind.json"
                 if file_sha256(blind) != archive["blind_proposals_sha256"]:
                     raise ValueError("The frozen independent proposals changed.")
+                # The marks and routing in the labelled file must still be the sealed predictions.
+                predictions = json.loads(blind.read_bytes())
+                if [{k:v for k,v in row.items() if k not in {"teacher_mark", "baseline_mark"}}
+                        for row in observations] != predictions:
+                    raise ValueError("The labelled comparison differs from its blind predictions.")
             rows.extend(r for r in observations if r["question_id"] != 32)
             report.setdefault("source_sha256", {})[path.name] = file_sha256(path)
         if len({(r["paper"],r["question_id"]) for r in rows}) != len(rows):
@@ -58,6 +68,11 @@ def compare(folder):
         report[label] = {key:summarize(rows, threshold) for key, threshold in (
             ("existing_rule", None), ("refer_zero", 0), ("refer_at_most_one", 1))}
         report[label]["teacher_by_proposal"] = mark_matrix(rows)
+        if label == "frozen_grader_four_new_papers":
+            report[label]["by_paper"] = {
+                paper:summarize([r for r in rows if r["paper"] == paper], None)
+                for paper in sorted({r["paper"] for r in rows})
+            }
     return report
 
 
