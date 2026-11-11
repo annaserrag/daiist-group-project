@@ -1,0 +1,82 @@
+{
+  "scope": "Repeated direct PDF calls on one generated printed sheet. Public question catalogue and key supplied. No local OCR, retrieved passages or student records.",
+  "model": "gemini-3.5-flash-lite",
+  "source_fixture_sha256": "44d415ff97a57aa8e44ba3e03e83f9d87d11189b2192779df8f44f788b6b0d8f",
+  "expected_marks": {
+    "1": 1,
+    "17": null,
+    "21": 2
+  },
+  "trials": [
+    {
+      "seconds": 1.2935,
+      "input_tokens": 2308,
+      "total_tokens": 2424,
+      "cost_eur": 0.000882897456637009,
+      "status": "returned",
+      "exact_readings": [
+        1,
+        17,
+        21
+      ],
+      "matching_marks_or_referrals": [
+        1
+      ],
+      "missing_ids": [],
+      "unexpected_ids": [],
+      "duplicate_ids": [],
+      "returned_marks": {
+        "1": 1.0,
+        "17": 0.0,
+        "21": 1.5
+      }
+    },
+    {
+      "seconds": 3.4834,
+      "input_tokens": 2308,
+      "total_tokens": 2424,
+      "cost_eur": 0.000882897456637009,
+      "status": "returned",
+      "exact_readings": [
+        1,
+        17,
+        21
+      ],
+      "matching_marks_or_referrals": [
+        1
+      ],
+      "missing_ids": [],
+      "unexpected_ids": [],
+      "duplicate_ids": [],
+      "returned_marks": {
+        "1": 1.0,
+        "17": 0.0,
+        "21": 1.5
+      }
+    },
+    {
+      "seconds": 1.9875,
+      "input_tokens": 2308,
+      "total_tokens": 2422,
+      "cost_eur": 0.0008784038824480991,
+      "status": "returned",
+      "exact_readings": [
+        1,
+        17,
+        21
+      ],
+      "matching_marks_or_referrals": [
+        1,
+        21
+      ],
+      "missing_ids": [],
+      "unexpected_ids": [],
+      "duplicate_ids": [],
+      "returned_marks": {
+        "1": 1.0,
+        "17": 0.0,
+        "21": 2.0
+      }
+    }
+  ]
+}

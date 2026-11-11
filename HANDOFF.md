@@ -2,6 +2,21 @@
 
 Component 2 lives on `component-2-grading` in a checkout of the team's fork. Anna's published `vision_model` branch and `main` both pointed to the starter commit on 11 November. Agree which branch receives the integration PR and supply one vetted PDF with a separately checked answer export. [Team fork](https://github.com/annaserrag/daiist-group-project)
 
+## Share the grading branch
+
+To share the local branch before the integration PR, create a Git bundle from the Component 2 checkout. The bundle contains committed project files and history. The private response cache and local credentials stay on the owner's machine.
+
+```powershell
+git bundle create "$env:USERPROFILE/Documents/component-2-grading.bundle" component-2-grading
+```
+
+Anna can fetch the snapshot in her clone of the team fork and inspect it in a separate worktree. With the bundle saved in her Documents folder, these commands leave the branch in her current worktree untouched.
+
+```powershell
+git fetch "$env:USERPROFILE/Documents/component-2-grading.bundle" refs/heads/component-2-grading:refs/remotes/handoff/component-2-grading
+git worktree add --detach ../grading-integration-check handoff/component-2-grading
+```
+
 ## Vision produces one object per exam
 
 | Field | Meaning |

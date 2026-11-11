@@ -1,0 +1,122 @@
+{
+  "scope": "Repeated runs on the same generated printed content through local OCR and Component 2.",
+  "source_fixture_sha256": "44d415ff97a57aa8e44ba3e03e83f9d87d11189b2192779df8f44f788b6b0d8f",
+  "expected_marks": {
+    "1": 1,
+    "17": null,
+    "21": 2
+  },
+  "trials": [
+    {
+      "scope": "Generated printed, raster-only PDF in a fixed layout. OCR reads each ID and answer independently. This checks the PDF connector and grader. No handwritten student exams.",
+      "reader": "printed-fixture-rapidocr-1.4.4",
+      "renderer": "5.15.2",
+      "live_written_grading": true,
+      "grading_model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+      "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+      "q21_cited_passage": "supervised-d1fde1be5025",
+      "pdf_path_used": "pdf",
+      "contract_valid": true,
+      "exact_readings": [
+        1,
+        17,
+        21
+      ],
+      "expected_readings": 3,
+      "routes": {
+        "1": {
+          "mark": 1,
+          "reason": "matches_key"
+        },
+        "17": {
+          "mark": null,
+          "reason": "invalid_choice"
+        },
+        "21": {
+          "mark": 2.0,
+          "reason": "grounded_proposal"
+        }
+      },
+      "seconds": 8.4129,
+      "ocr_seconds": 0.7805,
+      "grader_seconds": 7.632265300002473,
+      "tokens": 2459,
+      "cost_eur": 0.0008864024445043587,
+      "passed": true
+    },
+    {
+      "scope": "Generated printed, raster-only PDF in a fixed layout. OCR reads each ID and answer independently. This checks the PDF connector and grader. No handwritten student exams.",
+      "reader": "printed-fixture-rapidocr-1.4.4",
+      "renderer": "5.15.2",
+      "live_written_grading": true,
+      "grading_model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+      "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+      "q21_cited_passage": "supervised-8d8dcdc17a05",
+      "pdf_path_used": "pdf",
+      "contract_valid": true,
+      "exact_readings": [
+        1,
+        17,
+        21
+      ],
+      "expected_readings": 3,
+      "routes": {
+        "1": {
+          "mark": 1,
+          "reason": "matches_key"
+        },
+        "17": {
+          "mark": null,
+          "reason": "invalid_choice"
+        },
+        "21": {
+          "mark": 2.0,
+          "reason": "grounded_proposal"
+        }
+      },
+      "seconds": 3.0895,
+      "ocr_seconds": 0.4118,
+      "grader_seconds": 2.677568800005247,
+      "tokens": 2313,
+      "cost_eur": 0.0008589017704682304,
+      "passed": true
+    },
+    {
+      "scope": "Generated printed, raster-only PDF in a fixed layout. OCR reads each ID and answer independently. This checks the PDF connector and grader. No handwritten student exams.",
+      "reader": "printed-fixture-rapidocr-1.4.4",
+      "renderer": "5.15.2",
+      "live_written_grading": true,
+      "grading_model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+      "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+      "q21_cited_passage": "supervised-8d8dcdc17a05",
+      "pdf_path_used": "pdf",
+      "contract_valid": true,
+      "exact_readings": [
+        1,
+        17,
+        21
+      ],
+      "expected_readings": 3,
+      "routes": {
+        "1": {
+          "mark": 1,
+          "reason": "matches_key"
+        },
+        "17": {
+          "mark": null,
+          "reason": "invalid_choice"
+        },
+        "21": {
+          "mark": 2.0,
+          "reason": "grounded_proposal"
+        }
+      },
+      "seconds": 6.1467,
+      "ocr_seconds": 0.4174,
+      "grader_seconds": 5.729096800001571,
+      "tokens": 2310,
+      "cost_eur": 0.0008521614091848655,
+      "passed": true
+    }
+  ]
+}

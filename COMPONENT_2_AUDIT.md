@@ -25,6 +25,8 @@ Q27 initially retrieved three detection passages. The revised top three include 
 
 ## Earlier audit and development history
 
+The plan's direct-scan baseline has now been tested on the same synthetic printed content as the pipeline. Direct Gemini and the pipeline both read all three responses exactly on three repeated trials each. Direct grading assigned zero to the invalid Q17 choice each time. The pipeline referred it in all three trials. The direct baseline took a median 1.99 seconds and the pipeline took 6.15 seconds. A direct comparison on actual student scans would require a different data-handling agreement. [Direct baseline](eval/printed_direct_baseline.json) · [Pipeline repetitions](eval/printed_pipeline_repeats.json)
+
 ### Q32 partial credit on corrected scans
 
 | Paper | Answer on the scan | What the marking establishes |
