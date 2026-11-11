@@ -1,5 +1,30 @@
 # Evaluation files
 
+## Reproduce the Component 2 evidence
+
+Run these from the repository root. The first two commands use public material. The monitoring replay downloads the checksum-verified teacher CSV or accepts a local copy via `--teacher-csv`.
+
+```powershell
+uv run --locked --no-dev python -m exam_grader.metrics retrieval eval/retrieval_sources.csv --written-only --semantic
+uv run --locked --no-dev python -m exam_grader.monitor_replay
+```
+
+The component owner can reproduce the private feedback packet from the four redacted exports and their archived evaluation cache. On this workstation, the private archive lives in `$env:LOCALAPPDATA/daiist-component2/heldout`. Open `feedback-review.html` and fill in `feedback-labels.csv` independently. Rebuilding the packet preserves edits to that CSV. After labeling, copy the completed IDs, labels and comments to the course's `human_labels.csv` and use the judge command below. Keep the case manifest, marked-up texts and private paths outside the repository. The packet excludes the superseded model-based Q32 proposal.
+
+```powershell
+$archive = "$env:LOCALAPPDATA/daiist-component2/heldout"
+uv run --locked --no-dev python -m exam_grader.feedback_packet "$archive"
+# Set GRADE_APPROVED_HASHES to the four vetted export hashes before judging.
+uv run --locked --no-dev python -m exam_grader.judge "$archive/feedback-items.csv" "$archive/feedback-labels.csv" "$archive/judge-results.csv"
+```
+
+The judge can freeze its predictions with `--predict-only` before human annotation. It checkpoints and resumes successful requests by exact prompt and evidence fingerprint. Keep its output separate from the human worksheet until labeling is finished. Copy the final judge output to `eval/judge_results.csv` for the course runner. For a controlled threshold comparison on the private two-paper comparison cohort, run the following after populating the response cache.
+
+```powershell
+$env:GRADE_RETRIEVAL_MODE = "semantic"
+uv run --locked --no-dev python -m exam_grader.heldout_written "$archive" --cohort fresh --frozen --output "$archive/replayed-thresholds.json"
+```
+
 Inputs are written the same way as in the App tab: text, or the path of a file under `eval/inputs/` (an image, a document…), written from the repo root, e.g. `eval/inputs/case_07.jpg`.
 
 ## `cases.csv`: the end-to-end test set
@@ -28,3 +53,23 @@ If you use an LLM judge: your own labels for 20+ cases (`id`, `label`, `comment`
 ## `shifted.csv`: the drift demo
 
 10 or more inputs that you shifted on purpose (one `input` column): darker photos, another language, another customer segment… `uv run python main.py drift-demo` checks that your alert fires on these and stays quiet on the `normal` cases.
+
+## Held-out written grading pilot
+
+`heldout_written_pilot.json` summarizes a paired threshold sweep on all 15 written questions from each of two papers. The transcriptions came from the uncorrected Student_17 and Student_42 PDFs. They preserve incomplete answers and normalize handwriting, line breaks and punctuation. They were fixed before joining the teacher CSV. Each reading and question assignment has confidence 1 to isolate Component 2. The baseline fits the rounded question mean on the other 48 exams. [Dinesh K P, Mendeley Data v1, CC BY 4.0](https://doi.org/10.17632/sf3kvjwknt.1)
+
+The original pilot is preserved. The revised guide assigns two points across named criteria for each question and requires a reason for each deduction. The fresh test uses Student_8 and Student_36, selected before inspecting their answers or marks. All four papers are excluded from training the fresh-set baseline. The rubric, model and retrieval index are shared by the revised pilot and fresh runs. Run these commands from the project root in PowerShell. The private folder holds the four vetted transcriptions, cached responses and question-level comparisons with feedback. Identical requests reuse the same successful model response across thresholds. A lower threshold can change the selected evidence by skipping the question-only retry.
+
+```powershell
+uv run --no-dev python -m exam_grader.heldout_written "$env:LOCALAPPDATA/daiist-component2/heldout" --cohort pilot --output eval/written_current_pilot.json
+uv run --no-dev python -m exam_grader.heldout_written "$env:LOCALAPPDATA/daiist-component2/heldout" --cohort fresh --output eval/written_current_fresh.json
+uv run --no-dev python -m exam_grader.heldout_written "$env:LOCALAPPDATA/daiist-component2/heldout" --cohort q32 --output eval/q32_count_replay.json
+```
+
+Review share uses all 30 answers. Agreement and mean absolute error use only paired numeric proposals and teacher marks. A teacher review has no numeric proposal. Each model mark is out of two points. These two papers can guide development. Any later choice of threshold or scoring rubric needs confirmation on fresh papers.
+
+The Q32 replay compares the four archived transcriptions with the previous Q32 decisions at 0.25. The count rule runs locally on confidently assigned, readable answers. It counts equivalent names once. Unrecognized wording that could change the award goes to review. The four-paper comparison with feedback is written to `q32-count-comparison.json` in the private evaluation folder. Earlier rules interpreted “max-node” as the terminal-node limit used by the R randomForest package. Version 4 asks the teacher whether “max-node” duplicates a separately named leaf limit when the distinction affects the mark. [Parameter definition](https://search.r-project.org/CRAN/refmans/randomForest/html/randomForest.html) · [50-paper comparison](q32_all50_ambiguous_duplicates.json)
+
+The independent Q32 follow-up, `q32_fresh_count.json`, covers all 46 remaining papers. Manual transcriptions and production decisions were frozen before joining teacher marks. Of 24 numeric teacher marks only two had a proposal; one matched exactly. The other 22 labelled cases went to review. Read this as a coverage limitation, not as a reliable estimate of marking accuracy. The private evaluation folder contains `q32-fresh-blind.json` (transcriptions and frozen decisions) and `Q32 fresh papers.md` (the complete comparison).
+
+To replay the revised Q32 rule on those same 46 readings, run `python -m exam_grader.q32_replay "$env:LOCALAPPDATA/daiist-component2/heldout"` from the project root. The command verifies the archived input digest, applies the production rule, then joins the published teacher marks. It writes aggregate results under `eval/` and the individual comparisons in the private folder. Version 2 recognizes singular "epoch" and affirmative definitions of the cluster count in K-means. It proposed 4 marks (previously 3); of 3 with numeric teacher references, 1 matched. This is a development replay because the cases informed the revision.

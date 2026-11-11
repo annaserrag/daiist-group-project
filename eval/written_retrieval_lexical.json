@@ -1,0 +1,63 @@
+{
+  "status": "complete",
+  "search": "lexical",
+  "scope": "written",
+  "questions_in_scope": 15,
+  "reviewed": 15,
+  "supported": 14,
+  "open_questions": [],
+  "corpus_gaps": [],
+  "missing_exam_context_excluded": [
+    34
+  ],
+  "paragraph": {
+    "index": "paragraph:46c52674828b:lexical-v1",
+    "first_supporting_chunk_rank_in_top5": {
+      "21": 2,
+      "22": 3,
+      "23": 5,
+      "24": null,
+      "25": 5,
+      "26": 1,
+      "27": 3,
+      "28": 5,
+      "29": null,
+      "30": null,
+      "31": 1,
+      "32": 5,
+      "33": 1,
+      "35": 1
+    },
+    "hit@1": 0.2857142857142857,
+    "hit@1_including_reviewed_gaps": 0.2857142857142857,
+    "hit@3": 0.5,
+    "hit@3_including_reviewed_gaps": 0.5,
+    "hit@5": 0.7857142857142857,
+    "hit@5_including_reviewed_gaps": 0.7857142857142857
+  },
+  "section": {
+    "index": "section:46c52674828b:lexical-v1",
+    "first_supporting_chunk_rank_in_top5": {
+      "21": 1,
+      "22": 2,
+      "23": 2,
+      "24": null,
+      "25": null,
+      "26": 1,
+      "27": 3,
+      "28": null,
+      "29": null,
+      "30": null,
+      "31": 1,
+      "32": null,
+      "33": 1,
+      "35": 1
+    },
+    "hit@1": 0.35714285714285715,
+    "hit@1_including_reviewed_gaps": 0.35714285714285715,
+    "hit@3": 0.5714285714285714,
+    "hit@3_including_reviewed_gaps": 0.5714285714285714,
+    "hit@5": 0.5714285714285714,
+    "hit@5_including_reviewed_gaps": 0.5714285714285714
+  }
+}

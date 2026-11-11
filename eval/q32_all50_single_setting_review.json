@@ -1,0 +1,43 @@
+{
+  "question_id": 32,
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "comparison": "Development replay on all 50 archived manual readings, production policy v2 vs v3",
+  "teacher_source": "published teacher CSV",
+  "teacher_csv_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "numeric_teacher_marks": 27,
+  "previous_rule": "distinct-count-v2",
+  "current_rule": "distinct-count-v3",
+  "before": {
+    "papers": 50,
+    "proposals": 8,
+    "review": 42,
+    "paired_marks": 6,
+    "exact": 2,
+    "within_half": 4,
+    "mae": 0.6666666666666666,
+    "review_rate": 0.84,
+    "exact_rate_on_paired": 0.3333333333333333,
+    "labelled_in_review": 21
+  },
+  "after": {
+    "papers": 50,
+    "proposals": 4,
+    "review": 46,
+    "paired_marks": 3,
+    "exact": 2,
+    "within_half": 3,
+    "mae": 0.16666666666666666,
+    "review_rate": 0.92,
+    "exact_rate_on_paired": 0.6666666666666666,
+    "labelled_in_review": 24
+  },
+  "entered_review": 4,
+  "review_reason_counts": {
+    "missing_detection": 20,
+    "uncertain_hyperparameter": 19,
+    "single_hyperparameter_review": 6,
+    "unreadable": 1
+  },
+  "numeric_in_both_with_teacher": 3,
+  "unchanged_numeric_marks_on_common_set": 3
+}

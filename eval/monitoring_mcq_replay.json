@@ -1,0 +1,60 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "teacher_csv_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "scope": "Engineering replay of the published MCQ selections. Each valid letter becomes one observed slot. Confidence is fixed. Only reading count is evaluated. No live OCR or team course cases.",
+  "split": "Deterministic SHA-256 order of drift-v1/ followed by the published exam ID. First 30 provide the reference. The same remaining 20 form both comparison windows.",
+  "shift": "Withhold detections from Q16 through Q20.",
+  "reference_count": 30,
+  "reference_mean_observed_mcqs": 19.7,
+  "normal_window": {
+    "exam_count": 20,
+    "mean_observed_mcqs": 19.8,
+    "signals": [
+      {
+        "feature": "reading_count",
+        "psi": 1.008,
+        "threshold": 0.667,
+        "alert": true
+      }
+    ],
+    "half_count_candidate": [
+      {
+        "feature": "reading_count",
+        "psi": 0.222,
+        "threshold": 0.667,
+        "alert": false
+      }
+    ]
+  },
+  "shifted_window": {
+    "exam_count": 20,
+    "mean_observed_mcqs": 15.0,
+    "signals": [
+      {
+        "feature": "reading_count",
+        "psi": 17.95,
+        "threshold": 0.667,
+        "alert": true
+      }
+    ],
+    "half_count_candidate": [
+      {
+        "feature": "reading_count",
+        "psi": 6.795,
+        "threshold": 0.667,
+        "alert": true
+      }
+    ]
+  },
+  "sensitivity": "100 overlapping deterministic 30/20 repartitions of the same 50 exams. Both methods use the same alert threshold. The candidate adds half an observation per possible bin.",
+  "repartition_alert_counts_out_of_100": {
+    "current": {
+      "normal_alerts": 54,
+      "shifted_alerts": 100
+    },
+    "half_count_candidate": {
+      "normal_alerts": 1,
+      "shifted_alerts": 100
+    }
+  }
+}

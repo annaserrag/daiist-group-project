@@ -1,5 +1,7 @@
 # Setup
 
+**Exam grading project:** from the repo root, run `uv sync --locked --no-dev` and `uv run --locked --no-dev python app.py`. “Try synthetic OCR example” works without a key. For the private retrieval worksheet run `uv run --locked --no-dev python -m exam_grader.worksheet`. For live written marking set GEMINI_API_KEY locally; only server-approved, vetted inputs may be sent. The public corpus is included. See [Component 2 instructions](README.md) for the vector build, approval hashes, course evaluation and test commands, and [the integration contract](HANDOFF.md) to configure the team's PDF reader. Until that reader is connected, queued PDFs cannot receive marks. The general course setup follows.
+
 ## Install
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/). One member forks this repo and adds the rest of the team as collaborators (*Settings → Collaborators*). Each of you clones the fork and runs `uv sync`.

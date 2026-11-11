@@ -1,0 +1,34 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "question_id": 32,
+  "rule": "distinct-count-v1",
+  "rule_sha256": "e7e619f0ad5821913f9baa341eebb649cf8725f457ad4ae63541bd8b03bcbe06",
+  "teacher_csv_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "frozen_input_and_proposals_sha256": "ec47b0b331585eb9aa4793b99932fdc88a6c6206890e6e03f32abfe77325c333",
+  "scope": "Manual Q32 reading from uncorrected scans. All 46 papers outside the original four; no OCR or provider calls. Predictions frozen before the teacher join.",
+  "previous_papers_excluded": [
+    8,
+    17,
+    36,
+    42
+  ],
+  "papers": 46,
+  "located": 26,
+  "proposals": 3,
+  "reviewed": 43,
+  "review_by_reason": {
+    "missing_detection": 20,
+    "uncertain_hyperparameter": 22,
+    "unreadable": 1
+  },
+  "numeric_teacher_marks": 24,
+  "teacher_mark_unavailable": {
+    "empty": 21,
+    "NM": 1
+  },
+  "reviewed_with_numeric_reference": 22,
+  "paired_marks": 2,
+  "exact": 1,
+  "within_half": 2,
+  "mean_absolute_error": 0.25
+}

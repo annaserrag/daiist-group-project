@@ -1,0 +1,143 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 2,
+  "baseline_training_exams": 48,
+  "scope": "All Q21-Q35 on two manually transcribed papers, assuming perfect reading and question assignment.",
+  "model": "gemini-3.5-flash-lite:prompt-b5616579a8e0",
+  "index": "section:46c52674828b:lexical-v3",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 27,
+      "review_share": 0.9,
+      "reasons": {
+        "grounded_proposal": 3,
+        "context_check": 4,
+        "weak_retrieval": 23
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 27,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 3,
+        "exact": 0.6666666666666666,
+        "within_half": 1,
+        "mean_absolute_error": 0.16666666666666666
+      },
+      "grader_on_matched_answers": {
+        "n": 3,
+        "exact": 0,
+        "within_half": 0,
+        "mean_absolute_error": 1.0
+      }
+    },
+    {
+      "threshold": 0.3,
+      "review": 21,
+      "review_share": 0.7,
+      "reasons": {
+        "grounded_proposal": 9,
+        "context_check": 4,
+        "weak_retrieval": 16,
+        "unverified_citation": 1
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 21,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 9,
+        "exact": 0.3333333333333333,
+        "within_half": 0.8888888888888888,
+        "mean_absolute_error": 0.3888888888888889
+      },
+      "grader_on_matched_answers": {
+        "n": 9,
+        "exact": 0,
+        "within_half": 0,
+        "mean_absolute_error": 1.2222222222222223
+      }
+    },
+    {
+      "threshold": 0.25,
+      "review": 12,
+      "review_share": 0.4,
+      "reasons": {
+        "grounded_proposal": 18,
+        "context_check": 4,
+        "weak_retrieval": 6,
+        "unverified_citation": 1,
+        "provider_failure": 1
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 12,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 18,
+        "exact": 0.2222222222222222,
+        "within_half": 0.8888888888888888,
+        "mean_absolute_error": 0.4444444444444444
+      },
+      "grader_on_matched_answers": {
+        "n": 18,
+        "exact": 0.16666666666666666,
+        "within_half": 0.2222222222222222,
+        "mean_absolute_error": 1.0277777777777777
+      }
+    },
+    {
+      "threshold": 0.2,
+      "review": 12,
+      "review_share": 0.4,
+      "reasons": {
+        "grounded_proposal": 18,
+        "context_check": 4,
+        "weak_retrieval": 6,
+        "unverified_citation": 1,
+        "provider_failure": 1
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 12,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 18,
+        "exact": 0.2222222222222222,
+        "within_half": 0.8888888888888888,
+        "mean_absolute_error": 0.4444444444444444
+      },
+      "grader_on_matched_answers": {
+        "n": 18,
+        "exact": 0.16666666666666666,
+        "within_half": 0.2222222222222222,
+        "mean_absolute_error": 1.0277777777777777
+      }
+    }
+  ]
+}

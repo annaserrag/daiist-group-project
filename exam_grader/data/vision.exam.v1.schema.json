@@ -1,0 +1,167 @@
+{
+  "$defs": {
+    "VisionAnswer": {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "confirmed_blank"
+          }
+        }
+      },
+      "properties": {
+        "question_id": {
+          "anyOf": [
+            {
+              "maximum": 35,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Question Id"
+        },
+        "text": {
+          "maxLength": 4000,
+          "title": "Text",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "id_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Id Confidence",
+          "type": "number"
+        },
+        "state": {
+          "enum": [
+            "read",
+            "unreadable",
+            "confirmed_blank"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question_id",
+        "text",
+        "confidence",
+        "id_confidence",
+        "state"
+      ],
+      "then": {
+        "properties": {
+          "text": {
+            "const": ""
+          }
+        }
+      },
+      "title": "VisionAnswer",
+      "type": "object"
+    },
+    "VisionFeatures": {
+      "properties": {
+        "ink_density": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Ink Density",
+          "type": "number"
+        },
+        "line_count": {
+          "default": 0,
+          "maximum": 100000,
+          "minimum": 0,
+          "title": "Line Count",
+          "type": "integer"
+        }
+      },
+      "title": "VisionFeatures",
+      "type": "object"
+    },
+    "VisionUsage": {
+      "properties": {
+        "tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tokens"
+        },
+        "cost_eur": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Eur"
+        }
+      },
+      "title": "VisionUsage",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": "vision.exam.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "exam_status": {
+      "enum": [
+        "in_scope",
+        "unreadable",
+        "out_of_scope"
+      ],
+      "title": "Exam Status",
+      "type": "string"
+    },
+    "answers": {
+      "items": {
+        "$ref": "#/$defs/VisionAnswer"
+      },
+      "maxItems": 100,
+      "title": "Answers",
+      "type": "array"
+    },
+    "features": {
+      "$ref": "#/$defs/VisionFeatures"
+    },
+    "usage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/VisionUsage"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "schema_version",
+    "exam_status",
+    "answers"
+  ],
+  "title": "VisionExam",
+  "type": "object"
+}

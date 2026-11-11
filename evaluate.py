@@ -1,77 +1,223 @@
-"""
-Evaluation. `uv run python main.py evaluate` (this file, or evaluate.ipynb)
-
-The template only runs every case in eval/cases.csv through the pipeline and
-reports what does not depend on your product: review rate per kind, latency and
-cost. The TODOs are yours:
-
-  1. each component on its own, with the metric that fits it;
-  2. `is_correct()` for the end-to-end result, and the comparison with the baseline;
-  3. if outputs are free text, an LLM judge, checked against eval/human_labels.csv.
-
-Write what you report into eval/ (results.csv is written for you) and commit it,
-so the numbers in REPORT.md can be traced back.
-"""
-
+"""Run team-authored course cases through the same pipeline as the app, without writing app logs."""
+import argparse
 import csv
-import time
+import json
+import re
+from uuid import uuid4
 from pathlib import Path
+from statistics import mean
 
-import pandas as pd
-
-import env
 import pipeline
+from exam_grader.metrics import grading
+from exam_grader.metrics import retrieval
+from exam_grader.catalog import DATA
+from exam_grader.integration import file_sha256
+from exam_grader.grading import Policy
+from exam_grader.reference_marks import teacher_data, reference_mark, fit_written_baseline, compare_written
+from exam_grader.evaluation_cache import EvaluationCache
 
-ROOT = Path(__file__).resolve().parent
-CASES = ROOT / "eval" / "cases.csv"
-RESULTS = ROOT / "eval" / "results.csv"
+def rows(path):
+    with Path(path).open(encoding="utf-8-sig",newline="") as f:
+        return list(csv.DictReader(f))
 
+def write_csv(path, data, columns):
+    path.parent.mkdir(parents=True,exist_ok=True)
+    tmp = path.with_name(path.name+".tmp")
+    with tmp.open("w",encoding="utf-8",newline="") as f:
+        writer = csv.DictWriter(f,fieldnames=columns)
+        writer.writeheader()
+        writer.writerows(data)
+    tmp.replace(path)
 
-def is_correct(case: dict, result: dict) -> bool | None:
-    """TODO: is this end-to-end result correct for this case? None if code cannot tell (use the judge).
+UNAVAILABLE = {"no_index","provider_disabled","provider_failure","invalid_model_output","invalid_contract"}
 
-    PLACEHOLDER: compares component A's label with `expected`.
-    """
-    return result["outputs"]["component_a"]["label"] == case["expected"].strip()
+def match_expected(text, teacher):
+    """A team may use structured case expectations or keep narrative expectations for human assessment."""
+    try:
+        expected = json.loads(text)
+    except (TypeError,json.JSONDecodeError):
+        return None
+    if not isinstance(expected,dict):
+        return None
+    if not expected or set(expected)-{"exam_status","marks","review_questions","review_reasons","total"}:
+        raise ValueError("Unrecognized structured expectation.")
+    if teacher.get("reader_failed") or teacher.get("input_type") == "pdf_awaiting_reader":
+        return False
+    target_status = expected.get("exam_status","in_scope")
+    if target_status not in ("in_scope","unreadable","out_of_scope"):
+        raise ValueError("Expected exam_status must be in_scope, unreadable or out_of_scope.")
+    if teacher["exam_status"] != target_status:
+        return False
+    by_id = {str(r["question_id"]):r for r in teacher["answers"]}
+    checks = []
+    if target_status != "in_scope":
+        checks.append(teacher["proposed_total"] is None and all(r["mark"] is None for r in by_id.values()))
+    elif not any(r["mark"] is not None for r in by_id.values()):
+        # A blanket abstention cannot satisfy an ordinary case just because Q17 also abstained.
+        # An intentional all-review case needs an explicit, substantive reason on a target.
+        reasons = expected.get("review_reasons",{})
+        if (not reasons or any(r in UNAVAILABLE for r in reasons.values())
+                or all(r["reason"] in {"unreadable","missing_detection","empty_transcription"} for r in by_id.values())):
+            return False
+    if "exam_status" in expected:
+        checks.append(True)
+    for q,mark in expected.get("marks",{}).items():
+        if q not in by_id or type(mark) not in (int,float) or mark not in ({0,1} if int(q)<=20 else {0,.5,1,1.5,2}):
+            raise ValueError("Expected mark is outside the exam scale.")
+        checks.append(by_id[q]["mark"]==mark)
+    for q in expected.get("review_questions",[]):
+        item = by_id[str(q)]
+        checks.append(item["status"]=="review" and item["reason"] not in UNAVAILABLE)
+    for q,reason in expected.get("review_reasons",{}).items():
+        checks.append(by_id[q]["status"]=="review" and by_id[q]["reason"]==reason and reason not in UNAVAILABLE)
+    if "total" in expected:
+        checks.append(teacher["proposed_total"]==expected["total"])
+    if not checks:
+        raise ValueError("Empty structured expectation.")
+    return all(checks)
 
+def evaluate(cases, out_dir, *, links=None, reference=None, teacher_dir=None, policy=None,
+             training_ids=None, evaluation_cache=None):
+    if not cases:
+        raise ValueError("Add team-authored cases before evaluating.")
+    ids=[c["id"] for c in cases]
+    if len(set(ids)) != len(ids) or any(not re.fullmatch(r"[a-zA-Z0-9_-]+",i) for i in ids):
+        raise ValueError("Supply unique short case IDs made of letters, digits, hyphens or underscores.")
+    if links is not None:
+        if reference is None or set(links)-set(ids) or set(links.values())-set(reference):
+            raise ValueError("Check the case IDs and anonymous source IDs in the links CSV.")
+    baseline = None
+    if training_ids is not None:
+        if not links:
+            raise ValueError("A held-out comparison needs linked evaluation exams.")
+        baseline = fit_written_baseline(reference, training_ids, links.values())
+    results, pairs = [],[]
+    run_id = uuid4().hex
+    for case in cases:
+        result = pipeline.run_views(case["input"], policy=policy, evaluation_cache=evaluation_cache)
+        teacher,record = result["teacher"],result["record"]
+        if teacher_dir is not None:
+            teacher_dir.mkdir(parents=True,exist_ok=True)
+            path = teacher_dir / (case["id"]+".json")
+            tmp = path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(teacher,ensure_ascii=False),encoding="utf-8")
+            tmp.replace(path)
+        b = record["outputs"]["component_b"]
+        total_usage = record["outputs"]["total_usage"]
+        reader_usage = record["outputs"]["reader_usage"]
+        failures = sorted({r["reason"] for r in teacher["answers"] if r["reason"] in UNAVAILABLE})
+        if teacher.get("reader_failed") or b["input_type"] == "pdf_awaiting_reader":
+            failures.append("reader_failure" if teacher.get("reader_failed") else "reader_unavailable")
+        results.append({"run_id":run_id,"id":case["id"],"kind":case["kind"],"correct":match_expected(case["expected"],teacher),
+                        "review_questions":teacher["review_count"],"total":teacher["proposed_total"],
+                        "exam_status":teacher["exam_status"],"execution_issues":"|".join(failures),
+                        "latency_s":record["latency_s"],"component_2_s":b["latency_s"],
+                        "component_1_s":record["features"]["vision_latency_s"],
+                        "component_1_tokens":reader_usage["tokens"],"component_1_eur":reader_usage["cost_eur"],
+                        "component_2_tokens":b["tokens"] if b["usage_complete"] else None,"component_2_eur":b["cost_eur"],
+                        "tokens":record["tokens"] if total_usage["usage_complete"] else None,"usage_complete":total_usage["usage_complete"],
+                        "cost_eur":record["cost_eur"] if total_usage["cost_known"] else None,
+                        "cache_hits":b["cache_hits"],"model_calls":b["calls"],
+                        "uncached_tokens":total_usage["uncached_tokens"],"uncached_cost_eur":total_usage["uncached_cost_eur"],
+                        "input_type":b["input_type"],"vision_version":record["versions"]["component_a"],
+                        "grader_version":record["versions"]["component_b"],"index":record["versions"]["retrieval"],
+                        "policy":record["versions"]["policy"]})
+        if links and case["id"] in links:
+            gold = reference[links[case["id"]]]
+            for answer in teacher["answers"]:
+                q = answer["question_id"]
+                label = reference_mark(q,gold[q])
+                pairs.append({"run_id":run_id,"exam_id":case["id"],"question_id":q,
+                              "teacher_mark":"" if label is None else str(label),
+                              "proposed_mark":"" if answer["mark"] is None else str(answer["mark"]),
+                              "baseline_mark":baseline.get(q) if baseline is not None else None})
+    out_dir=Path(out_dir)
+    write_csv(out_dir/"results.csv",results,list(results[0]))
+    known = [r for r in results if r["correct"] is not None]
+    costs = [r["cost_eur"] for r in results if r["cost_eur"] is not None]
+    summary = {"run_id":run_id,"cases":len(cases),"automatically_assessed":len(known),
+               "model_calls":sum(r["model_calls"] for r in results),"cache_hits":sum(r["cache_hits"] for r in results),
+               "awaiting_human_assessment":len(cases)-len(known),
+               "cases_with_execution_issues":sum(bool(r["execution_issues"]) for r in results),
+               "agreement_with_structured_expectations":mean(r["correct"] for r in known) if known else None,
+               "mean_review_questions":mean(r["review_questions"] for r in results),
+               "mean_exam_latency_s":mean(r["latency_s"] for r in results),
+               "known_cost_exams":len(costs),"mean_known_cost_eur":mean(costs) if costs else None}
+    if pairs:
+        write_csv(out_dir/"paired_marks.csv",pairs,list(pairs[0]))
+        summary["mcq_vs_published_key_on_recorded_letters"]=grading([r for r in pairs if r["question_id"]<=20])
+        summary["written_vs_teacher"]=grading([r for r in pairs if r["question_id"]>20])
+        if baseline is not None:
+            summary["held_out_written_comparison"] = {"training_exams":len(training_ids),
+                "evaluation_source_exams":len(set(links.values())),**compare_written(pairs)}
+    temp_summary = out_dir / ("summary-"+run_id+".tmp")
+    temp_summary.write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
+    temp_summary.replace(out_dir/"summary.json")
+    return summary
 
-def main() -> None:
-    env.load_env()
-    with CASES.open(newline="", encoding="utf-8") as f:
-        cases = [r for r in csv.DictReader(f) if (r.get("input") or "").strip()]
-    rows = []
-    for i, case in enumerate(cases, 1):
-        print(f"  {i}/{len(cases)}", end="\r", flush=True)
-        started = time.perf_counter()
-        result = pipeline.run(case["input"])
-        rows.append({
-            "id": case["id"],
-            "kind": case["kind"].strip().lower(),
-            "review": result["review"],
-            "correct": is_correct(case, result),
-            "latency_s": round(time.perf_counter() - started, 3),
-            "tokens": result["tokens"],
-            "cost_eur": result["cost_eur"],
-            "outputs": result["outputs"],
-        })
-    results = pd.DataFrame(rows)
-    results.to_csv(RESULTS, index=False)
-    print(f"Wrote {RESULTS.relative_to(ROOT)} ({len(results)} cases).\n")
-
-    by_kind = results.groupby("kind").agg(
-        cases=("id", "count"),
-        sent_to_review=("review", "mean"),
-        correct=("correct", "mean"),
-        median_latency_s=("latency_s", "median"),
-        mean_cost_eur=("cost_eur", "mean"),
-    )
-    print(by_kind.round(3).to_string())
-    print(f"\nTotal cost of this run: €{results['cost_eur'].sum():.4f}, {results['tokens'].sum()} tokens.")
-
-    # TODO 1: each component on its own (accuracy/F1, mAP, hit rate at k...), on its own test data.
-    # TODO 2: the baseline: how would the `baseline` column of eval/cases.csv have done on the same cases?
-    # TODO 3: LLM judge for free-text outputs, and its agreement with eval/human_labels.csv.
-
+def component_evidence(base, cases_path):
+    """Reproduce the component evidence present in this checkout. Never invent missing labels."""
+    source=base/"retrieval_sources.csv"
+    files=[cases_path,DATA/"corpus.json",DATA/"Question.txt",DATA/"answerkey.txt",DATA/"instructions.txt"]
+    report={"retrieval":{"status":"no worksheet"},"feedback_judge":{"status":"no paired judge results"}}
+    if source.is_file():
+        files.append(source)
+        labels=rows(source)
+        report["retrieval"]={"lexical":retrieval(labels,False,partial=True)}
+        vectors=[DATA/f"vectors-{design}.json" for design in ("paragraph","section")]
+        if all(p.is_file() for p in vectors):
+            report["retrieval"]["semantic"]=retrieval(labels,True,partial=True)
+            files.extend(vectors)
+        else:
+            report["retrieval"]["semantic"]={"status":"not run","missing":[p.name for p in vectors if not p.is_file()]}
+    human,judged=base/"human_labels.csv",base/"judge_results.csv"
+    if judged.is_file() and human.is_file():
+        from exam_grader.judge import compare_labels
+        paired=rows(judged)
+        by_id={r["id"]:r["judge_label"] for r in paired}
+        if len(paired)!=len(by_id):
+            raise ValueError("Duplicate judge result ID.")
+        report["feedback_judge"]=compare_labels(by_id,rows(human))
+        files.extend([human,judged])
+    report["input_sha256"]={p.name:file_sha256(p) for p in files}
+    return report
 
 if __name__ == "__main__":
-    main()
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--cases",type=Path,default=Path("eval/cases.csv"))
+    p.add_argument("--out",type=Path,default=Path("eval"))
+    p.add_argument("--links",type=Path,help="Optional CSV linking id to source_id (e.g. Student_1).")
+    p.add_argument("--baseline-train",type=Path,help="CSV with a source_id column for the team's training exams.")
+    p.add_argument("--cache",type=Path,help="Private SQLite file outside the repo for repeat Gemini evaluations.")
+    p.add_argument("--policy",type=Path,help="JSON object containing Policy fields for this evaluation run.")
+    p.add_argument("--teacher-csv",help="Optional local version 1 source for use with --links.")
+    p.add_argument("--private-exports",type=Path,metavar="DIR",help="Keep teacher views outside the deployable repo for judge calibration.")
+    args=p.parse_args()
+    if not args.cases.exists():
+        raise SystemExit("Supply your team's eval/cases.csv or use --cases PATH. See README.md.")
+    if args.private_exports and args.private_exports.resolve().is_relative_to(Path(__file__).resolve().parent):
+        raise SystemExit("Choose a private export folder outside this repo. The course deployer uploads repository files.")
+    base=args.cases.parent
+    for attr,filename in (("links","case_links.csv"),("baseline_train","train_sources.csv"),("policy","grade_policy.json")):
+        if getattr(args,attr) is None and (base/filename).is_file():
+            setattr(args,attr,base/filename)
+    components=component_evidence(base,args.cases)
+    for optional in (args.links,args.baseline_train,args.policy):
+        if optional:
+            components["input_sha256"][optional.name]=file_sha256(optional)
+    links = None
+    if args.links:
+        link_rows = rows(args.links)
+        links = {r["id"]:r["source_id"] for r in link_rows}
+        if len(links)!=len(link_rows):
+            raise ValueError("Duplicate case ID in links.")
+    result = evaluate(rows(args.cases),args.out,links=links,reference=teacher_data(args.teacher_csv) if links else None,
+                      teacher_dir=args.private_exports,
+                      policy=Policy(**json.loads(args.policy.read_text(encoding="utf-8-sig"))) if args.policy else None,
+                      training_ids=[r["source_id"].strip() for r in rows(args.baseline_train)] if args.baseline_train else None,
+                      evaluation_cache=EvaluationCache(args.cache) if args.cache else None)
+    components["run_id"]=result["run_id"]
+    tmp=args.out/"component_results.json.tmp"
+    tmp.write_text(json.dumps(components,indent=2)+"\n",encoding="utf-8")
+    tmp.replace(args.out/"component_results.json")
+    print(json.dumps(result,indent=2))

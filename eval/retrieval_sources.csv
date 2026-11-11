@@ -1,0 +1,36 @@
+question_id,question,acceptable_sources,review_status,note
+1,Which of the following is an assumption of Linear Regression?,,,
+2,"In a perfectly fitted regression model, the sum of residuals (errors) should be:",,,
+3,Which distance metric is specifically used for categorical variables or strings of equal length?,,,
+4,Supervised learning can be split into which two main categories?,,,
+5,Which of the following is an ensemble learning method based on decision trees?,,,
+6,"The process of combining multiple classifiers to improve prediction (e.g., Bagging or Boosting) is called:",,,
+7,"In a Confusion Matrix, what is the value of the error for a perfect classifier?",,,
+8,Which visualization tool is most effective for identifying correlations between two continuous variables?,,,
+9,"In a scatter plot, individual data observations are represented as:",,,
+10,Which measure of central tendency is most sensitive to outliers?,,,
+11,"In regression analysis, the output (dependent variable) is typically:",,,
+12,The process of identifying the most relevant variables to use in a model is known as:,,,
+13,Which technique is used to predict a continuous numerical value?,,,
+14,Analysis that involves data points collected or recorded at specific time intervals is called:,,,
+15,Which of the following is actually a classification algorithm despite its name?,,,
+16,Hyperparameters are best described as:,,,
+17,(True/False): Logistic regression is used for predicting continuous outcomes.,,,
+18,"In a confusion matrix, where are the ""Correct Predictions"" located?",,,
+19,What is the formula for Precision?,,,
+20,"In Support Vector Machines (SVM), the data points closest to the hyperplane that help define the margin are called:",,,
+21,Define Supervised Learning.,supervised,supported,
+22,Evaluation Case Study: A model (M1) achieves 99% accuracy on the training set but only 30% accuracy on the testing set. What is happening to this model?,overfit,supported,
+23,What is Regression Analysis?,residuals|regression,supported,Relates a dependent variable to explanatory variables.
+24,List and elucidate two major challenges in Machine Learning.,quality|overfit,supported,"Two explained challenges can be quality and quantity, or overfitting and underfitting."
+25,List any two major real-world applications of Data Science.,applications,supported,Rainfall prediction and robotic control are valid examples.
+26,Distinguish between Structured and Semi-structured data.,semi,supported,Contrasts predefined table schemas with flexible tagged records.
+27,Describe methods used to detect and handle outliers in a dataset.,norm|statistics,supported,Requires both an outlier detection method and a defensible treatment.
+28,What is Data Pre-processing?,prepare,supported,Transforms raw features into a suitable model input.
+29,Why is Data Normalization required for the K-Nearest Neighbors (K-NN) algorithm?,scales,supported,Different feature ranges can dominate distance and change which neighbors are selected.
+30,How are continuous attributes discretized? Give an example.,binning,supported,Groups continuous values into intervals and illustrates price bands.
+31,What does the 'K' represent in the K-Means clustering algorithm?,clusters,supported,K specifies the number of clusters in advance.
+32,Name three common Hyperparameters in Machine Learning algorithms.,ensemble|params,supported,Each page provides three valid hyperparameters.
+33,Define Gradient Descent.,descent,supported,Iteratively adjusts parameters to reduce loss.
+34,Classifier Comparison: Compare three SVM classifiers based on their margins and boundaries.,,missing_context,The available question omits the three classifiers or their figure. Their margins and boundaries cannot be compared.
+35,Explain how the Radial Basis Function (RBF) Kernel works in SVM.,svm,supported,RBF similarity decreases with distance and gamma controls how local the influence is.

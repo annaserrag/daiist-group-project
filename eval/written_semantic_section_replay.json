@@ -1,0 +1,134 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 2,
+  "cohort": "fresh",
+  "baseline_training_exams": 46,
+  "scope": "All 30 written slots on two papers. Visible answers were manually transcribed and assigned confidence 1. Unlocated answers go to review.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3",
+  "q32_rule": "distinct-count-v5",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 20,
+      "review_share": 0.6666666666666666,
+      "reasons": {
+        "grounded_proposal": 10,
+        "missing_detection": 8,
+        "provider_failure": 8,
+        "unverified_citation": 1,
+        "single_hyperparameter_review": 2,
+        "context_check": 1
+      },
+      "evaluation_workload": [
+        {
+          "paper": "paper-c",
+          "elapsed_seconds_including_pacing": 122.7681,
+          "tokens_billed_this_run": 18768,
+          "calls": 18,
+          "cache_hits": 0,
+          "uncached_tokens": 18768,
+          "uncached_cost_eur": null,
+          "usage_complete": false
+        },
+        {
+          "paper": "paper-d",
+          "elapsed_seconds_including_pacing": 143.8837,
+          "tokens_billed_this_run": 18038,
+          "calls": 17,
+          "cache_hits": 0,
+          "uncached_tokens": 18038,
+          "uncached_cost_eur": null,
+          "usage_complete": false
+        }
+      ],
+      "written_slots": 30,
+      "valid_teacher_marks": 19,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 10,
+      "baseline_on_all_scorable": {
+        "n": 19,
+        "exact": 0.15789473684210525,
+        "within_half": 0.8421052631578947,
+        "mean_absolute_error": 0.5526315789473685
+      },
+      "baseline_on_matched_answers": {
+        "n": 9,
+        "exact": 0.3333333333333333,
+        "within_half": 0.8888888888888888,
+        "mean_absolute_error": 0.3888888888888889
+      },
+      "grader_on_matched_answers": {
+        "n": 9,
+        "exact": 0.6666666666666666,
+        "within_half": 0.7777777777777778,
+        "mean_absolute_error": 0.2777777777777778
+      },
+      "feedback_check": {
+        "below_full_credit": 4,
+        "fully_accounted_for": 4
+      }
+    },
+    {
+      "threshold": 0.25,
+      "review": 13,
+      "review_share": 0.43333333333333335,
+      "reasons": {
+        "grounded_proposal": 17,
+        "missing_detection": 8,
+        "provider_failure": 1,
+        "unverified_citation": 1,
+        "single_hyperparameter_review": 2,
+        "context_check": 1
+      },
+      "evaluation_workload": [
+        {
+          "paper": "paper-c",
+          "elapsed_seconds_including_pacing": 59.1633,
+          "tokens_billed_this_run": 10201,
+          "calls": 8,
+          "cache_hits": 5,
+          "uncached_tokens": 22981,
+          "uncached_cost_eur": null,
+          "usage_complete": true
+        },
+        {
+          "paper": "paper-d",
+          "elapsed_seconds_including_pacing": 59.292,
+          "tokens_billed_this_run": 10250,
+          "calls": 8,
+          "cache_hits": 6,
+          "uncached_tokens": 25730,
+          "uncached_cost_eur": null,
+          "usage_complete": true
+        }
+      ],
+      "written_slots": 30,
+      "valid_teacher_marks": 19,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 3,
+      "baseline_on_all_scorable": {
+        "n": 19,
+        "exact": 0.15789473684210525,
+        "within_half": 0.8421052631578947,
+        "mean_absolute_error": 0.5526315789473685
+      },
+      "baseline_on_matched_answers": {
+        "n": 16,
+        "exact": 0.1875,
+        "within_half": 0.875,
+        "mean_absolute_error": 0.5
+      },
+      "grader_on_matched_answers": {
+        "n": 16,
+        "exact": 0.75,
+        "within_half": 0.8125,
+        "mean_absolute_error": 0.25
+      },
+      "feedback_check": {
+        "below_full_credit": 8,
+        "fully_accounted_for": 8
+      }
+    }
+  ]
+}

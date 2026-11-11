@@ -1,0 +1,2571 @@
+[
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Page Summary",
+  "text": "Supervised learning uses labeled data to train models that predict outcomes for new, unseen data."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Page Summary",
+  "text": "The training process involves feeding the model labeled examples, allowing it to learn the relationship between features and labels."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Page Summary",
+  "text": "Models are evaluated by comparing their predictions on unseen data to the actual values, helping to refine their accuracy."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Foundational supervised learning concepts",
+  "text": "Supervised machine learning is based on the following core concepts:"
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Data",
+  "text": "Data is the driving force of ML. Data comes in the form of words and numbers stored in tables, or as the values of pixels and waveforms captured in images and audio files. We store related data in datasets. For example, we might have a dataset of the following:"
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Data",
+  "text": "Datasets are made up of individual examples that contain features and a label. You could think of an example as analogous to a single row in a spreadsheet. Features are the values that a supervised model uses to predict the label. The label is the \"answer,\" or the value we want the model to predict. In a weather model that predicts rainfall, the features could be latitude, longitude, temperature, humidity, cloud coverage, wind direction, and atmospheric pressure. The label would be rainfall amount."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Data",
+  "text": "Examples that contain both features and a label are called labeled examples."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Dataset characteristics",
+  "text": "A dataset is characterized by its size and diversity. Size indicates the number of examples. Diversity indicates the range those examples cover. Good datasets are both large and highly diverse."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Dataset characteristics",
+  "text": "Datasets can be large and diverse, or large but not diverse, or small but highly diverse. In other words, a large dataset doesn't guarantee sufficient diversity, and a dataset that is highly diverse doesn't guarantee sufficient examples."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Dataset characteristics",
+  "text": "For instance, a dataset might contain 100 years worth of data, but only for the month of July. Using this dataset to predict rainfall in January would produce poor predictions. Conversely, a dataset might cover only a few years but contain every month. This dataset might produce poor predictions because it doesn't contain enough years to account for variability."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Check Your Understanding",
+  "text": "A dataset can also be characterized by the number of its features. For example, some weather datasets might contain hundreds of features, ranging from satellite imagery to cloud coverage values. Other datasets might contain only three or four features, like humidity, atmospheric pressure, and temperature. Datasets with more features can help a model discover additional patterns and make better predictions. However, datasets with more features don't always produce models that make better predictions because some features might have no causal relationship to the label."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Model",
+  "text": "In supervised learning, a model is the complex collection of numbers that define the mathematical relationship from specific input feature patterns to specific output label values. The model discovers these patterns through training."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Training",
+  "text": "Before a supervised model can make predictions, it must be trained. To train a model, we give the model a dataset with labeled examples. The model's goal is to work out the best solution for predicting the labels from the features. The model finds the best solution by comparing its predicted value to the label's actual value. Based on the difference between the predicted and actual values—defined as the loss—the model gradually updates its solution. In other words, the model learns the mathematical relationship between the features and the label so that it can make the best predictions on unseen data."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Training",
+  "text": "For example, if the model predicted 1.15 inches of rain, but the actual value was .75 inches, the model modifies its solution so its prediction is closer to .75 inches. After the model has looked at each example in the dataset—in some cases, multiple times—it arrives at a solution that makes the best predictions, on average, for each of the examples."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Training",
+  "text": "The model takes in a single labeled example and provides a prediction."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Evaluating",
+  "text": "We evaluate a trained model to determine how well it learned. When we evaluate a model, we use a labeled dataset, but we only give the model the dataset's features. We then compare the model's predictions to the label's true values."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Evaluating",
+  "text": "Figure 4. Evaluating an ML model by comparing its predictions to the actual values."
+ },
+ {
+  "source": "supervised",
+  "title": "Supervised learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/supervised",
+  "heading": "Evaluating",
+  "text": "Depending on the model's predictions, we might do more training and evaluating before deploying the model in a real-world application."
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Page Summary",
+  "text": "This module introduces linear regression, a statistical method used to predict a label value based on its features."
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Page Summary",
+  "text": "The linear regression model uses an equation (y' = b + w₁x₁ + ...) to represent the relationship between features and the label."
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Page Summary",
+  "text": "During training, the model adjusts its bias (b) and weights (w) to minimize the difference between predicted and actual values."
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Linear regression equation",
+  "text": "In algebraic terms, the model would be defined as $ y = mx + b $, where"
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Linear regression equation",
+  "text": "In ML, we write the equation for a linear regression model as follows:"
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Linear regression equation",
+  "text": "During training, the model calculates the weight and bias that produce the best model."
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Models with multiple features",
+  "text": "Although the example in this section uses only one feature—the heaviness of the car—a more sophisticated model might rely on multiple features, each having a separate weight ($ w_1 $, $ w_2 $, etc.). For example, a model that relies on five features would be written as follows:"
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Models with multiple features",
+  "text": "For example, a model that predicts gas mileage could additionally use features such as the following:"
+ },
+ {
+  "source": "regression",
+  "title": "Linear regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression",
+  "heading": "Models with multiple features",
+  "text": "Figure 5. A model with five features to predict a car's miles per gallon rating."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Page Summary",
+  "text": "Gradient descent is an iterative optimization algorithm used to find the best weights and bias for a linear regression model by minimizing the loss function."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Page Summary",
+  "text": "The process involves repeatedly calculating the loss, determining the direction to adjust weights and bias to reduce loss, and updating the parameters accordingly."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Page Summary",
+  "text": "A model is considered to have converged when further iterations do not significantly reduce the loss, indicating it has found the weights and bias that produce the lowest possible loss."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Model convergence and loss curves",
+  "text": "When training a model, you'll often look at a loss curve to determine if the model has converged. The loss curve shows how the loss changes as the model trains. The following is what a typical loss curve looks like. Loss is on the y-axis and iterations are on the x-axis:"
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Model convergence and loss curves",
+  "text": "Figure 12. Loss curve showing the model converging around the 1,000th-iteration mark."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Model convergence and loss curves",
+  "text": "You can see that loss dramatically decreases during the first few iterations, then gradually decreases before flattening out around the 1,000th-iteration mark. After 1,000 iterations, we can be mostly certain that the model has converged."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Convergence and convex functions",
+  "text": "The loss functions for linear models always produce a convex surface. As a result of this property, when a linear regression model converges, we know the model has found the weights and bias that produce the lowest loss."
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Convergence and convex functions",
+  "text": "If we graph the loss surface for a model with one feature, we can see its convex shape. The following is the loss surface for a hypothetical miles per gallon dataset. Weight is on the x-axis, bias is on the y-axis, and loss is on the z-axis:"
+ },
+ {
+  "source": "descent",
+  "title": "Gradient descent",
+  "url": "https://developers.google.com/machine-learning/crash-course/linear-regression/gradient-descent",
+  "heading": "Convergence and convex functions",
+  "text": "In this example, a weight of -5.44 and bias of 35.94 produce the lowest loss at 5.54:"
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Page Summary",
+  "text": "Overfitting occurs when a model performs well on training data but poorly on new, unseen data."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Page Summary",
+  "text": "A model is considered to generalize well if it accurately predicts on new data, indicating it hasn't overfit."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Page Summary",
+  "text": "Overfitting can be detected by observing diverging loss curves for training and validation sets on a generalization curve."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Fitting, overfitting, and underfitting",
+  "text": "A model must make good predictions on new data. That is, you're aiming to create a model that \"fits\" new data."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Fitting, overfitting, and underfitting",
+  "text": "As you've seen, an overfit model makes excellent predictions on the training set but poor predictions on new data. An underfit model doesn't even make good predictions on the training data. If an overfit model is like a product that performs well in the lab but poorly in the real world, then an underfit model is like a product that doesn't even do well in the lab."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Fitting, overfitting, and underfitting",
+  "text": "Generalization is the opposite of overfitting. That is, a model that generalizes well makes good predictions on new data. Your goal is to create a model that generalizes well to new data."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Detecting overfitting",
+  "text": "A loss curve plots a model's loss against the number of training iterations. A graph that shows two or more loss curves is called a generalization curve. The following generalization curve shows two loss curves:"
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Detecting overfitting",
+  "text": "Notice that the two loss curves behave similarly at first and then diverge. That is, after a certain number of iterations, loss declines or holds steady (converges) for the training set, but increases for the validation set. This suggests overfitting."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Detecting overfitting",
+  "text": "In contrast, a generalization curve for a well-fit model shows two loss curves that have similar shapes."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "What causes overfitting?",
+  "text": "Very broadly speaking, overfitting is caused by one or both of the following problems:"
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Generalization conditions",
+  "text": "A model trains on a training set, but the real test of a model's worth is how well it makes predictions on new examples, particularly on real-world data. While developing a model, your test set serves as a proxy for real-world data. Training a model that generalizes well implies the following dataset conditions:"
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Generalization conditions",
+  "text": "Explore the preceding conditions through the following exercises."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Challenge exercise",
+  "text": "You are creating a model that predicts the ideal date for riders to buy a train ticket for a particular route. For example, the model might recommend that users buy their ticket on July 8 for a train that departs July 23. The train company updates prices hourly, basing their updates on a variety of factors but mainly on the current number of available seats. That is:"
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Challenge exercise",
+  "text": "Answer: The real world model is struggling with a feedback loop."
+ },
+ {
+  "source": "overfit",
+  "title": "Overfitting",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+  "heading": "Challenge exercise",
+  "text": "For example, suppose the model recommends that users buy tickets on July 8. Some riders who use the model's recommendation buy their tickets at 8:30 in the morning on July 8. At 9:00, the train company raises prices because fewer seats are now available. Riders using the model's recommendation have altered prices. By evening, ticket prices might be much higher than in the morning."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Page Summary",
+  "text": "A machine learning model's performance is heavily reliant on the quality and quantity of the dataset it's trained on, with larger, high-quality datasets generally leading to better results."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Page Summary",
+  "text": "Datasets can contain various data types, including numerical, categorical, text, multimedia, and embedding vectors, each requiring specific handling for optimal model training."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Page Summary",
+  "text": "Maintaining data quality involves addressing issues like label errors, noisy features, and proper filtering to ensure the reliability of the dataset for accurate predictions."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Types of data",
+  "text": "A dataset could contain many kinds of datatypes, including but certainly not limited to:"
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Quantity of data",
+  "text": "As a rough rule of thumb, your model should train on at least an order of magnitude (or two) more examples than trainable parameters. However, good models generally train on substantially more examples than that."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Quantity of data",
+  "text": "Models trained on large datasets with few features generally outperform models trained on small datasets with a lot of features. Google has historically had great success training simple models on large datasets."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Quantity of data",
+  "text": "Different datasets for different machine learning programs may require wildly different amounts of examples to build a useful model. For some relatively simple problems, a few dozen examples might be sufficient. For other problems, a trillion examples might be insufficient."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Quality and reliability of data",
+  "text": "Everyone prefers high quality to low quality, but quality is such a vague concept that it could be defined many different ways. This course defines quality pragmatically:"
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Quality and reliability of data",
+  "text": "A high-quality dataset helps your model accomplish its goal. A low quality dataset inhibits your model from accomplishing its goal."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Quality and reliability of data",
+  "text": "A high-quality dataset is usually also reliable. Reliability refers to the degree to which you can trust your data. A model trained on a reliable dataset is more likely to yield useful predictions than a model trained on unreliable data."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Complete vs. incomplete examples",
+  "text": "In a perfect world, each example is complete; that is, each example contains a value for each feature."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Complete vs. incomplete examples",
+  "text": "Unfortunately, real-world examples are often incomplete, meaning that at least one feature value is missing."
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Complete vs. incomplete examples",
+  "text": "Don't train a model on incomplete examples. Instead, fix or eliminate incomplete examples by doing one of the following:"
+ },
+ {
+  "source": "quality",
+  "title": "Data quality",
+  "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+  "heading": "Exercise: Check your understanding",
+  "text": "Which of the following would be a reasonable value to impute for the missing value of Temperature?"
+ },
+ {
+  "source": "logistic",
+  "title": "Logistic regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/logistic-regression",
+  "heading": "Page Summary",
+  "text": "This module introduces logistic regression, a model used to predict the probability of an outcome, unlike linear regression which predicts continuous numerical values."
+ },
+ {
+  "source": "logistic",
+  "title": "Logistic regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/logistic-regression",
+  "heading": "Page Summary",
+  "text": "Logistic regression utilizes the sigmoid function to calculate probability and employs log loss as its loss function."
+ },
+ {
+  "source": "logistic",
+  "title": "Logistic regression",
+  "url": "https://developers.google.com/machine-learning/crash-course/logistic-regression",
+  "heading": "Page Summary",
+  "text": "Regularization is crucial when training logistic regression models to prevent overfitting and improve generalization."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Classification metrics",
+  "text": "True and false positives and negatives are used to calculate several useful metrics for evaluating models. Which evaluation metrics are most meaningful depends on the specific model and the specific task, the cost of different misclassifications, and whether the dataset is balanced or imbalanced."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Classification metrics",
+  "text": "All of the metrics in this section are calculated at a single fixed threshold, and change when the threshold changes. Very often, the user tunes the threshold to optimize one of these metrics."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Accuracy",
+  "text": "Accuracy is the proportion of all classifications that were correct, whether positive or negative. It is mathematically defined as:"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Accuracy",
+  "text": "\\[\\text{Accuracy} = \\frac{\\text{correct classifications}}{\\text{total classifications}} = \\frac{TP+TN}{TP+TN+FP+FN}\\]"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Accuracy",
+  "text": "In the spam classification example, accuracy measures the fraction of all emails correctly classified."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Recall, or true positive rate",
+  "text": "The true positive rate (TPR), or the proportion of all actual positives that were classified correctly as positives, is also known as recall."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Recall, or true positive rate",
+  "text": "\\[\\text{Recall (or TPR)} = \\frac{\\text{correctly classified actual positives}}{\\text{all actual positives}} = \\frac{TP}{TP+FN}\\]"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Recall, or true positive rate",
+  "text": "False negatives are actual positives that were misclassified as negatives, which is why they appear in the denominator. In the spam classification example, recall measures the fraction of spam emails that were correctly classified as spam. This is why another name for recall is probability of detection: it answers the question \"What fraction of spam emails are detected by this model?\""
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "False positive rate",
+  "text": "The false positive rate (FPR) is the proportion of all actual negatives that were classified incorrectly as positives, also known as the probability of false alarm. It is mathematically defined as:"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "False positive rate",
+  "text": "\\[\\text{FPR} = \\frac{\\text{incorrectly classified actual negatives}} {\\text{all actual negatives}} = \\frac{FP}{FP+TN}\\]"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "False positive rate",
+  "text": "False positives are actual negatives that were misclassified, which is why they appear in the denominator. In the spam classification example, FPR measures the fraction of legitimate emails that were incorrectly classified as spam, or the model's rate of false alarms."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Precision",
+  "text": "Precision is the proportion of all the model's positive classifications that are actually positive. It is mathematically defined as:"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Precision",
+  "text": "\\[\\text{Precision} = \\frac{\\text{correctly classified actual positives}} {\\text{everything classified as positive}} = \\frac{TP}{TP+FP}\\]"
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Precision",
+  "text": "In the spam classification example, precision measures the fraction of emails classified as spam that were actually spam."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Choice of metric and tradeoffs",
+  "text": "The metric(s) you choose to prioritize when evaluating the model and choosing a threshold depend on the costs, benefits, and risks of the specific problem. In the spam classification example, it often makes sense to prioritize recall, nabbing all the spam emails, or precision, trying to ensure that spam-labeled emails are in fact spam, or some balance of the two, above some minimum accuracy level."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Choice of metric and tradeoffs",
+  "text": "Use as a rough indicator of model training progress/convergence for balanced datasets."
+ },
+ {
+  "source": "confusion",
+  "title": "Classification metrics",
+  "url": "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+  "heading": "Choice of metric and tradeoffs",
+  "text": "For model performance, use only in combination with other metrics."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Page Summary",
+  "text": "Data normalization is crucial for enhancing machine learning model performance by scaling features to a similar range."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Page Summary",
+  "text": "Linear scaling, Z-score scaling, and log scaling are common normalization techniques, each suitable for different data distributions."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Page Summary",
+  "text": "Clipping helps manage outliers by limiting extreme values within a defined range, improving model robustness."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Linear scaling",
+  "text": "Linear scaling (more commonly shortened to just scaling) means converting floating-point values from their natural range into a standard range—usually 0 to 1 or -1 to +1."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Linear scaling",
+  "text": "Use the following formula to scale to the standard range 0 to 1, inclusive:"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Linear scaling",
+  "text": "For example, consider a feature named quantity whose natural range spans 100 to 900. Suppose the natural value of quantity in a particular example is 300. Therefore, you can calculate the normalized value of 300 as follows:"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Exercise: Check your understanding",
+  "text": "Answer: Linear scaling would be a poor choice for normalizing net_worth. This feature contains many outliers, and the values are not uniformly distributed across its primary range. Most people would be squeezed within a very narrow band of the overall range."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Z-score scaling",
+  "text": "A Z-score is the number of standard deviations a value is from the mean. For example, a value that is 2 standard deviations greater than the mean has a Z-score of +2.0. A value that is 1.5 standard deviations less than the mean has a Z-score of -1.5."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Z-score scaling",
+  "text": "Representing a feature with Z-score scaling means storing that feature's Z-score in the feature vector. For example, the following figure shows two histograms:"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Z-score scaling",
+  "text": "Z-score scaling is also a good choice for data like that shown in the following figure, which has only a vaguely normal distribution."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Exercise: Check your understanding",
+  "text": "Answer: Z-score scaling would be a good normalization technique for height because this feature conforms to a normal distribution. Ten million examples implies a lot of outliers—probably enough outliers for the model to learn patterns on very high or very low Z-scores."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Log scaling",
+  "text": "Log scaling computes the logarithm of the raw value. In theory, the logarithm could be any base; in practice, log scaling usually calculates the natural logarithm (ln)."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Log scaling",
+  "text": "Use the following formula to normalize a value, $x$, to its log:"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Log scaling",
+  "text": "Log scaling is helpful when the data conforms to a power law distribution. Casually speaking, a power law distribution looks as follows:"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Clipping",
+  "text": "Clipping is a technique to minimize the influence of extreme outliers. In brief, clipping usually caps (reduces) the value of outliers to a specific maximum value. Clipping is a strange idea, and yet, it can be very effective."
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Clipping",
+  "text": "For example, imagine a dataset containing a feature named roomsPerPerson, which represents the number of rooms (total rooms divided by number of occupants) for various houses. The following plot shows that over 99% of the feature values conform to a normal distribution (roughly, a mean of 1.8 and a standard deviation of 0.7). However, the feature contains a few outliers, some of them extreme:"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Clipping",
+  "text": "How can you minimize the influence of those extreme outliers? Well, the histogram is not an even distribution, a normal distribution, or a power law distribution. What if you simply cap or clip the maximum value of roomsPerPerson at an arbitrary value, say 4.0?"
+ },
+ {
+  "source": "norm",
+  "title": "Normalization",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/normalization",
+  "heading": "Exercise: Test your knowledge",
+  "text": "Suppose you are developing a model that predicts a data center's productivity based on the temperature measured inside the data center. Almost all of the temperature values in your dataset fall between 15 and 30 (Celsius), with the following exceptions:"
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Page Summary",
+  "text": "Binning is a feature engineering technique used to group numerical data into categories (bins) to improve model performance when a linear relationship is weak or data is clustered."
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Page Summary",
+  "text": "Binning can be beneficial when features exhibit a \"clumpy\" distribution rather than a linear one, allowing the model to learn separate weights for each bin."
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Page Summary",
+  "text": "While creating multiple bins is possible, it's generally recommended to avoid an excessive number as it can lead to insufficient training examples per bin and increased feature dimensionality."
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Binning example: number of shoppers versus temperature",
+  "text": "Suppose you are creating a model that predicts the number of shoppers by the outside temperature for that day. Here's a plot of the temperature versus the number of shoppers:"
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Binning example: number of shoppers versus temperature",
+  "text": "The plot shows, not surprisingly, that the number of shoppers was highest when the temperature was most comfortable."
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Binning example: number of shoppers versus temperature",
+  "text": "You could represent the feature as raw values: a temperature of 35.0 in the dataset would be 35.0 in the feature vector. Is that the best idea?"
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Exercise: Check your understanding",
+  "text": "The following plot shows the median home price for each 0.2 degrees of latitude for the mythical country of Freedonia:"
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Exercise: Check your understanding",
+  "text": "The graphic shows a nonlinear pattern between home value and latitude, so representing latitude as its floating-point value is unlikely to help a model make good predictions. Perhaps bucketing latitudes would be a better idea?"
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Quantile Bucketing",
+  "text": "Quantile bucketing creates bucketing boundaries such that the number of examples in each bucket is exactly or nearly equal. Quantile bucketing mostly hides the outliers."
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Quantile Bucketing",
+  "text": "To illustrate the problem that quantile bucketing solves, consider the equally spaced buckets shown in the following figure, where each of the ten buckets represents a span of exactly 10,000 dollars. Notice that the bucket from 0 to 10,000 contains dozens of examples but the bucket from 50,000 to 60,000 contains only 5 examples. Consequently, the model has enough examples to train on the 0 to 10,000 bucket but not enough examples to train on for the 50,000 to 60,000 bucket."
+ },
+ {
+  "source": "binning",
+  "title": "Binning",
+  "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+  "heading": "Quantile Bucketing",
+  "text": "In contrast, the following figure uses quantile bucketing to divide car prices into bins with approximately the same number of examples in each bucket. Notice that some of the bins encompass a narrow price span while others encompass a very wide price span."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Feature scaling and nearest neighbors",
+  "text": "Go to the end to download the full example code or to run this example in your browser via JupyterLite or Binder."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Feature scaling and nearest neighbors",
+  "text": "Feature scaling through standardization, also called Z-score normalization, is an important preprocessing step for many machine learning algorithms. It involves rescaling each feature such that it has a standard deviation of 1 and a mean of 0."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Feature scaling and nearest neighbors",
+  "text": "Even if tree based models are (almost) not affected by scaling, many other algorithms require features to be normalized, often for different reasons: to ease the convergence (such as a non-penalized logistic regression), to create a completely different model fit compared to the fit with unscaled data (such as KNeighbors models). The latter is demonstrated on the first part of the present example."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Load and prepare data#",
+  "text": "The dataset used is the Wine recognition dataset available at UCI. This dataset has continuous features that are heterogeneous in scale due to differing properties that they measure (e.g. alcohol content and malic acid)."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on a k-neighbors models#",
+  "text": "For the sake of visualizing the decision boundary of a KNeighborsClassifier, in this section we select a subset of 2 features that have values with different orders of magnitude."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on a k-neighbors models#",
+  "text": "Keep in mind that using a subset of the features to train the model may likely leave out feature with high predictive impact, resulting in a decision boundary that is much worse in comparison to a model trained on the full set of features."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on a k-neighbors models#",
+  "text": "Here the decision boundary shows that fitting scaled or non-scaled data lead to completely different models. The reason is that the variable “proline” has values which vary between 0 and 1,000; whereas the variable “hue” varies between 1 and 10. Because of this, distances between samples are mostly impacted by differences in values of “proline”, while values of the “hue” will be comparatively ignored. If one uses StandardScaler to normalize this database, both scaled values lay approximately between -3 and 3 and the neighbors structure will be impacted more or less equivalently by both variables."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on a PCA dimensional reduction#",
+  "text": "Dimensional reduction using PCA consists of finding the features that maximize the variance. If one feature varies more than the others only because of their respective scales, PCA would determine that such feature dominates the direction of the principal components."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on a PCA dimensional reduction#",
+  "text": "We can inspect the first principal components using all the original features:"
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on a PCA dimensional reduction#",
+  "text": "Indeed we find that the “proline” feature dominates the direction of the first principal component without scaling, being about two orders of magnitude above the other features. This is contrasted when observing the first principal component for the scaled version of the data, where the orders of magnitude are roughly the same across all the features."
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on model’s performance#",
+  "text": "First we show how the optimal regularization of a LogisticRegressionCV depends on the scaling or non-scaling of the data:"
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on model’s performance#",
+  "text": "The need for regularization is higher (lower values of C) for the data that was not scaled before applying PCA. We now evaluate the effect of scaling on the accuracy and the mean log-loss of the optimal models:"
+ },
+ {
+  "source": "scales",
+  "title": "Feature scaling and nearest neighbors",
+  "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+  "heading": "Effect of rescaling on model’s performance#",
+  "text": "A clear difference in prediction accuracies is observed when the data is scaled before PCA, as it vastly outperforms the unscaled version. This corresponds to the intuition obtained from the plot in the previous section, where the components become linearly separable when scaling before using PCA."
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2. K-means#",
+  "text": "The KMeans algorithm clusters data by trying to separate samples in n groups of equal variance, minimizing a criterion known as the inertia or within-cluster sum-of-squares (see below). This algorithm requires the number of clusters to be specified. It scales well to large numbers of samples and has been used across a large range of application areas in many different fields."
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2. K-means#",
+  "text": "The k-means algorithm divides a set of \\(N\\) samples \\(X\\) into \\(K\\) disjoint clusters \\(C\\), each described by the mean \\(\\mu_j\\) of the samples in the cluster. The means are commonly called the cluster “centroids”; note that they are not, in general, points from \\(X\\), although they live in the same space."
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2. K-means#",
+  "text": "The K-means algorithm aims to choose centroids that minimise the inertia, or within-cluster sum-of-squares criterion:"
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2.1. Low-level parallelism#",
+  "text": "KMeans benefits from OpenMP based parallelism through Cython. Small chunks of data (256 samples) are processed in parallel, which in addition yields a low memory footprint. For more details on how to control the number of threads, please refer to our Parallelism notes."
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2.1. Low-level parallelism#",
+  "text": "Demonstration of k-means assumptions: Demonstrating when k-means performs intuitively and when it does not"
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2.1. Low-level parallelism#",
+  "text": "A demo of K-Means clustering on the handwritten digits data: Clustering handwritten digits"
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2.2. Mini Batch K-Means#",
+  "text": "The MiniBatchKMeans is a variant of the KMeans algorithm which uses mini-batches to reduce the computation time, while still attempting to optimise the same objective function. Mini-batches are subsets of the input data, randomly sampled in each training iteration. These mini-batches drastically reduce the amount of computation required to converge to a local solution. In contrast to other algorithms that reduce the convergence time of k-means, mini-batch k-means produces results that are generally only slightly worse than the standard algorithm."
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2.2. Mini Batch K-Means#",
+  "text": "The algorithm iterates between two major steps, similar to vanilla k-means. In the first step, \\(b\\) samples are drawn randomly from the dataset, to form a mini-batch. These are then assigned to the nearest centroid. In the second step, the centroids are updated. In contrast to k-means, this is done on a per-sample basis. For each sample in the mini-batch, the assigned centroid is updated by taking the streaming average of the sample and all previous samples assigned to that centroid. This has the effect of decreasing the rate of change for a centroid over time. These steps are performed until convergence or a predetermined number of iterations is reached."
+ },
+ {
+  "source": "clusters",
+  "title": "K-means clustering",
+  "url": "https://scikit-learn.org/stable/modules/clustering.html#k-means",
+  "heading": "2.3.2.2. Mini Batch K-Means#",
+  "text": "MiniBatchKMeans converges faster than KMeans, but the quality of the results is reduced. In practice this difference in quality can be quite small, as shown in the example and cited reference."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "Outlier detection",
+  "text": "Many applications require being able to decide whether a new observation belongs to the same distribution as existing observations (it is an inlier), or should be considered as different (it is an outlier). Often, this ability is used to clean real data sets. Two important distinctions must be made:"
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "Outlier detection",
+  "text": "The training data contains outliers which are defined as observations that are far from the others. Outlier detection estimators thus try to fit the regions where the training data is the most concentrated, ignoring the deviant observations."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "Outlier detection",
+  "text": "The training data is not polluted by outliers and we are interested in detecting whether a new observation is an outlier. In this context an outlier is also called a novelty."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.1. Overview of outlier detection methods#",
+  "text": "A comparison of the outlier detection algorithms in scikit-learn. Local Outlier Factor (LOF) does not show a decision boundary in black as it has no predict method to be applied on new data when it is used for outlier detection."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.1. Overview of outlier detection methods#",
+  "text": "ensemble.IsolationForest and neighbors.LocalOutlierFactor perform reasonably well on the data sets considered here. The svm.OneClassSVM is known to be sensitive to outliers and thus does not perform very well for outlier detection. That being said, outlier detection in high-dimension, or without any assumptions on the distribution of the inlying data is very challenging. svm.OneClassSVM may still be used with outlier detection but requires fine-tuning of its hyperparameter nu to handle outliers and prevent overfitting. linear_model.SGDOneClassSVM provides an implementation of a linear One-Class SVM with a linear complexity in the number of samples. This implementation is here used with a kernel approximation technique to obtain results similar to svm.OneClassSVM which uses a Gaussian kernel by default. Finally, covariance.EllipticEnvelope assumes the data is Gaussian and learns an ellipse. For more details on the different estimators refer to the example Comparing anomaly detection algorithms for outlier detection on toy datasets and the sections hereunder."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.1. Overview of outlier detection methods#",
+  "text": "See Comparing anomaly detection algorithms for outlier detection on toy datasets for a comparison of the svm.OneClassSVM, the ensemble.IsolationForest, the neighbors.LocalOutlierFactor and covariance.EllipticEnvelope."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.2. Novelty Detection#",
+  "text": "Consider a data set of \\(n\\) observations from the same distribution described by \\(p\\) features. Consider now that we add one more observation to that data set. Is the new observation so different from the others that we can doubt it is regular? (i.e. does it come from the same distribution?) Or on the contrary, is it so similar to the other that we cannot distinguish it from the original observations? This is the question addressed by the novelty detection tools and methods."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.2. Novelty Detection#",
+  "text": "In general, it is about to learn a rough, close frontier delimiting the contour of the initial observations distribution, plotted in embedding \\(p\\)-dimensional space. Then, if further observations lay within the frontier-delimited subspace, they are considered as coming from the same population as the initial observations. Otherwise, if they lay outside the frontier, we can say that they are abnormal with a given confidence in our assessment."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.2. Novelty Detection#",
+  "text": "The One-Class SVM has been introduced by Schölkopf et al. for that purpose and implemented in the Support Vector Machines module in the svm.OneClassSVM object. It requires the choice of a kernel and a scalar parameter to define a frontier. The RBF kernel is usually chosen although there exists no exact formula or algorithm to set its bandwidth parameter. This is the default in the scikit-learn implementation. The nu parameter, also known as the margin of the One-Class SVM, corresponds to the probability of finding a new, but regular, observation outside the frontier."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.2.1. Scaling up the One-Class SVM#",
+  "text": "An online linear version of the One-Class SVM is implemented in linear_model.SGDOneClassSVM. This implementation scales linearly with the number of samples and can be used with a kernel approximation to approximate the solution of a kernelized svm.OneClassSVM whose complexity is at best quadratic in the number of samples. See section Online One-Class SVM for more details."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.2.1. Scaling up the One-Class SVM#",
+  "text": "See One-Class SVM versus One-Class SVM using Stochastic Gradient Descent for an illustration of the approximation of a kernelized One-Class SVM with the linear_model.SGDOneClassSVM combined with kernel approximation."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3. Outlier Detection#",
+  "text": "Outlier detection is similar to novelty detection in the sense that the goal is to separate a core of regular observations from some polluting ones, called outliers. Yet, in the case of outlier detection, we don’t have a clean data set representing the population of regular observations that can be used to train any tool."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3.1. Fitting an elliptic envelope#",
+  "text": "One common way of performing outlier detection is to assume that the regular data come from a known distribution (e.g. data are Gaussian distributed). From this assumption, we generally try to define the “shape” of the data, and can define outlying observations as observations which stand far enough from the fit shape."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3.1. Fitting an elliptic envelope#",
+  "text": "The scikit-learn provides an object covariance.EllipticEnvelope that fits a robust covariance estimate to the data, and thus fits an ellipse to the central data points, ignoring points outside the central mode."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3.1. Fitting an elliptic envelope#",
+  "text": "For instance, assuming that the inlier data are Gaussian distributed, it will estimate the inlier location and covariance in a robust way (i.e. without being influenced by outliers). The Mahalanobis distances obtained from this estimate are used to derive a measure of outlyingness. This strategy is illustrated below."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3.2. Isolation Forest#",
+  "text": "One efficient way of performing outlier detection in high-dimensional datasets is to use random forests. The ensemble.IsolationForest ‘isolates’ observations by randomly selecting a feature and then randomly selecting a split value between the maximum and minimum values of the selected feature."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3.2. Isolation Forest#",
+  "text": "Since recursive partitioning can be represented by a tree structure, the number of splittings required to isolate a sample is equivalent to the path length from the root node to the terminating node."
+ },
+ {
+  "source": "outliers",
+  "title": "Outlier detection",
+  "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+  "heading": "2.7.3.2. Isolation Forest#",
+  "text": "This path length, averaged over a forest of such random trees, is a measure of normality and our decision function."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "Preprocessing",
+  "text": "The sklearn.preprocessing package provides several common utility functions and transformer classes to change raw feature vectors into a representation that is more suitable for the downstream estimators."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "Preprocessing",
+  "text": "In general, many learning algorithms such as linear models benefit from standardization of the data set (see Importance of Feature Scaling). If some outliers are present in the set, robust scalers or other transformers can be more appropriate. The behaviors of the different scalers, transformers, and normalizers on a dataset containing marginal outliers are highlighted in Compare the effect of different scalers on data with outliers."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1. Standardization, or mean removal and variance scaling#",
+  "text": "Standardization of datasets is a common requirement for many machine learning estimators implemented in scikit-learn; they might behave badly if the individual features do not more or less look like standard normally distributed data: Gaussian with zero mean and unit variance."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1. Standardization, or mean removal and variance scaling#",
+  "text": "In practice we often ignore the shape of the distribution and just transform the data to center it by removing the mean value of each feature, then scale it by dividing non-constant features by their standard deviation."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1. Standardization, or mean removal and variance scaling#",
+  "text": "For instance, many elements used in the objective function of a learning algorithm (such as the RBF kernel of Support Vector Machines or the l1 and l2 regularizers of linear models) may assume that all features are centered around zero or have variance in the same order. If a feature has a variance that is orders of magnitude larger than others, it might dominate the objective function and make the estimator unable to learn from other features correctly as expected."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.1. Scaling features to a range#",
+  "text": "An alternative standardization is scaling features to lie between a given minimum and maximum value, often between zero and one, or so that the maximum absolute value of each feature is scaled to unit size. This can be achieved using MinMaxScaler or MaxAbsScaler, respectively."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.1. Scaling features to a range#",
+  "text": "The motivation to use this scaling includes robustness to very small standard deviations of features and preserving zero entries in sparse data."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.1. Scaling features to a range#",
+  "text": "Here is an example to scale a toy data matrix to the [0, 1] range:"
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.2. Scaling sparse data#",
+  "text": "Centering sparse data would destroy the sparseness structure in the data, and thus rarely is a sensible thing to do. However, it can make sense to scale sparse inputs, especially if features are on different scales."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.2. Scaling sparse data#",
+  "text": "MaxAbsScaler was specifically designed for scaling sparse data, and is the recommended way to go about this. However, StandardScaler can accept scipy.sparse matrices as input, as long as with_mean=False is explicitly passed to the constructor. Otherwise a ValueError will be raised as silently centering would break the sparsity and would often crash the execution by allocating excessive amounts of memory unintentionally. RobustScaler cannot be fitted to sparse inputs, but you can use the transform method on sparse inputs."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.2. Scaling sparse data#",
+  "text": "Note that the scalers accept both Compressed Sparse Rows and Compressed Sparse Columns format (see scipy.sparse.csr_matrix and scipy.sparse.csc_matrix). Any other sparse input will be converted to the Compressed Sparse Rows representation. To avoid unnecessary memory copies, it is recommended to choose the CSR or CSC representation upstream."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.3. Scaling data with outliers#",
+  "text": "If your data contains many outliers, scaling using the mean and variance of the data is likely to not work very well. In these cases, you can use RobustScaler as a drop-in replacement instead. It uses more robust estimates for the center and range of your data."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.3. Scaling data with outliers#",
+  "text": "Further discussion on the importance of centering and scaling data is available on this FAQ: Should I normalize/standardize/rescale the data?"
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.3. Scaling data with outliers#",
+  "text": "It is sometimes not enough to center and scale the features independently, since a downstream model can further make some assumption on the linear independence of the features."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.4. Centering kernel matrices#",
+  "text": "If you have a kernel matrix of a kernel \\(K\\) that computes a dot product in a feature space (possibly implicitly) defined by a function \\(\\phi(\\cdot)\\), a KernelCenterer can transform the kernel matrix so that it contains inner products in the feature space defined by \\(\\phi\\) followed by the removal of the mean in that space. In other words, KernelCenterer computes the centered Gram matrix associated to a positive semidefinite kernel \\(K\\)."
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.4. Centering kernel matrices#",
+  "text": "We can have a look at the mathematical formulation now that we have the intuition. Let \\(K\\) be a kernel matrix of shape (n_samples, n_samples) computed from \\(X\\), a data matrix of shape (n_samples, n_features), during the fit step. \\(K\\) is defined by"
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.1.4. Centering kernel matrices#",
+  "text": "\\(\\phi(X)\\) is a function mapping of \\(X\\) to a Hilbert space. A centered kernel \\(\\tilde{K}\\) is defined as:"
+ },
+ {
+  "source": "prepare",
+  "title": "Preprocessing",
+  "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+  "heading": "8.3.2. Non-linear transformation#",
+  "text": "Two types of transformations are available: quantile transforms and power transforms. Both quantile and power transforms are based on monotonic transformations of the features and thus preserve the rank of the values along each feature."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6. Kernel functions#",
+  "text": "polynomial: \\((\\gamma \\langle x, x'\\rangle + r)^d\\), where \\(d\\) is specified by parameter degree, \\(r\\) by coef0."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6. Kernel functions#",
+  "text": "rbf: \\(\\exp(-\\gamma \\|x-x'\\|^2)\\), where \\(\\gamma\\) is specified by parameter gamma, must be greater than 0."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6. Kernel functions#",
+  "text": "sigmoid \\(\\tanh(\\gamma \\langle x,x'\\rangle + r)\\), where \\(r\\) is specified by coef0."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6.1. Parameters of the RBF Kernel#",
+  "text": "When training an SVM with the Radial Basis Function (RBF) kernel, two parameters must be considered: C and gamma. The parameter C, common to all SVM kernels, trades off misclassification of training examples against simplicity of the decision surface. A low C makes the decision surface smooth, while a high C aims at classifying all training examples correctly. gamma defines how much influence a single training example has. The larger gamma is, the closer other examples must be to be affected."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6.1. Parameters of the RBF Kernel#",
+  "text": "Proper choice of C and gamma is critical to the SVM’s performance. One is advised to use GridSearchCV with C and gamma spaced exponentially far apart to choose good values."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6.2. Custom Kernels#",
+  "text": "You can define your own kernels by either giving the kernel as a python function or by precomputing the Gram matrix."
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6.2. Custom Kernels#",
+  "text": "Classifiers with custom kernels behave the same way as any other classifiers, except that:"
+ },
+ {
+  "source": "svm",
+  "title": "Support vector machine kernels",
+  "url": "https://scikit-learn.org/stable/modules/svm.html#kernel-functions",
+  "heading": "1.4.6.2. Custom Kernels#",
+  "text": "Field support_vectors_ is now empty, only indices of support vectors are stored in support_"
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "Hyperparameters",
+  "text": "Hyper-parameters are parameters that are not directly learnt within estimators. In scikit-learn they are passed as arguments to the constructor of the estimator classes. Typical examples include C, kernel and gamma for Support Vector Classifier, alpha for Lasso, etc."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "Hyperparameters",
+  "text": "It is possible and recommended to search the hyper-parameter space for the best cross validation score."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "Hyperparameters",
+  "text": "Any parameter provided when constructing an estimator may be optimized in this manner. Specifically, to find the names and current values for all parameters for a given estimator, use:"
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.1. Exhaustive Grid Search#",
+  "text": "The grid search provided by GridSearchCV exhaustively generates candidates from a grid of parameter values specified with the param_grid parameter. For instance, the following param_grid:"
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.1. Exhaustive Grid Search#",
+  "text": "specifies that two grids should be explored: one with a linear kernel and C values in [1, 10, 100, 1000], and the second one with an RBF kernel, and the cross-product of C values ranging in [1, 10, 100, 1000] and gamma values in [0.001, 0.0001]."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.1. Exhaustive Grid Search#",
+  "text": "The GridSearchCV instance implements the usual estimator API: when “fitting” it on a dataset all the possible combinations of parameter values are evaluated and the best combination is retained."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.2. Randomized Parameter Optimization#",
+  "text": "While using a grid of parameter settings is currently the most widely used method for parameter optimization, other search methods have more favorable properties. RandomizedSearchCV implements a randomized search over parameters, where each setting is sampled from a distribution over possible parameter values. This has two main benefits over an exhaustive search:"
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.2. Randomized Parameter Optimization#",
+  "text": "A budget can be chosen independent of the number of parameters and possible values."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.2. Randomized Parameter Optimization#",
+  "text": "Adding parameters that do not influence the performance does not decrease efficiency."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3. Searching for optimal parameters with successive halving#",
+  "text": "Scikit-learn also provides the HalvingGridSearchCV and HalvingRandomSearchCV estimators that can be used to search a parameter space using successive halving [1] [2]. Successive halving (SH) is like a tournament among candidate parameter combinations. SH is an iterative selection process where all candidates (the parameter combinations) are evaluated with a small amount of resources at the first iteration. Only some of these candidates are selected for the next iteration, which will be allocated more resources. For parameter tuning, the resource is typically the number of training samples, but it can also be an arbitrary numeric parameter such as n_estimators in a random forest."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3. Searching for optimal parameters with successive halving#",
+  "text": "The resource increase chosen should be large enough so that a large improvement in scores is obtained when taking into account statistical significance."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3. Searching for optimal parameters with successive halving#",
+  "text": "As illustrated in the figure below, only a subset of candidates ‘survive’ until the last iteration. These are the candidates that have consistently ranked among the top-scoring candidates across all iterations. Each iteration is allocated an increasing amount of resources per candidate, here the number of samples."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3.1. Aggressive elimination of candidates#",
+  "text": "Using the aggressive_elimination parameter, you can force the search process to end up with less than factor candidates at the last iteration."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3.1. Aggressive elimination of candidates#",
+  "text": "Ideally, we want the last iteration to evaluate factor candidates. We then just have to pick the best one. When the number of available resources is small with respect to the number of candidates, the last iteration may have to evaluate more than factor candidates:"
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3.1. Aggressive elimination of candidates#",
+  "text": "Since we cannot use more than max_resources=40 resources, the process has to stop at the second iteration which evaluates more than factor=2 candidates."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3.2. Analyzing results with the cv_results_ attribute#",
+  "text": "The cv_results_ attribute contains useful information for analyzing the results of a search. It can be converted to a pandas dataframe with df = pd.DataFrame(est.cv_results_). The cv_results_ attribute of HalvingGridSearchCV and HalvingRandomSearchCV is similar to that of GridSearchCV and RandomizedSearchCV, with additional information related to the successive halving process."
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3.2. Analyzing results with the cv_results_ attribute#",
+  "text": "{‘criterion’: ‘log_loss’, ‘max_depth’: None, ‘max_features’: 9, ‘min_samples_split’: 5}"
+ },
+ {
+  "source": "params",
+  "title": "Hyperparameters",
+  "url": "https://scikit-learn.org/stable/modules/grid_search.html",
+  "heading": "3.2.3.2. Analyzing results with the cv_results_ attribute#",
+  "text": "{‘criterion’: ‘gini’, ‘max_depth’: None, ‘max_features’: 8, ‘min_samples_split’: 7}"
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "Ensemble methods",
+  "text": "Ensemble methods combine the predictions of several base estimators built with a given learning algorithm in order to improve generalizability / robustness over a single estimator."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "Ensemble methods",
+  "text": "Two very famous examples of ensemble methods are gradient-boosted trees and random forests."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "Ensemble methods",
+  "text": "More generally, ensemble models can be applied to any base learner beyond trees, in averaging methods such as Bagging methods, model stacking, or Voting, or in boosting, as AdaBoost."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1. Gradient-boosted trees#",
+  "text": "Gradient Tree Boosting or Gradient Boosted Decision Trees (GBDT) is a generalization of boosting to arbitrary differentiable loss functions, see the seminal work of [Friedman2001]. GBDT is an excellent model for both regression and classification, in particular for tabular data."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1.1. Histogram-Based Gradient Boosting#",
+  "text": "Scikit-learn 0.21 introduced two new implementations of gradient boosted trees, namely HistGradientBoostingClassifier and HistGradientBoostingRegressor, inspired by LightGBM (See [LightGBM])."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1.1. Histogram-Based Gradient Boosting#",
+  "text": "These histogram-based estimators can be orders of magnitude faster than GradientBoostingClassifier and GradientBoostingRegressor when the number of samples is larger than tens of thousands of samples."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1.1. Histogram-Based Gradient Boosting#",
+  "text": "They also have built-in support for missing values, which avoids the need for an imputer."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1.2. GradientBoostingClassifier and GradientBoostingRegressor#",
+  "text": "The usage and the parameters of GradientBoostingClassifier and GradientBoostingRegressor are described below. The 2 most important parameters of these estimators are n_estimators and learning_rate."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1.2. GradientBoostingClassifier and GradientBoostingRegressor#",
+  "text": "GradientBoostingClassifier supports both binary and multi-class classification. The following example shows how to fit a gradient boosting classifier with 100 decision stumps as weak learners:"
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.1.2. GradientBoostingClassifier and GradientBoostingRegressor#",
+  "text": "The number of weak learners (i.e. regression trees) is controlled by the parameter n_estimators; The size of each tree can be controlled either by setting the tree depth via max_depth or by setting the number of leaf nodes via max_leaf_nodes. The learning_rate is a hyper-parameter in the range (0.0, 1.0] that controls overfitting via shrinkage ."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2. Random forests and other randomized tree ensembles#",
+  "text": "The sklearn.ensemble module includes two averaging algorithms based on randomized decision trees: the RandomForest algorithm and the Extra-Trees method. Both algorithms are perturb-and-combine techniques [B1998] specifically designed for trees. This means a diverse set of classifiers is created by introducing randomness in the classifier construction. The prediction of the ensemble is given as the averaged prediction of the individual classifiers."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2. Random forests and other randomized tree ensembles#",
+  "text": "As other classifiers, forest classifiers have to be fitted with two arrays: a sparse or dense array X of shape (n_samples, n_features) holding the training samples, and an array Y of shape (n_samples,) holding the target values (class labels) for the training samples:"
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2. Random forests and other randomized tree ensembles#",
+  "text": "Like decision trees, forests of trees also extend to multi-output problems (if Y is an array of shape (n_samples, n_outputs))."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2.1. Random Forests#",
+  "text": "In random forests (see RandomForestClassifier and RandomForestRegressor classes), each tree in the ensemble is built from a sample drawn with replacement (i.e., a bootstrap sample) from the training set."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2.1. Random Forests#",
+  "text": "During the construction of each tree in the forest, a random subset of the features is considered. The size of this subset is controlled by the max_features parameter; it may include either all input features or a random subset of them (see the parameter tuning guidelines for more details)."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2.1. Random Forests#",
+  "text": "The purpose of these two sources of randomness (bootstrapping the samples and randomly selecting features at each split) is to decrease the variance of the forest estimator. Indeed, individual decision trees typically exhibit high variance and tend to overfit. The injected randomness in forests yield decision trees with somewhat decoupled prediction errors. By taking an average of those predictions, some errors can cancel out. Random forests achieve a reduced variance by combining diverse trees, sometimes at the cost of a slight increase in bias. In practice the variance reduction is often significant hence yielding an overall better model."
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2.2. Extremely Randomized Trees#",
+  "text": "In extremely randomized trees (see ExtraTreesClassifier and ExtraTreesRegressor classes), randomness goes one step further in the way splits are computed. As in random forests, a random subset of candidate features is used, but instead of looking for the most discriminative thresholds, thresholds are drawn at random for each candidate feature and the best of these randomly-generated thresholds is picked as the splitting rule. This usually allows to reduce the variance of the model a bit more, at the expense of a slightly greater increase in bias:"
+ },
+ {
+  "source": "ensemble",
+  "title": "Ensemble methods",
+  "url": "https://scikit-learn.org/stable/modules/ensemble.html",
+  "heading": "1.11.2.3. Parameters#",
+  "text": "The main parameters to adjust when using these methods is n_estimators and max_features. The former is the number of trees in the forest. The larger the better, but also the longer it will take to compute. In addition, note that results will stop getting significantly better beyond a critical number of trees. The latter is the size of the random subsets of features to consider when splitting a node. The lower the greater the reduction of variance, but also the greater the increase in bias. Empirical good default values are max_features=1.0 or equivalently max_features=None (always considering all features instead of a random subset) for regression problems, and max_features=\"sqrt\" (using a random subset of size sqrt(n_features)) for classification tasks (where n_features is the number of features in the data). The default value of max_features=1.0 is equivalent to bagged trees and more randomness can be achieved by setting smaller values (e.g. 0.3 is a typical default in the literature). Good results are often achieved when setting max_depth=None in combination with min_samples_split=2 (i.e., when fully developing the trees). Bear in mind though that these values are usually not optimal, and might result in models that consume a lot of RAM. The best parameter values should always be cross-validated. In addition, note that in random forests, bootstrap samples are used by default (bootstrap=True) while the default strategy for extra-trees is to use the whole dataset (bootstrap=False). When using bootstrap sampling the generalization error can be estimated on the left out or out-of-bag samples. This can be enabled by setting oob_score=True."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "Feature selection",
+  "text": "The classes in the sklearn.feature_selection module can be used for feature selection/dimensionality reduction on sample sets, either to improve estimators’ accuracy scores or to boost their performance on very high-dimensional datasets."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.1. Removing features with low variance#",
+  "text": "VarianceThreshold is a simple baseline approach to feature selection. It removes all features whose variance doesn’t meet some threshold. By default, it removes all zero-variance features, i.e. features that have the same value in all samples."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.1. Removing features with low variance#",
+  "text": "As an example, suppose that we have a dataset with boolean features, and we want to remove all features that are either one or zero (on or off) in more than 80% of the samples. Boolean features are Bernoulli random variables, and the variance of such variables is given by"
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.1. Removing features with low variance#",
+  "text": "As expected, VarianceThreshold has removed the first column, which has a probability \\(p = 5/6 > .8\\) of containing a zero."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.2. Univariate feature selection#",
+  "text": "Univariate feature selection works by selecting the best features based on univariate statistical tests. It can be seen as a preprocessing step to an estimator. Scikit-learn exposes feature selection routines as objects that implement the transform method:"
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.2. Univariate feature selection#",
+  "text": "SelectKBest removes all but the \\(k\\) highest scoring features"
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.2. Univariate feature selection#",
+  "text": "SelectPercentile removes all but a user-specified highest scoring percentage of features"
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.3. Recursive feature elimination#",
+  "text": "Given an external estimator that assigns weights to features (e.g., the coefficients of a linear model), the goal of recursive feature elimination (RFE) is to select features by recursively considering smaller and smaller sets of features. First, the estimator is trained on the initial set of features and the importance of each feature is obtained either through any specific attribute (such as coef_, feature_importances_) or callable. Then, the least important features are pruned from the current set of features. That procedure is recursively repeated on the pruned set until the desired number of features to select is eventually reached."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.3. Recursive feature elimination#",
+  "text": "RFECV performs RFE in a cross-validation loop to find the optimal number of features. In more details, the number of features selected is tuned automatically by fitting an RFE selector on the different cross-validation splits (provided by the cv parameter). The performance of the RFE selector is evaluated using scorer for different numbers of selected features and aggregated together. Finally, the scores are averaged across folds and the number of features selected is set to the number of features that maximize the cross-validation score."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.3. Recursive feature elimination#",
+  "text": "Recursive feature elimination: A recursive feature elimination example showing the relevance of pixels in a digit classification task."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4. Feature selection using SelectFromModel#",
+  "text": "SelectFromModel is a meta-transformer that can be used alongside any estimator that assigns importance to each feature through a specific attribute (such as coef_, feature_importances_) or via an importance_getter callable after fitting. The features are considered unimportant and removed if the corresponding importance of the feature values is below the provided threshold parameter. Apart from specifying the threshold numerically, there are built-in heuristics for finding a threshold using a string argument. Available heuristics are “mean”, “median” and float multiples of these like “0.1*mean”. In combination with the threshold criteria, one can use the max_features parameter to set a limit on the number of features to select."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4. Feature selection using SelectFromModel#",
+  "text": "For examples on how it is to be used refer to the sections below."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4.1. L1-based feature selection#",
+  "text": "Linear models penalized with the L1 norm have sparse solutions: many of their estimated coefficients are zero. When the goal is to reduce the dimensionality of the data to use with another classifier, they can be used along with SelectFromModel to select the non-zero coefficients. In particular, sparse estimators useful for this purpose are the Lasso for regression, and of LogisticRegression and LinearSVC for classification:"
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4.1. L1-based feature selection#",
+  "text": "With SVMs and logistic regression, the parameter C controls the sparsity: the smaller C the fewer features selected. With Lasso, the higher the alpha parameter, the fewer features selected."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4.1. L1-based feature selection#",
+  "text": "For a good choice of alpha, the Lasso can fully recover the exact set of non-zero variables using only few observations, provided certain specific conditions are met. In particular, the number of samples should be “sufficiently large”, or L1 models will perform at random, where “sufficiently large” depends on the number of non-zero coefficients, the logarithm of the number of features, the amount of noise, the smallest absolute value of non-zero coefficients, and the structure of the design matrix X. In addition, the design matrix must display certain specific properties, such as not being too correlated. On the use of Lasso for sparse signal recovery, see this example on compressive sensing: Compressive sensing: tomography reconstruction with L1 prior (Lasso)."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4.2. Tree-based feature selection#",
+  "text": "Tree-based estimators (see the sklearn.tree module and forest of trees in the sklearn.ensemble module) can be used to compute impurity-based feature importances, which in turn can be used to discard irrelevant features (when coupled with the SelectFromModel meta-transformer):"
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4.2. Tree-based feature selection#",
+  "text": "Feature importances with a forest of trees: example on synthetic data showing the recovery of the actually meaningful features."
+ },
+ {
+  "source": "features",
+  "title": "Feature selection",
+  "url": "https://scikit-learn.org/stable/modules/feature_selection.html",
+  "heading": "1.13.4.2. Tree-based feature selection#",
+  "text": "Permutation Importance vs Random Forest Feature Importance (MDI): example discussing the caveats of using impurity-based feature importances as a proxy for feature relevance."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Page Summary",
+  "text": "Machine learning (ML) is a way to train software, called a model, to make predictions or generate content using data."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Page Summary",
+  "text": "ML systems can be categorized as supervised, unsupervised, reinforcement, or generative AI, each learning differently."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Page Summary",
+  "text": "Supervised learning uses labeled data to make predictions, often for regression (predicting numerical values) or classification (categorizing data)."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Types of ML Systems",
+  "text": "ML systems fall into one or more of the following categories based on how they learn to make predictions or generate content:"
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Supervised learning",
+  "text": "Supervised learning models can make predictions after seeing lots of data with the correct answers and then discovering the connections between the elements in the data that produce the correct answers. This is like a student learning new material by studying old exams that contain both questions and answers. Once the student has trained on enough old exams, the student is well prepared to take a new exam. These ML systems are \"supervised\" in the sense that a human gives the ML system data with the known correct results."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Supervised learning",
+  "text": "Two of the most common use cases for supervised learning are regression and classification."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Regression",
+  "text": "A regression model predicts a numeric value. For example, a weather model that predicts the amount of rain, in inches or millimeters, is a regression model."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Classification",
+  "text": "Classification models predict the likelihood that something belongs to a category. Unlike regression models, whose output is a number, classification models output a value that states whether or not something belongs to a particular category. For example, classification models are used to predict if an email is spam or if a photo contains a cat."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Classification",
+  "text": "Classification models are divided into two groups: binary classification and multiclass classification. Binary classification models output a value from a class that contains only two values, for example, a model that outputs either rain or no rain. Multiclass classification models output a value from a class that contains more than two values, for example, a model that can output either rain, hail, snow, or sleet."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Unsupervised learning",
+  "text": "An unsupervised learning model aims to identify meaningful patterns in a dataset. For example, many unsupervised learning models rely on a technique called clustering to organize similar data into groups (\"clusters\")."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Unsupervised learning",
+  "text": "Clustering differs from classification because the categories aren't defined by you. For example, an unsupervised model might cluster a weather dataset based on temperature, revealing segmentations that define the seasons. You might then attempt to name those clusters based on your understanding of the dataset."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Unsupervised learning",
+  "text": "Figure 4. Clusters of weather patterns labeled as snow, sleet, rain, and no rain."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Reinforcement learning",
+  "text": "Reinforcement learning models make predictions by getting rewards or penalties based on actions performed within an environment. A reinforcement learning system generates a policy that defines the best strategy for getting the most rewards."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Reinforcement learning",
+  "text": "Reinforcement learning is used to train robots to perform tasks, like walking around a room, and software programs like AlphaGo to play the game of Go."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Generative AI",
+  "text": "Generative AI is a class of models that creates content from user input. For example, generative AI can create unique images, music compositions, and jokes; it can summarize articles, explain how to perform a task, or edit a photo."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Generative AI",
+  "text": "Generative AI can take a variety of inputs and create a variety of outputs, like text, images, audio, and video. It can also take and create combinations of these. For example, a model can take an image as input and create an image and text as output, or take an image and text as input and create a video as output."
+ },
+ {
+  "source": "applications",
+  "title": "Applications of machine learning",
+  "url": "https://developers.google.com/machine-learning/intro-to-ml/what-is-ml",
+  "heading": "Generative AI",
+  "text": "We can discuss generative models by their inputs and outputs, typically written as \"type of input\"-to-\"type of output.\" For example, the following is a partial list of some inputs and outputs for generative models:"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Statistical outliers and their effects",
+  "text": "In statistics, an outlier is a data point that differs significantly from other observations.[1][2] An outlier may be due to a variability in the measurement, an indication of novel data, or it may be the result of experimental error; the latter are sometimes excluded from the data set.[3][4] An outlier can be an indication of exciting possibility, but can also cause serious problems in statistical analyses."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Statistical outliers and their effects",
+  "text": "Outliers can occur by chance in any distribution, but they can indicate novel behaviour or structures in the data-set, measurement error, or that the population has a heavy-tailed distribution. In the case of measurement error, one wishes to discard them or use statistics that are robust to outliers, while in the case of heavy-tailed distributions, they indicate that the distribution has high skewness and that one should be very cautious in using tools or intuitions that assume a normal distribution. A frequent cause of outliers is a mixture of two distributions, which may be two distinct sub-populations, or may indicate 'correct trial' versus 'measurement error'; this is modeled by a mixture model."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Statistical outliers and their effects",
+  "text": "In most larger samplings of data, some data points will be further away from the sample mean than what is deemed reasonable. This can be due to incidental systematic error or flaws in the theory that generated an assumed family of probability distributions, or it may be that some observations are far from the center of the data. Outlier points can therefore indicate faulty data, erroneous procedures, or areas where a certain theory might not be valid. However, in large samples, a small number of outliers is to be expected (and not due to any anomalous condition)."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Occurrence and causes",
+  "text": "In the case of normally distributed data, the three sigma rule means that roughly 1 in 22 observations will differ by twice the standard deviation or more from the mean, and 1 in 370 will deviate by three times the standard deviation.[6] In a sample of 1000 observations, the presence of up to five observations deviating from the mean by more than three times the standard deviation is within the range of what can be expected, being less than twice the expected number and hence within 1 standard deviation of the expected number – see Poisson distribution – and not indicate an anomaly. If the sample size is only 100, however, just three such outliers are already reason for concern, being more than 11 times the expected number."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Occurrence and causes",
+  "text": "In general, if the nature of the population distribution is known a priori, it is possible to test if the number of outliers deviate significantly from what can be expected: for a given cutoff (so samples fall beyond the cutoff with probability p) of a given distribution, the number of outliers will follow a binomial distribution with parameter p, which can generally be well-approximated by the Poisson distribution with λ = pn. Thus if one takes a normal distribution with cutoff 3 standard deviations from the mean, p is approximately 0.3%, and thus for 1000 trials one can approximate the number of samples whose deviation exceeds 3 sigmas by a Poisson distribution with λ = 3."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Causes",
+  "text": "Outliers can have many anomalous causes. A physical apparatus for taking measurements may have suffered a transient malfunction. There may have been an error in data transmission or transcription. Outliers arise due to changes in system behaviour, fraudulent behaviour, human error, instrument error or simply through natural deviations in populations. A sample may have been contaminated with elements from outside the population being examined. Alternatively, an outlier could be the result of a flaw in the assumed theory, calling for further investigation by the researcher. Additionally, the pathological appearance of outliers of a certain form appears in a variety of datasets, indicating that the causative mechanism for the data might differ at the extreme end (King effect)."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Definitions and detection",
+  "text": "There is no rigid mathematical definition of what constitutes an outlier; determining whether or not an observation is an outlier is ultimately a subjective exercise.[7]"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Definitions and detection",
+  "text": "There are various methods of outlier detection, some of which are treated as synonymous with novelty detection.[3][8][9][10][11] Some are graphical such as normal probability plots. Others are model-based. Box plots are a hybrid."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Definitions and detection",
+  "text": "Model-based methods which are commonly used for identification assume that the data are from a normal distribution, and identify observations which are deemed \"unlikely\" based on mean and standard deviation:"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Peirce's criterion",
+  "text": "It is proposed to determine in a series of m observations the limit of error, beyond which all observations involving so great an error may be rejected, provided there are as many as n such observations. The principle upon which it is proposed to solve this problem is, that the proposed observations should be rejected when the probability of the system of errors obtained by retaining them is less than that of the system of errors obtained by their rejection multiplied by the probability of making so many, and no more, abnormal observations. (Quoted in the editorial note on page 516 to Peirce (1982 edition) from A Manual of Astronomy 2:558 by Chauvenet.) [13][14][15][16]"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Tukey's fences",
+  "text": "Other methods flag observations based on measures such as the interquartile range. For example, if Q1 and Q3 are the lower and upper quartiles respectively, then one could define an outlier to be any observation outside the range:"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Tukey's fences",
+  "text": "for some nonnegative constant k. John Tukey proposed this test, where k=1.5 indicates an \"outlier\", and k=3 indicates data that is \"far out\".[17]"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "In anomaly detection",
+  "text": "In various domains such as, but not limited to, statistics, signal processing, finance, econometrics, manufacturing, networking and data mining, the task of anomaly detection may take other approaches. Some of these may be distance-based[18][19] and density-based such as Local Outlier Factor (LOF).[20] Some approaches may use the distance to the k-nearest neighbors to label observations as outliers or non-outliers.[21]"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Modified Thompson Tau test",
+  "text": "The modified Thompson Tau test is a method used to determine if an outlier exists in a data set.[22] The strength of this method lies in the fact that it takes into account a data set's standard deviation, average and provides a statistically determined rejection zone; thus providing an objective method to determine if a data point is an outlier.[citation needed][23] How it works: First, a data set's average is determined. Next the absolute deviation between each data point and the average are determined. Thirdly, a rejection region is determined using the formula:"
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Modified Thompson Tau test",
+  "text": "where tα/2 is the critical value from the Student t distribution with n-2 degrees of freedom, n is the sample size, and s is the sample standard deviation. To determine if a value is an outlier: Calculate δ=|(X−mean(X))/s|. If δ > Rejection Region, the data point is an outlier. If δ ≤ Rejection Region, the data point is not an outlier."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Modified Thompson Tau test",
+  "text": "The modified Thompson Tau test is used to find one outlier at a time (largest value of δ is removed if it is an outlier). Meaning, if a data point is found to be an outlier, it is removed from the data set and the test is applied again with a new average and rejection region. This process is continued until no outliers remain in a data set."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Working with outliers",
+  "text": "The choice of how to deal with an outlier should depend on the cause. Some estimators are highly sensitive to outliers, notably estimation of covariance matrices."
+ },
+ {
+  "source": "statistics",
+  "title": "Statistical outliers and their effects",
+  "url": "https://en.wikipedia.org/wiki/Outlier",
+  "heading": "Retention",
+  "text": "Even when a normal distribution model is appropriate to the data being analyzed, outliers are expected for large sample sizes and should not automatically be discarded if that is the case.[25] Instead, one should use a method that is robust to outliers to model or analyze data with naturally occurring outliers.[25]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Scatter plots",
+  "text": "A scatter plot, also called a scatterplot, scatter graph, scatter chart, scattergram, or scatter diagram,[1] is a type of plot or mathematical diagram using Cartesian coordinates to display values for typically two variables for a set of data. If the points are coded (color/shape/size), one additional variable can be displayed. The data are displayed as a collection of points, each having the value of one variable determining the position on the horizontal axis and the value of the other variable determining the position on the vertical axis.[2] The scatter diagram is one of the seven basic tools of quality control."
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "History",
+  "text": "According to Michael Friendly and Daniel Denis, the defining characteristic distinguishing scatter plots from line charts is the representation of specific observations of bivariate data where one variable is plotted on the horizontal axis and the other on the vertical axis. The two variables are often abstracted from a physical representation like the spread of bullets on a target or a geographic or celestial projection.[3][4]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "History",
+  "text": "While Edmund Halley created a bivariate plot of temperature and pressure in 1686, he omitted the specific data points used to demonstrate the relationship. Friendly and Denis claim his visualization was different from an actual scatter plot. Friendly and Denis attribute the first scatter plot to John Herschel. In 1833, Herschel plotted the angle between the central star in the constellation Virgo and Gamma Virginis over time to find how the angle changes over time, not through calculation but with freehand drawing and human judgment.[3]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "History",
+  "text": "Sir Francis Galton extended and popularized the scatter plot and many other statistical tools to pursue a scientific basis for eugenics.[5] When, in 1886, Galton published a scatter plot and correlation ellipse of the height of parents and children, he extended Herschel's mere plotting of data points by binning and averaging adjacent cells to create a smoother visualization.[3] Karl Pearson, R. A. Fischer, and other statisticians and eugenicists built on Galton's work and formalized correlations and significance testing.[5]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Overview",
+  "text": "A scatter plot can be used either when one continuous variable is under the control of the experimenter and the other depends on it or when both continuous variables are independent. If a parameter exists that is systematically incremented and/or decremented by the other, it is called the control parameter or independent variable and is customarily plotted along the horizontal axis. The measured or dependent variable is customarily plotted along the vertical axis. If no dependent variable exists, either type of variable can be plotted on either axis and a scatter plot will illustrate only the degree of correlation (not causation) between two variables.[citation needed]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Overview",
+  "text": "A scatter plot can suggest various kinds of correlations between variables with a certain confidence interval. For example, weight and height would be on the y-axis, and height would be on the x-axis. Correlations may be positive (rising), negative (falling), or null (uncorrelated). If the dots' pattern slopes from lower left to upper right, it indicates a positive correlation between the variables being studied. If the pattern of dots slopes from upper left to lower right, it indicates a negative correlation. A line of best fit (alternatively called 'trendline') can be drawn to study the relationship between the variables. An equation for the correlation between the variables can be determined by established best-fit procedures. For a linear correlation, the best-fit procedure is known as linear regression and is guaranteed to generate a correct solution in a finite time. No universal best-fit procedure is guaranteed to generate a correct solution for arbitrary relationships. A scatter plot is also very useful when we wish to see how two comparable data sets agree to show nonlinear relationships between variables. The ability to do this can be enhanced by adding a smooth line such as LOESS.[7] Furthermore, if the data are represented by a mixture model of simple relationships, these relationships will be visually evident as superimposed patterns.[citation needed]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Overview",
+  "text": "The scatter diagram is one of the seven basic tools of quality control.[8]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Example",
+  "text": "For example, to display a link between a person's lung capacity, and how long that person could hold their breath, a researcher would choose a group of people to study, then measure each one's lung capacity (first variable) and how long that person could hold their breath (second variable). The researcher would then plot the data in a scatter plot, assigning \"lung capacity\" to the horizontal axis, and \"time holding breath\" to the vertical axis.[citation needed]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Example",
+  "text": "A person with a lung capacity of 400 cl who held their breath for 21.7 s would be represented by a single dot on the scatter plot at the point (400, 21.7) in the Cartesian coordinates. The scatter plot of all the people in the study would enable the researcher to obtain a visual comparison of the two variables in the data set and will help to determine what kind of relationship there might be between the two variables.[citation needed]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Scatter plot matrices",
+  "text": "For a set of data variables (dimensions) X1, X2, ... , Xk, the scatter plot matrix shows all the pairwise scatter plots of the variables on a single view with multiple scatter plots in a matrix format. For k variables, the scatter plot matrix will contain k rows and k columns. A plot located on the intersection of ith row and jth column is a plot of variables Xi versus Xj.[10] This means that each row and column is one dimension, and each cell plots a scatter plot of two dimensions.[citation needed]"
+ },
+ {
+  "source": "scatter",
+  "title": "Scatter plots",
+  "url": "https://en.wikipedia.org/wiki/Scatter_plot",
+  "heading": "Scatter plot matrices",
+  "text": "A generalized scatter plot matrix[11] offers a range of displays of paired combinations of categorical and quantitative variables. A mosaic plot, fluctuation diagram, or faceted bar chart may be used to display two categorical variables. Other plots are used for one categorical and one quantitative variables."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Linear regression assumptions and residuals",
+  "text": "In statistics, linear regression is a model that estimates the relationship between a scalar response (dependent variable) and one or more explanatory variables (regressor or independent variable) related via a linear combination. A linear model with exactly one explanatory variable is a simple linear regression; a model with two or more explanatory variables is a multiple linear regression.[1]"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Linear regression assumptions and residuals",
+  "text": "In linear regression, the relationships are modeled using linear predictor functions whose unknown model parameters are estimated from the data. Most commonly, the conditional mean of the response given the values of the explanatory variables (or predictors) is assumed to be an affine function of those values; less commonly, the conditional median or some other quantile is used. Like all forms of regression analysis, linear regression focuses on the conditional probability distribution of the response given the values of the predictors, rather than on the joint probability distribution of all of these variables, which is the domain of multivariate analysis."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Linear regression assumptions and residuals",
+  "text": "A generalization of linear regression is found in nonlinear regression. Linear regression is also a type of machine learning algorithm, more specifically a supervised algorithm, that learns from the labelled datasets and maps the data points to the most optimized linear functions that can be used for prediction on new datasets.[2]"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Simple and multiple linear regression",
+  "text": "The simplest case of a single scalar predictor variable x and a single scalar response variable y is known as simple linear regression. The extension to multiple and/or vector-valued predictor variables (denoted with a capital X) is known as multiple linear regression."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Assumptions",
+  "text": "When estimating the parameters of linear regression models with standard estimation techniques such as ordinary least squares, it is necessary to make a number of assumptions about the predictor variables, the response variable and their relationship, to get estimators that are unbiased in finite sample. Numerous extensions have been developed that allow each of these assumptions to be relaxed (reduced to a weaker form), and in some cases eliminated entirely. Generally these extensions require more data or modelling assumptions to produce an equally precise model.[4]"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Interpretation",
+  "text": "A fitted linear regression model can be used to identify the relationship between a single predictor variable xj and the response variable y when all the other predictor variables in the model are \"held fixed\". Specifically, the interpretation of βj is the expected change in y for a one-unit change in xj when the other covariates are held fixed—that is, the expected value of the partial derivative of y with respect to xj. This is sometimes called the unique effect of xj on y. In contrast, the marginal effect of xj on y can be assessed using a correlation coefficient or simple linear regression model relating only xj to y; this effect is the total derivative of y with respect to xj."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Interpretation",
+  "text": "Care must be taken when interpreting regression results, as some of the regressors may not allow for marginal changes (such as dummy variables, or the intercept term), while others cannot be held fixed (recall the example from the introduction: it would be impossible to \"hold ti fixed\" and at the same time change the value of ti2)."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Interpretation",
+  "text": "It is possible that the unique effect be nearly zero even when the marginal effect is large. This may imply that some other covariate captures all the information in xj, so that once that variable is in the model, there is no contribution of xj to the variation in y. Conversely, the unique effect of xj can be large while its marginal effect is nearly zero. This would happen if the other covariates explained a great deal of the variation of y, but they mainly explain variation in a way that is complementary to what is captured by xj. In this case, including the other variables in the model reduces the part of the variability of y that is unrelated to xj, thereby strengthening the apparent relationship with xj."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Estimation methods",
+  "text": "A large number of procedures have been developed for parameter estimation and inference in linear regression. These methods differ in computational simplicity of algorithms, presence of a closed-form solution, robustness with respect to heavy-tailed distributions, and theoretical assumptions needed to validate desirable statistical properties such as consistency and asymptotic efficiency."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Estimation methods",
+  "text": "Some of the more common estimation techniques for linear regression are summarized below."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Least-squares estimation and related techniques",
+  "text": "Assuming that the independent variables are xi→=[x1i,x2i,…,xmi] and the model's parameters are β→=[β0,β1,…,βm], then the model's prediction would be"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Least-squares estimation and related techniques",
+  "text": "If xi→ is extended to xi→=[1,x1i,x2i,…,xmi] then yi would become a dot product of the parameter and the independent vectors, i.e."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Least-squares estimation and related techniques",
+  "text": "In the least-squares setting, the optimum parameter vector is defined as such that minimizes the sum of mean squared loss:"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Maximum-likelihood estimation and related techniques",
+  "text": "Maximum likelihood estimation can be performed when the distribution of the error terms is known to belong to a certain parametric family ƒθ of probability distributions.[8] When fθ is a normal distribution with zero mean and variance θ, the resulting estimate is identical to the OLS estimate. GLS estimates are maximum likelihood estimates when ε follows a multivariate normal distribution with a known covariance matrix. Let's denote each data point by (xi→,yi) and the regression parameters as β→, and the set of all data by D and the cost function by L(D,β→)=∑i(yi−β→⋅xi→)2."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Maximum-likelihood estimation and related techniques",
+  "text": "As shown below the same optimal parameter that minimizes L(D,β→) achieves maximum likelihood too.[9] Here the assumption is that the dependent variable y is a random variable that follows a Gaussian distribution, where the standard deviation is fixed and the mean is a linear combination of x→:H(D,β→)=∏i=1nPr(yi|xi→;β→,σ)=∏i=1n12πσexp⁡(−(yi−β→⋅xi→)22σ2)"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Maximum-likelihood estimation and related techniques",
+  "text": "Now, we need to look for a parameter that maximizes this likelihood function. Since the logarithmic function is strictly increasing, instead of maximizing this function, we can also maximize its logarithm and find the optimal parameter that way.[9]"
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Applications",
+  "text": "Linear regression is widely used in biological, behavioral and social sciences to describe possible relationships between variables. It ranks as one of the most important tools used in these disciplines."
+ },
+ {
+  "source": "residuals",
+  "title": "Linear regression assumptions and residuals",
+  "url": "https://en.wikipedia.org/wiki/Linear_regression",
+  "heading": "Trend line",
+  "text": "A trend line represents a trend, the long-term movement in time series data after other components have been accounted for. It tells whether a particular data set (say GDP, oil prices or stock prices) have increased or decreased over the period of time. A trend line could simply be drawn by eye through a set of data points, but more properly their position and slope is calculated using statistical techniques like linear regression. Trend lines typically are straight lines, although some variations use higher degree polynomials depending on the degree of curvature desired in the line."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Time series",
+  "text": "In mathematics, a time series is a sequence of data points indexed, listed, or graphed in chronological order. Most commonly, a time series consists of observations recorded at successive equally spaced points in time. Thus, it represents a form of discrete-time data. A time series may describe measurements collected over seconds, days, years, or even centuries. Common examples include heights of ocean tides, counts of sunspots, daily temperature readings, and the closing values of stock market indices such as the Dow Jones Industrial Average."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Time series",
+  "text": "A time series is often visualized using a run chart (a type of temporal line chart), which helps identify patterns such as trends, seasonal effects, and irregular fluctuations. Time series are widely used in statistics, actuarial science, signal processing, pattern recognition, econometrics, mathematical finance, weather forecasting, earthquake prediction, electroencephalography, control engineering, astronomy, communications engineering, and many other areas of applied science and engineering that involve temporal measurements."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Time series",
+  "text": "Time series analysis comprises methods for analyzing time series data in order to extract meaningful statistics and other characteristics of the data. Time series forecasting is the use of a model to predict future values based on previously observed values. Generally, time series data is modeled as a stochastic process. While regression analysis is often employed in such a way as to test relationships between one or more different time series, this type of analysis is not usually called \"time series analysis\", which refers in particular to relationships between different points in time within a single series."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Methods for analysis ....",
+  "text": "Methods for time series analysis may be divided into two classes: frequency-domain methods and time-domain methods. The former include spectral analysis and wavelet analysis; the latter include auto-correlation and cross-correlation analysis. In the time domain, correlation and analysis can be made in a filter-like manner using scaled correlation, thereby mitigating the need to operate in the frequency domain."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Methods for analysis ....",
+  "text": "Additionally, time series analysis techniques may be divided into parametric and non-parametric methods. The parametric approaches assume that the underlying stationary stochastic process has a certain structure which can be described using a small number of parameters (for example, using an autoregressive or moving-average model). In these approaches, the task is to estimate the parameters of the model that describes the stochastic process. By contrast, non-parametric approaches explicitly estimate the covariance or the spectrum of the process without assuming that the process has any particular structure."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Methods for analysis ....",
+  "text": "Methods of time series analysis may also be divided into linear and non-linear, and univariate and multivariate."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Panel data",
+  "text": "A time series is one type of panel data. Panel data is the general class, a multidimensional data set, whereas a time series data set is a one-dimensional panel (as is a cross-sectional dataset). A data set may exhibit characteristics of both panel data and time series data. One way to tell is to ask what makes one data record unique from the other records. If the answer is the time data field, then this is a time series data set candidate. If determining a unique record requires a time data field and an additional identifier which is unrelated to time (e.g. student ID, stock symbol, country code), then it is panel data candidate. If the differentiation lies on the non-time identifier, then the data set is a cross-sectional data set candidate."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Analysis",
+  "text": "There are several types of motivation and data analysis available for time series which are appropriate for different purposes."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Motivation",
+  "text": "In the context of statistics, econometrics, quantitative finance, seismology, meteorology, and geophysics the primary goal of time series analysis is forecasting. In the context of signal processing, control engineering and communication engineering it is used for signal detection. Other applications are in data mining, pattern recognition and machine learning, where time series analysis can be used for clustering,[2][3][4] classification,[5] query by content,[6] anomaly detection as well as forecasting.[7]"
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Exploratory analysis",
+  "text": "A simple way to examine a regular time series is manually with a line chart. The datagraphic shows tuberculosis deaths in the United States,[8] along with the yearly change and the percentage change from year to year. The total number of deaths declined in every year until the mid-1980s, after which there were occasional increases, often proportionately - but not absolutely - quite large."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Exploratory analysis",
+  "text": "A study of corporate data analysts found two challenges to exploratory time series analysis: discovering the shape of interesting patterns, and finding an explanation for these patterns.[9] Visual tools that represent time series data as heat map matrices can help overcome these challenges."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Estimation, filtering, and smoothing",
+  "text": "This approach may be based on harmonic analysis and filtering of signals in the frequency domain using the Fourier transform, and spectral density estimation. Its development was significantly accelerated during World War II by mathematician Norbert Wiener, electrical engineers Rudolf E. Kálmán, Dennis Gabor and others for filtering signals from noise and predicting signal values at a certain point in time."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Estimation, filtering, and smoothing",
+  "text": "An equivalent effect may be achieved in the time domain, as in a Kalman filter; see filtering and smoothing for more techniques."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Curve fitting",
+  "text": "Curve fitting[12][13] is the process of constructing a curve, or mathematical function, that has the best fit to a series of data points,[14] possibly subject to constraints.[15][16] Curve fitting can involve either interpolation,[17][18] where an exact fit to the data is required, or smoothing,[19][20] in which a \"smooth\" function is constructed that approximately fits the data. A related topic is regression analysis,[21][22] which focuses more on questions of statistical inference such as how much uncertainty is present in a curve that is fit to data observed with random errors. Fitted curves can be used as an aid for data visualization,[23][24] to infer values of a function where no data are available,[25] and to summarize the relationships among two or more variables.[26] Extrapolation refers to the use of a fitted curve beyond the range of the observed data,[27] and is subject to a degree of uncertainty[28] since it may reflect the method used to construct the curve as much as it reflects the observed data."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Curve fitting",
+  "text": "For processes that are expected to generally grow in magnitude one of the curves in the graphic (and many others) can be fitted by estimating their parameters."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Curve fitting",
+  "text": "The construction of economic time series involves the estimation of some components for some dates by interpolation between values (\"benchmarks\") for earlier and later dates. Interpolation is estimation of an unknown quantity between two known quantities (historical data), or drawing conclusions about missing information from the available information (\"reading between the lines\").[29] Interpolation is useful where the data surrounding the missing data is available and its trend, seasonality, and longer-term cycles are known. This is often done by using a related series known for all relevant dates.[30] Alternatively polynomial interpolation or spline interpolation is used where piecewise polynomial functions are fitted in time intervals such that they fit smoothly together. A different problem which is closely related to interpolation is the approximation of a complicated function by a simple function (also called regression). The main difference between regression and interpolation is that polynomial regression gives a single polynomial that models the entire data set. Spline interpolation, however, yield a piecewise continuous function composed of many polynomials to model the data set."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Function approximation",
+  "text": "In general, a function approximation problem asks us to select a function among a well-defined class that closely matches (\"approximates\") a target function in a task-specific way. One can distinguish two major classes of function approximation problems: First, for known target functions, approximation theory is the branch of numerical analysis that investigates how certain known functions (for example, special functions) can be approximated by a specific class of functions (for example, polynomials or rational functions) that often have desirable properties (inexpensive computation, continuity, integral and limit values, etc.)."
+ },
+ {
+  "source": "series",
+  "title": "Time series",
+  "url": "https://en.wikipedia.org/wiki/Time_series",
+  "heading": "Function approximation",
+  "text": "Second, the target function, call it g, may be unknown; instead of an explicit formula, only a set of points (a time series) of the form (x, g(x)) is provided. Depending on the structure of the domain and codomain of g, several techniques for approximating g may be applicable. For example, if g is an operation on the real numbers, techniques of interpolation, extrapolation, regression analysis, and curve fitting can be used. If the codomain (range or target set) of g is a finite set, one is dealing with a classification problem instead. A related problem of online time series approximation[31] is to summarize the data in one-pass and construct an approximate representation that can support a variety of time series queries with bounds on worst-case error."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "Nearest neighbors and distance",
+  "text": "sklearn.neighbors provides functionality for unsupervised and supervised neighbors-based learning methods. Unsupervised nearest neighbors is the foundation of many other learning methods, notably manifold learning and spectral clustering. Supervised neighbors-based learning comes in two flavors: classification for data with discrete labels, and regression for data with continuous labels."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "Nearest neighbors and distance",
+  "text": "The principle behind nearest neighbor methods is to find a predefined number of training samples closest in distance to the new point, and predict the label from these. The number of samples can be a user-defined constant (k-nearest neighbor learning), or vary based on the local density of points (radius-based neighbor learning). The distance can, in general, be any metric measure: standard Euclidean distance is the most common choice. Neighbors-based methods are known as non-generalizing machine learning methods, since they simply “remember” all of its training data (possibly transformed into a fast indexing structure such as a Ball Tree or KD Tree)."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "Nearest neighbors and distance",
+  "text": "Despite its simplicity, nearest neighbors has been successful in a large number of classification and regression problems, including handwritten digits and satellite image scenes. Being a non-parametric method, it is often successful in classification situations where the decision boundary is very irregular."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1. Unsupervised Nearest Neighbors#",
+  "text": "NearestNeighbors implements unsupervised nearest neighbors learning. It acts as a uniform interface to three different nearest neighbors algorithms: BallTree, KDTree, and a brute-force algorithm based on routines in sklearn.metrics.pairwise. The choice of neighbors search algorithm is controlled through the keyword 'algorithm', which must be one of ['auto', 'ball_tree', 'kd_tree', 'brute']. When the default value 'auto' is passed, the algorithm attempts to determine the best approach from the training data. For a discussion of the strengths and weaknesses of each option, see Nearest Neighbor Algorithms."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1. Unsupervised Nearest Neighbors#",
+  "text": "Regarding the Nearest Neighbors algorithms, if two neighbors \\(k+1\\) and \\(k\\) have identical distances but different labels, the result will depend on the ordering of the training data."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1.1. Finding the Nearest Neighbors#",
+  "text": "For the simple task of finding the nearest neighbors between two sets of data, the unsupervised algorithms within sklearn.neighbors can be used:"
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1.1. Finding the Nearest Neighbors#",
+  "text": "Because the query set matches the training set, the nearest neighbor of each point is the point itself, at a distance of zero."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1.1. Finding the Nearest Neighbors#",
+  "text": "It is also possible to efficiently produce a sparse graph showing the connections between neighboring points:"
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1.2. KDTree and BallTree Classes#",
+  "text": "Alternatively, one can use the KDTree or BallTree classes directly to find nearest neighbors. This is the functionality wrapped by the NearestNeighbors class used above. The Ball Tree and KD Tree have the same interface; we’ll show an example of using the KD Tree here:"
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.1.2. KDTree and BallTree Classes#",
+  "text": "Refer to the KDTree and BallTree class documentation for more information on the options available for nearest neighbors searches, including specification of query strategies, distance metrics, etc. For a list of valid metrics use KDTree.valid_metrics and BallTree.valid_metrics:"
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.2. Nearest Neighbors Classification#",
+  "text": "Neighbors-based classification is a type of instance-based learning or non-generalizing learning: it does not attempt to construct a general internal model, but simply stores instances of the training data. Classification is computed from a simple majority vote of the nearest neighbors of each point: a query point is assigned the data class which has the most representatives within the nearest neighbors of the point."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.2. Nearest Neighbors Classification#",
+  "text": "scikit-learn implements two different nearest neighbors classifiers: KNeighborsClassifier implements learning based on the \\(k\\) nearest neighbors of each query point, where \\(k\\) is an integer value specified by the user. RadiusNeighborsClassifier implements learning based on the number of neighbors within a fixed radius \\(r\\) of each training point, where \\(r\\) is a floating-point value specified by the user."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.2. Nearest Neighbors Classification#",
+  "text": "The \\(k\\)-neighbors classification in KNeighborsClassifier is the most commonly used technique. The optimal choice of the value \\(k\\) is highly data-dependent: in general a larger \\(k\\) suppresses the effects of noise, but makes the classification boundaries less distinct."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.3. Nearest Neighbors Regression#",
+  "text": "Neighbors-based regression can be used in cases where the data labels are continuous rather than discrete variables. The label assigned to a query point is computed based on the mean of the labels of its nearest neighbors."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.3. Nearest Neighbors Regression#",
+  "text": "scikit-learn implements two different neighbors regressors: KNeighborsRegressor implements learning based on the \\(k\\) nearest neighbors of each query point, where \\(k\\) is an integer value specified by the user. RadiusNeighborsRegressor implements learning based on the neighbors within a fixed radius \\(r\\) of the query point, where \\(r\\) is a floating-point value specified by the user."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.3. Nearest Neighbors Regression#",
+  "text": "The basic nearest neighbors regression uses uniform weights: that is, each point in the local neighborhood contributes uniformly to the classification of a query point. Under some circumstances, it can be advantageous to weight points such that nearby points contribute more to the regression than faraway points. This can be accomplished through the weights keyword. The default value, weights = 'uniform', assigns equal weights to all points. weights = 'distance' assigns weights proportional to the inverse of the distance from the query point. Alternatively, a user-defined function of the distance can be supplied, which will be used to compute the weights."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.4.1. Brute Force#",
+  "text": "Fast computation of nearest neighbors is an active area of research in machine learning. The most naive neighbor search implementation involves the brute-force computation of distances between all pairs of points in the dataset: for \\(N\\) samples in \\(D\\) dimensions, this approach scales as \\(O[D N^2]\\). Efficient brute-force neighbors searches can be very competitive for small data samples. However, as the number of samples \\(N\\) grows, the brute-force approach quickly becomes infeasible. In the classes within sklearn.neighbors, brute-force neighbors searches are specified using the keyword algorithm = 'brute', and are computed using the routines available in sklearn.metrics.pairwise."
+ },
+ {
+  "source": "nearest",
+  "title": "Nearest neighbors and distance",
+  "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+  "heading": "1.6.4.2. K-D Tree#",
+  "text": "To address the computational inefficiencies of the brute-force approach, a variety of tree-based data structures have been invented. In general, these structures attempt to reduce the required number of distance calculations by efficiently encoding aggregate distance information for the sample. The basic idea is that if point \\(A\\) is very distant from point \\(B\\), and point \\(B\\) is very close to point \\(C\\), then we know that points \\(A\\) and \\(C\\) are very distant, without having to explicitly calculate their distance. In this way, the computational cost of a nearest neighbors search can be reduced to \\(O[D N \\log(N)]\\) or better. This is a significant improvement over brute-force for large \\(N\\)."
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Semi-structured data",
+  "text": "Semi-structured data[1] is a form of structured data that is not rigidly structured.[2] The data model associated with semi-structured data is interpreted[3] when the data is read from a data storage medium[4] or accessed in memory.[5] The data model need not conform to a predefined database schema and is not optimized for succinct, low-overhead streaming or persistent storage[6] as is normal with a relational database, graph database, data table, or graph.[7] Instead, semi-structured data includes delimiter characters or tags to separate semantic elements or to describe relationships among records and fields within the data. The data is said to have a self-describing structure.[8]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Semi-structured data",
+  "text": "Semi-structured data may be human-generated or machine-generated.[9] It may be part of an unstructured document such as narrative text or may encompass unstructured data such as free-form comments.[10] It may be intended to be read by humans,[11] to be shared between software services or applications whose data models are not fully consistent,[12] or to be transmitted from sensors or other devices to computers.[13] Optical character recognition in combination with intelligent document processing can convert semi-structured data appearing on printed pages into machine-ready formats such as JSON.[14] Electronic data interchange uses standard segments, elements, and delimiters to transfer business transaction data between computers owned by different organizations.[15] Metrics from an array of various sensors can be combined, as heterogeneous data without predefined schemas, in JSON format.[16]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Human-generated sources",
+  "text": "Human-generated semi-structured data includes text and information organized with tags, markers, or flexible layouts (such as forms or tables) created by people rather than by automated systems.[17] Examples include medical charts, real property records, pay records, and structural metadata within publications."
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Medical records",
+  "text": "Clinical notes containing standardized dropdown selections can be mixed with free-text physician narratives.[18] The Fast Healthcare Interoperability Resources (FHIR) standard is used for exchanging health care information electronically.[19]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Medical records",
+  "text": "Patient intake forms[20] featuring labeled fields (e.g., age, symptoms) and handwritten or typed comments[21] can be digitally stored using JSON or FHIR standards.[22]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Medical records",
+  "text": "Electronic health record logs can be formatted via standards like HL7 that group data into segments.[23]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Real estate",
+  "text": "Real estate records such as deed, mortgage, and lien documents[24] can be processed as JSON objects.[25]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Real estate",
+  "text": "Scanned or digital property lease documents often include irregular tables, hierarchical headers, and customized clauses[26] that can be treated as semi-structured data."
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Real estate",
+  "text": "Property listing descriptions represented via listing services include such information as square footage and room count along with free-form descriptive text.[27]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Pay records",
+  "text": "Employee pay stubs feature fixed field labels (gross pay, deductions) along with descriptive text.[29]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Pay records",
+  "text": "Human-entered spreadsheet logs track contractor hours[30] and commission adjustments.[31]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Pay records",
+  "text": "Corporate compensation disclosures are managed through tracking schemas like the Open Payments Search Tool[32] associated with the Physician Payments Sunshine Act of 2010.[33]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Publications",
+  "text": "A book or periodical has structural metadata such as its table of contents, chapters, parts, and an index.[34] These can be represented in JSON.[35]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Publications",
+  "text": "Bibliographical references conform to a structure, typically defined by the MLA Handbook, the APA, or the Chicago Manual of Style, that can be parsed based on sets of delimiters[36] or using wildcards.[37]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Machine-generated sources",
+  "text": "Machine-generated semi-structured data sources are automated systems and devices that output information organized with tags, keys, or markers rather than rigid tabular schemas.[38] Examples include server log files, IoT sensor metrics, event streams, NoSQL database engines, email systems, mapping, and geographic information systems."
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "System and server logs",
+  "text": "Application outputs, error logs, and security audit trails can use text patterns or key-value pairs without a strict schema.[39]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "IoT and telemetry streams",
+  "text": "Many smart devices, industrial sensors, and interconnected hardware components generate periodic metrics[40] packaged in JSON or XML.[41]"
+ },
+ {
+  "source": "semi",
+  "title": "Semi-structured data",
+  "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+  "heading": "Web and API activity",
+  "text": "Automated webhooks, clickstream tracking data, and web API response payloads are typically packaged in JSON.[42]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Hamming distance",
+  "text": "In information theory, the Hamming distance between two strings or vectors of equal length is the number of positions at which the corresponding symbols are different. In other words, it measures the minimum number of substitutions required to change one string into the other, or equivalently, the minimum number of errors that could have transformed one string into the other. In a more general context, the Hamming distance is one of several string metrics for measuring the edit distance between two sequences. It is named after the American mathematician Richard Hamming."
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Hamming distance",
+  "text": "A major application is in coding theory, more specifically to block codes, in which the equal-length strings are vectors over a finite field."
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Definition",
+  "text": "The Hamming distance between two equal-length strings of symbols is the number of positions at which the corresponding symbols are different.[1]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Examples",
+  "text": "The symbols may be letters, bits, or decimal digits, among other possibilities. For example, the Hamming distance between:"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Properties",
+  "text": "For a fixed length n, the Hamming distance is a metric on the set of the words of length n (also known as a Hamming space), as it fulfills the conditions of non-negativity, symmetry, the Hamming distance of two words is 0 if and only if the two words are identical, and it satisfies the triangle inequality as well:[2] Indeed, if we fix three words a, b and c, then whenever there is a difference between the ith letter of a and the ith letter of c, then there must be a difference between the ith letter of a and ith letter of b, or between the ith letter of b and the ith letter of c. Hence the Hamming distance between a and c is not larger than the sum of the Hamming distances between a and b and between b and c. The Hamming distance between two words a and b can also be seen as the Hamming weight of a − b for an appropriate choice of the − operator, much as the difference between two integers can be seen as a distance from zero on the number line.[clarification needed]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Properties",
+  "text": "For binary strings a and b the Hamming distance is equal to the number of ones (population count) in a XOR b.[3] The metric space of length-n binary strings, with the Hamming distance, is known as the Hamming cube; it is equivalent as a metric space to the set of distances between vertices in a hypercube graph. One can also view a binary string of length n as a vector in ℝn by treating each symbol in the string as a real coordinate; with this embedding, the strings form the vertices of an n-dimensional hypercube, and the Hamming distance of the strings is equivalent to the Manhattan distance between the vertices."
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Error detection and error correction",
+  "text": "The minimum Hamming distance or minimum distance (usually denoted by dmin) is used to define some essential notions in coding theory, such as error detecting and error correcting codes. In particular, a code C is said to be k error detecting if, and only if, the minimum Hamming distance between any two of its codewords is at least k+1.[2]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Error detection and error correction",
+  "text": "For example, consider a code consisting of two codewords \"000\" and \"111\". The Hamming distance between these two words is 3, and therefore it is k=2 error detecting. This means that if one bit is flipped or two bits are flipped, the error can be detected. If three bits are flipped, then \"000\" becomes \"111\" and the error cannot be detected."
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Error detection and error correction",
+  "text": "A code C is said to be k-error correcting if, for every word w in the underlying Hamming space H, there exists at most one codeword c (from C) such that the Hamming distance between w and c is at most k. In other words, a code is k-errors correcting if the minimum Hamming distance between any two of its codewords is at least 2k+1. This is also understood geometrically as any closed balls of radius k centered on distinct codewords being disjoint.[2] These balls are also called Hamming spheres in this context.[4]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "History and applications",
+  "text": "The Hamming distance is named after Richard Hamming, who introduced the concept in his fundamental paper on Hamming codes, Error detecting and error correcting codes, in 1950.[5] Hamming weight analysis of bits is used in several disciplines including information theory, coding theory, and cryptography.[6]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "History and applications",
+  "text": "It is used in telecommunication to count the number of flipped bits in a fixed-length binary word as an estimate of error, and therefore is sometimes called the signal distance.[7] For q-ary strings over an alphabet of size q ≥ 2 the Hamming distance is applied in case of the q-ary symmetric channel, while the Lee distance is used for phase-shift keying or more generally channels susceptible to synchronization errors because the Lee distance accounts for errors of ±1.[8] If q=2 or q=3 both distances coincide because any pair of elements from ℤ/2ℤ or ℤ/3ℤ differ by 1, but the distances are different for larger q."
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "History and applications",
+  "text": "The Hamming distance is also used in systematics as a measure of genetic distance.[9]"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Algorithm example",
+  "text": "The following function, written in Python 3, returns the Hamming distance between two strings:"
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Algorithm example",
+  "text": "The following C function will compute the Hamming distance of two integers (considered as binary values, that is, as sequences of bits). The running time of this procedure is proportional to the Hamming distance rather than to the number of bits in the inputs. It computes the bitwise exclusive or of the two inputs, and then finds the Hamming weight of the result (the number of nonzero bits) using an algorithm of Wegner (1960) that repeatedly finds and clears the lowest-order nonzero bit. Some compilers support the __builtin_popcount function which can calculate this using specialized processor hardware where available."
+ },
+ {
+  "source": "hamming",
+  "title": "Hamming distance",
+  "url": "https://en.wikipedia.org/wiki/Hamming_distance",
+  "heading": "Algorithm example",
+  "text": "A faster alternative is to use the population count (popcount) assembly instruction. Certain compilers such as GCC and Clang make it available via an intrinsic function:"
+ }
+]

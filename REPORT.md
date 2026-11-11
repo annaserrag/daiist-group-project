@@ -15,15 +15,40 @@
 
 *The two components and how one feeds the other: a diagram plus a short walk-through of one request from input to output. Which models or APIs, and why those. What you reused from assignments 1–3, and whose it was.*
 
+```mermaid
+flowchart LR
+    A[Exam PDF] --> B[Team vision reader]
+    B --> C[Question IDs, readings and two confidence scores]
+    C --> D{Question type and confidence}
+    D --> E[MCQ answer key]
+    D --> F[Retrieve course passages and grade written answer]
+    D --> G[Teacher review]
+    E --> H[Teacher sign-off]
+    F --> H
+    F --> G
+    G --> H
+```
+
+The Component 2 interface accepts a versioned handoff. On the bundled engineering example, Q1 contains a clear B, which earns a proposed 1. Q17 contains D on a two-option question and goes to review. The teacher sees the readings, proposed marks, reasons and evidence. A final sheet requires the teacher to complete all 35 marks. The PDF route awaits acceptance with Anna's reader. [Handoff and acceptance procedure](HANDOFF.md)
+
 ## Data
 
 *Where each component's data comes from, with links, licences and sizes. Confirm that there is no personal data in your inputs or logs.*
+
+The answer catalogue contains 20 multiple-choice and 15 written questions. Recorded teacher marks are used for evaluation. The public teaching index contains 367 paragraphs from 25 pages, also grouped into 157 section chunks. Precomputed Gemini embeddings allow local retrieval. Student text is used locally for lexical matching. External grading requires a server-approved input. Safe request logs omit answer text, filenames and model feedback. [Dataset, licences and attribution](SOURCES.md)
 
 ## Evaluation
 
 ### Components
 
 *Each component on its own: the metric, the result, the test data and its size.*
+
+| Component 2 measurement | Observed result | Scope |
+|---|---|---|
+| MCQ key replay | 987/987 valid letters scored according to the key. All 13 unusable entries went to review. | 50 papers, 1,000 recorded slots, transcription assumed correct. The teacher total agreed on 13/44 complete sheets. [MCQ evidence](eval/published_mcq_replay.json) |
+| Retrieval | Approved page in top three for 14/14 answerable written questions with both semantic designs. Lexical search reached 11/14 for sections and 10/14 for paragraphs. | Question-only queries on the team's reviewed worksheet. Q34 lacks its figure. Labels identify pages, so a passage may still cover only part of an answer. [Semantic results](eval/written_retrieval_semantic.json) · [Lexical results](eval/written_retrieval_lexical_v3.json) |
+| Written grading | 17/30 proposals, 13/30 reviews. Among the 16 proposals with a numeric teacher mark, 12 agreed exactly and 13 were within half a point. Mean absolute error was 0.25/2. The training-exam question-mean baseline on the same 16 had 3 exact and mean absolute error 0.50/2. | Replayed two previously transcribed papers. One proposal lacks a numeric reference. Both thresholds gave identical decisions with frozen responses. One missing response was referred. [Frozen replay](eval/written_semantic_frozen_thresholds.json) · [Live run](eval/written_semantic_section_replay.json) |
+| Q32 | 45/50 referred. Of five proposals, four had a numeric teacher reference. All four matched and were zero. | Development replay on papers already examined during rule changes. [Q32 evidence](eval/q32_all50_svm_only.json) |
 
 ### End to end
 
@@ -33,9 +58,13 @@
 
 *Per request: tokens, euros and seconds, for each component and in total. What it would cost per month at the volume in your business case.*
 
+Three uncached requests on the same synthetic JSON took 2.12, 3.02 and 3.75 seconds and returned 2/2 for Q21. Each included one model-eligible answer. The paid-tier equivalent ranged from €0.000875 to €0.000902 per request. The calculation uses $0.30 per million input tokens, $2.50 per million output tokens and USD 1.1127 per EUR on 11 November 2026. This measures the JSON handoff and grader with resources initialized. The team still needs timings for full PDFs, the reader and teacher sign-off. [Request measurements](eval/component2_live_smoke.json) · [Google standard pricing](https://aistudio.google.com/docs/pricing#gemini-3.5-flash-lite) · [ECB reference rate series](https://data.ecb.europa.eu/data/datasets/EXR/EXR.D.USD.EUR.SP00.A)
+
 ## Operations
 
 *What you log. The quality signal and the drift check you monitor, the reference set, and the alert threshold with its justification. The drift demo: what you shifted, and the result with the alert firing (screenshot or numbers). The rate of false alarms on normal inputs.*
+
+A Component 2 engineering replay used 30 published MCQ sheets for reference and 20 held back. Removing Q16–20 detections triggered the reading-count alert. The existing estimator also fired on the unaltered comparison window. Across 100 overlapping repartitions of the same 50 papers, it alerted on 54 ordinary windows and all 100 shifted windows. Adding half an observation per bin gave 1 ordinary alert and 100 shifted alerts at the same threshold. These repeated splits use the same papers. The team's final drift rule, independent reference inputs and end-to-end drift demonstration remain open. [Replay and estimator comparison](eval/monitoring_mcq_replay.json)
 
 ## Failures
 
@@ -53,6 +82,8 @@
 
 *Anything beyond SETUP.md that the professor needs to run it: which keys, any download step, how long the first run takes.*
 
+Both public retrieval indexes are bundled. The synthetic example can run locally without keys. A Gemini API key enables cited written proposals on approved inputs. Use the integration acceptance command after installing the team's reader. [Setup](SETUP.md) · [Worked example](README.md) · [Reader check](HANDOFF.md)
+
 ## AI use
 
-*What you used and how, or "none".*
+Codex assisted with the Component 2 implementation, test harnesses, rubric and retrieval experiments, local transcription and evaluation tooling, and compilation of the technical measurements above. Retrieval page recommendations were reviewed with the component owner. Team members should add their individual contributions, human labels, decisions, interpretation of the results and any additional AI use before submission.

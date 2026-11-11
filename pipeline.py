@@ -1,91 +1,75 @@
-"""
-Your product's logic: the two components and how one feeds the other.
-
-Everything here is a PLACEHOLDER so the template runs end to end without any
-key: component A is a keyword "classifier" and component B a canned "writer".
-Replace both with your real components (or import them from your own modules)
-but keep what `run()` returns, because app.py, evaluate.py, main.py and
-check.py all read it:
-
-    run(raw_input) -> {
-        "input_summary": str,          # short, no personal data: it is logged
-        "features": {name: number},    # what the drift check watches
-        "outputs": {component: ...},   # each component's output, JSON-serialisable
-        "versions": {component: str},  # model and prompt versions
-        "review": bool,                # does this case go to a person?
-        "tokens": int,                 # tokens spent on this request (0 if none)
-        "cost_eur": float,             # cost of this request in euros
-    }
-
-`raw_input` is what the App tab's input gives you: text, or a file path if you
-switch the input to gr.Image / gr.File with type="filepath". The `input` column
-of eval/cases.csv uses the same convention.
-"""
-
+"""Course pipeline entry points for JSON handoffs and the team's PDF reader."""
+import json
+import os
+from functools import lru_cache
+from importlib import import_module
+from importlib.util import find_spec
 from pathlib import Path
+from time import perf_counter
 
-VERSIONS = {
-    "component_a": "placeholder-keywords-v0",
-    "component_b": "placeholder-template-v0",
-}
+import env
+from exam_grader.catalog import DATA
+from exam_grader.grading import Policy
+from exam_grader.integration import connect, file_sha256
+from exam_grader.retrieval import Index
 
-# Placeholder thresholds. Yours must be justified in REPORT.md.
-REVIEW_BELOW_CONFIDENCE = 0.6
+env.load_env()
+EXAMPLE = DATA / "vision-example.json"
 
-_NEGATIVE = {"broken", "late", "missing", "wrong", "refund", "bad", "problem", "error"}
-_POSITIVE = {"thanks", "great", "perfect", "fine", "good", "works"}
+@lru_cache
+def resources():
+    design = os.getenv("GRADE_INDEX_DESIGN", "section")
+    has_vectors = (DATA / f"vectors-{design}.json").is_file()
+    mode = os.getenv("GRADE_RETRIEVAL_MODE", "auto")
+    if mode not in {"auto", "lexical", "semantic"}:
+        raise ValueError("GRADE_RETRIEVAL_MODE must be auto, lexical or semantic.")
+    index = Index(design=design, semantic=mode == "semantic" or (mode == "auto" and has_vectors))
+    agent = None
+    if os.getenv("GEMINI_API_KEY"):
+        from exam_grader.gemini import Gemini
+        rates = [os.getenv(name) for name in ("GRADE_INPUT_EUR_PER_M", "GRADE_OUTPUT_EUR_PER_M")]
+        agent = Gemini(input_eur_per_million=rates[0], output_eur_per_million=rates[1])
+    approved = {file_sha256(EXAMPLE)}
+    approved.update(os.getenv("GRADE_APPROVED_HASHES", "").lower().split())
+    return index, agent, frozenset(approved)
 
+def read_export(path):
+    if path.stat().st_size > 512_000:
+        raise ValueError("OCR export is too large.")
+    with path.open(encoding="utf-8-sig") as stream:
+        return json.load(stream)
 
-def read_input(raw_input: str) -> str:
-    """Text as it is; for a file path, the file's text. Replace for images."""
-    path = Path(str(raw_input))
-    if len(str(raw_input)) < 300 and path.is_file():
-        return path.read_text(encoding="utf-8", errors="replace")
-    return str(raw_input)
+def run_views(raw_input, *, policy=None, evaluation_cache=None):
+    path = Path(raw_input)
+    index, agent, approved = resources()
+    if agent is not None and evaluation_cache is not None:
+        agent = agent.for_evaluation(evaluation_cache)
+    elif evaluation_cache is not None and evaluation_cache.read_only:
+        from exam_grader.gemini import Gemini
+        agent = Gemini(frozen_cache=evaluation_cache)
+    if path.suffix.lower() == ".json":
+        reader, version, input_type = read_export, "ocr-json-replay-v1", "ocr_export"
+    elif path.suffix.lower() == ".pdf":
+        module_name = os.getenv("GRADE_VISION_MODULE", "vision")
+        if find_spec(module_name) is None:
+            reader = lambda _: {"schema_version":"vision.exam.v1", "exam_status":"unreadable", "answers":[]}
+            version, input_type = "vision-unavailable", "pdf_awaiting_reader"
+        else:
+            module = import_module(module_name)
+            reader, version, input_type = module.read_exam, module.VERSION, "pdf"
+    else:
+        raise ValueError("Choose an OCR JSON export or a PDF exam.")
+    started = perf_counter()
+    if policy is None and os.getenv("GRADE_POLICY_FILE"):
+        policy = Policy(**json.loads(Path(os.environ["GRADE_POLICY_FILE"]).read_text(encoding="utf-8-sig")))
+    result = connect(path, read_exam=reader, vision_version=version, index=index,
+                     agent=agent, approved_hashes=approved, policy=policy, reader_charges_possible=input_type == "pdf")
+    duration = perf_counter() - started
+    result["record"]["outputs"]["component_b"]["input_type"] = input_type
+    result["record"]["versions"]["rubric"] = "mendeley-sf3kvjwknt-v1"
+    result["teacher"]["input_type"] = input_type
+    result["record"]["latency_s"] = round(duration, 4)
+    return result
 
-
-def input_features(text: str) -> dict[str, float]:
-    """Numbers that describe the input, for the drift check (lengths, brightness, language...)."""
-    words = text.split()
-    letters = [c for c in text if c.isalpha()]
-    return {
-        "n_words": float(len(words)),
-        "share_uppercase": sum(c.isupper() for c in letters) / len(letters) if letters else 0.0,
-    }
-
-
-def component_a(text: str) -> dict:
-    """PLACEHOLDER first component: label the input and say how sure it is."""
-    words = {w.strip(".,!?;:").lower() for w in text.split()}
-    negative, positive = len(words & _NEGATIVE), len(words & _POSITIVE)
-    if negative == positive:
-        return {"label": "unclear", "confidence": 0.5}
-    label = "complaint" if negative > positive else "no_issue"
-    confidence = 0.5 + 0.5 * abs(negative - positive) / (negative + positive)
-    return {"label": label, "confidence": round(confidence, 3)}
-
-
-def component_b(text: str, a: dict) -> dict:
-    """PLACEHOLDER second component: uses component A's output to write a reply."""
-    replies = {
-        "complaint": "We are sorry about the problem. We will contact you within 48 hours.",
-        "no_issue": "Thank you for your message. No action is needed.",
-        "unclear": "Thank you. A member of the team will review your message.",
-    }
-    return {"reply": replies[a["label"]], "tokens": 0}
-
-
-def run(raw_input: str) -> dict:
-    text = read_input(raw_input)
-    a = component_a(text)
-    b = component_b(text, a)
-    features = input_features(text) | {"confidence": a["confidence"]}
-    return {
-        "input_summary": text[:120],
-        "features": features,
-        "outputs": {"component_a": a, "component_b": b},
-        "versions": VERSIONS,
-        "review": a["confidence"] < REVIEW_BELOW_CONFIDENCE,
-        "tokens": b["tokens"],
-        "cost_eur": 0.0,
-    }
+def run(raw_input):
+    return run_views(raw_input)["record"]

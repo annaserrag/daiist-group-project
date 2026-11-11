@@ -1,0 +1,11 @@
+{
+  "schema_version": "vision.exam.v1",
+  "exam_status": "in_scope",
+  "answers": [
+    {"question_id": 21, "text": "It learns from examples with known target labels.", "confidence": 0.96, "id_confidence": 0.99, "state": "read"},
+    {"question_id": 1, "text": "B", "confidence": 0.96, "id_confidence": 0.98, "state": "read"},
+    {"question_id": 17, "text": "D", "confidence": 0.98, "id_confidence": 0.99, "state": "read"},
+    {"question_id": 23, "text": "", "confidence": 0.99, "id_confidence": 0.99, "state": "confirmed_blank"},
+    {"question_id": 34, "text": "The first has a wider margin.", "confidence": 0.98, "id_confidence": 0.98, "state": "read"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "question_id": 32,
+  "rule": "distinct-count-v1",
+  "papers": 4,
+  "proposals": 4,
+  "teacher_marks": 3,
+  "paired_marks": 3,
+  "exact": 1,
+  "within_half": 2,
+  "mean_absolute_error": 0.6666666666666666,
+  "scope": "Replay of four previously evaluated papers using fixed manual transcriptions."
+}

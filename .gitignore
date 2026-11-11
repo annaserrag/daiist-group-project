@@ -1,18 +1,9 @@
-.DS_Store
 __pycache__/
-.venv/
-.pytest_cache/
-.ipynb_checkpoints/
 *.pyc
-
-# Logs are pushed to your private Hugging Face dataset, never to git
-logs/
-
-# Written by deploy.py from uv.lock
-requirements.txt
-
-# Never commit your API keys
 .env
-
-# Past logs downloaded from your Hugging Face dataset when the app starts
+.venv/
+exam_grader/data/.embedding-cache.*
+logs/
 logs_archive/
+.gradio/
+eval/private/

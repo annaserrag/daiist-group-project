@@ -1,0 +1,4 @@
+exam_grader/data/Question.txt -text
+exam_grader/data/answerkey.txt -text
+exam_grader/data/corpus.json -text whitespace=cr-at-eol
+exam_grader/data/vision-example.json -text

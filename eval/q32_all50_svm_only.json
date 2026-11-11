@@ -1,0 +1,40 @@
+{
+  "question_id": 32,
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "teacher_csv_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "scope": "Development replay on all 50 archived manual readings.",
+  "previous_rule": "distinct-count-v4",
+  "current_rule": "distinct-count-v5",
+  "before": {
+    "papers": 50,
+    "proposals": 3,
+    "review": 47,
+    "paired_marks": 2,
+    "exact": 2,
+    "within_half": 2,
+    "mae": 0.0,
+    "review_rate": 0.94,
+    "exact_rate_on_paired": 1.0
+  },
+  "after": {
+    "papers": 50,
+    "proposals": 5,
+    "review": 45,
+    "paired_marks": 4,
+    "exact": 4,
+    "within_half": 4,
+    "mae": 0.0,
+    "review_rate": 0.9,
+    "exact_rate_on_paired": 1.0
+  },
+  "numeric_teacher_marks": 27,
+  "left_review": 2,
+  "entered_review": 0,
+  "review_by_reason": {
+    "missing_detection": 20,
+    "uncertain_hyperparameter": 17,
+    "single_hyperparameter_review": 6,
+    "ambiguous_duplicate": 1,
+    "unreadable": 1
+  }
+}

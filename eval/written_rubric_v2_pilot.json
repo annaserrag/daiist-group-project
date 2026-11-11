@@ -1,0 +1,118 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 2,
+  "cohort": "pilot",
+  "baseline_training_exams": 48,
+  "scope": "All 30 written slots on two papers. Visible answers were manually transcribed and assigned confidence 1. Unlocated answers go to review.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-e5c8ef0bcdf2",
+  "index": "section:46c52674828b:lexical-v3",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 28,
+      "review_share": 0.9333333333333333,
+      "reasons": {
+        "grounded_proposal": 2,
+        "context_check": 4,
+        "weak_retrieval": 23,
+        "unverified_citation": 1
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 28,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 2,
+        "exact": 1,
+        "within_half": 1,
+        "mean_absolute_error": 0.0
+      },
+      "grader_on_matched_answers": {
+        "n": 2,
+        "exact": 1,
+        "within_half": 1,
+        "mean_absolute_error": 0.0
+      },
+      "feedback_check": {
+        "below_full_credit": 0,
+        "fully_accounted_for": 0
+      },
+      "change_on_same_answers": {
+        "paired_marks": 2,
+        "original": {
+          "exact": 0,
+          "within_half": 0,
+          "mae": 1.0
+        },
+        "revised": {
+          "exact": 2,
+          "within_half": 2,
+          "mae": 0.0
+        },
+        "closer": 2,
+        "further": 0,
+        "unchanged_error": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "review": 14,
+      "review_share": 0.4666666666666667,
+      "reasons": {
+        "grounded_proposal": 16,
+        "context_check": 4,
+        "weak_retrieval": 6,
+        "unverified_citation": 2,
+        "provider_failure": 2
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 30,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 14,
+      "baseline_on_all_scorable": {
+        "n": 30,
+        "exact": 0.2,
+        "within_half": 0.9,
+        "mean_absolute_error": 0.4666666666666667
+      },
+      "baseline_on_matched_answers": {
+        "n": 16,
+        "exact": 0.25,
+        "within_half": 0.9375,
+        "mean_absolute_error": 0.40625
+      },
+      "grader_on_matched_answers": {
+        "n": 16,
+        "exact": 0.375,
+        "within_half": 0.375,
+        "mean_absolute_error": 0.75
+      },
+      "feedback_check": {
+        "below_full_credit": 12,
+        "fully_accounted_for": 12
+      },
+      "change_on_same_answers": {
+        "paired_marks": 14,
+        "original": {
+          "exact": 3,
+          "within_half": 4,
+          "mae": 0.9642857142857143
+        },
+        "revised": {
+          "exact": 6,
+          "within_half": 6,
+          "mae": 0.7142857142857143
+        },
+        "closer": 4,
+        "further": 0,
+        "unchanged_error": 10
+      }
+    }
+  ]
+}

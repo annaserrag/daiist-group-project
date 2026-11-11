@@ -1,0 +1,52 @@
+{
+  "fixture": "vision-example.json",
+  "fixture_sha256": "44d415ff97a57aa8e44ba3e03e83f9d87d11189b2192779df8f44f788b6b0d8f",
+  "scope": "Same five-observation synthetic JSON, one model-eligible written answer. Resources initialized once. No response cache, PDF reader, or grading-call pacing.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3",
+  "eur_per_million_input_output": [
+    0.2696144513345915,
+    2.2467870944549295
+  ],
+  "samples": [
+    {
+      "request_seconds": 2.12,
+      "json_read_seconds": 0.0001,
+      "grading_seconds": 2.1197453000022506,
+      "input_tokens": 2253,
+      "output_tokens": 119,
+      "calls": 2,
+      "usage_complete": true,
+      "cost_eur_at_configured_rates": 0.0008748090230969712,
+      "q21_mark": 2.0,
+      "q21_route": "grounded_proposal",
+      "reviewed_slots": 32
+    },
+    {
+      "request_seconds": 3.0226,
+      "json_read_seconds": 0.0001,
+      "grading_seconds": 3.022249500001635,
+      "input_tokens": 2253,
+      "output_tokens": 125,
+      "calls": 2,
+      "usage_complete": true,
+      "cost_eur_at_configured_rates": 0.0008882897456637008,
+      "q21_mark": 2.0,
+      "q21_route": "grounded_proposal",
+      "reviewed_slots": 32
+    },
+    {
+      "request_seconds": 3.7483,
+      "json_read_seconds": 0.0001,
+      "grading_seconds": 3.747953999998572,
+      "input_tokens": 2405,
+      "output_tokens": 113,
+      "calls": 2,
+      "usage_complete": true,
+      "cost_eur_at_configured_rates": 0.0009023096971330995,
+      "q21_mark": 2.0,
+      "q21_route": "grounded_proposal",
+      "reviewed_slots": 32
+    }
+  ]
+}

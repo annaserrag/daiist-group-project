@@ -1,0 +1,25 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "file_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "input": "published recorded choices with assumed correct transcription and question assignment",
+  "exams": 50,
+  "recorded_slots": 1000,
+  "scorable_recorded_choices": 987,
+  "match_published_key_scoring": 987,
+  "unscorable_recorded_choices": 13,
+  "unscorable_routed_to_review": 13,
+  "complete_mcq_sheets": {
+    "exams": 44,
+    "teacher_total_in_published_key_range": 13,
+    "q1_sensitivity_eligible": 44,
+    "teacher_total_in_q1_D_range": 29
+  },
+  "partial_mcq_sheets": {
+    "exams": 6,
+    "teacher_total_in_published_key_range": 4,
+    "q1_sensitivity_eligible": 6,
+    "teacher_total_in_q1_D_range": 5
+  },
+  "range_definition": "subtotal of proposed MCQ marks through subtotal plus count of unresolved choices",
+  "sensitivity": "Q1=D is a hypothetical comparison only. The runtime key uses B."
+}

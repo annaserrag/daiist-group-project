@@ -1,0 +1,87 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "exams": 2,
+  "cohort": "fresh",
+  "baseline_training_exams": 46,
+  "scope": "All 30 written slots on two papers. Visible answers were manually transcribed and assigned confidence 1. Unlocated answers go to review.",
+  "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-e5c8ef0bcdf2",
+  "index": "section:46c52674828b:lexical-v3",
+  "thresholds": [
+    {
+      "threshold": 0.4,
+      "review": 28,
+      "review_share": 0.9333333333333333,
+      "reasons": {
+        "grounded_proposal": 2,
+        "missing_detection": 8,
+        "weak_retrieval": 19,
+        "context_check": 1
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 19,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 17,
+      "baseline_on_all_scorable": {
+        "n": 19,
+        "exact": 0.15789473684210525,
+        "within_half": 0.8421052631578947,
+        "mean_absolute_error": 0.5526315789473685
+      },
+      "baseline_on_matched_answers": {
+        "n": 2,
+        "exact": 1,
+        "within_half": 1,
+        "mean_absolute_error": 0.0
+      },
+      "grader_on_matched_answers": {
+        "n": 2,
+        "exact": 1,
+        "within_half": 1,
+        "mean_absolute_error": 0.0
+      },
+      "feedback_check": {
+        "below_full_credit": 0,
+        "fully_accounted_for": 0
+      }
+    },
+    {
+      "threshold": 0.25,
+      "review": 22,
+      "review_share": 0.7333333333333333,
+      "reasons": {
+        "grounded_proposal": 8,
+        "missing_detection": 8,
+        "weak_retrieval": 8,
+        "unverified_citation": 1,
+        "provider_failure": 4,
+        "context_check": 1
+      },
+      "written_slots": 30,
+      "valid_teacher_marks": 19,
+      "labelled_questions_without_training_marks": 0,
+      "sent_to_review_with_valid_reference": 11,
+      "baseline_on_all_scorable": {
+        "n": 19,
+        "exact": 0.15789473684210525,
+        "within_half": 0.8421052631578947,
+        "mean_absolute_error": 0.5526315789473685
+      },
+      "baseline_on_matched_answers": {
+        "n": 8,
+        "exact": 0.125,
+        "within_half": 0.875,
+        "mean_absolute_error": 0.5625
+      },
+      "grader_on_matched_answers": {
+        "n": 8,
+        "exact": 0.5,
+        "within_half": 0.75,
+        "mean_absolute_error": 0.375
+      },
+      "feedback_check": {
+        "below_full_credit": 5,
+        "fully_accounted_for": 5
+      }
+    }
+  ]
+}
