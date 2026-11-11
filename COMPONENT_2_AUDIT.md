@@ -19,6 +19,8 @@ The teacher can require a second check of model-proposed scores at or below 1/2.
 
 The grading branch installs from the lockfile. The clean-checkout checks cover the no-key Gradio `/run` endpoint, the expected mark and review rows, one safe log per request, and the saved retrieval ranks. A separate printed-PDF run exercised real OCR and live written grading through the same PDF entry point. The professor's checker currently stops at the empty team case file. [Current printed-PDF evidence](eval/printed_pdf_finalized.json)
 
+Clean checkout `c4b76bb` passed 44 tests on Windows. Both archived semantic retrieval results reproduced. Using the private response cache without a Gemini key reproduced all 28 revised decisions, including 15 proposals with the default policy and four with the optional 1/2 review cutoff. The course deployment helper generated 83 pinned runtime requirements. The team's hosted Space, handwritten reader, manual time savings and human-judge agreement remain unverified.
+
 Q27 initially retrieved three detection passages. The revised top three include detection and treatment in both semantic designs. On the two-paper replay, one actual Q27 reading still went to review for an unverified citation and the other was unreadable. Improved source coverage alone did not establish a grade for either. [Updated retrieval](eval/written_retrieval_multipart.json)
 
 ## Earlier audit and development history
