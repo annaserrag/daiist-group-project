@@ -62,6 +62,26 @@ class AppFlow(unittest.TestCase):
         self.assertFalse(match_expected('{"review_questions":[21]}',good))
         self.assertIsNone(match_expected("Assess manually",bad))
 
+    def test_frozen_cache_miss_cannot_satisfy_a_targeted_review(self):
+        from evaluate import rows
+        from exam_grader.evaluation_cache import EvaluationCache
+        from exam_grader.grading import Policy
+        from exam_grader.retrieval import Index
+        resources = (Index(), None, {pipeline.file_sha256(pipeline.EXAMPLE)})
+        with tempfile.TemporaryDirectory() as folder, patch.object(pipeline,"resources",return_value=resources):
+            root = Path(folder)
+            cache_path = root/"empty.sqlite"
+            EvaluationCache(cache_path)
+            frozen = EvaluationCache(cache_path,read_only=True)
+            cases = [dict(id=f"q{q}",kind="review",input=str(pipeline.EXAMPLE),
+                          expected=json.dumps({"review_questions":[q]})) for q in (17,21)]
+            result = evaluate(cases,root,policy=Policy(min_similarity=0),evaluation_cache=frozen)
+            self.assertEqual(result["agreement_with_structured_expectations"],0.5)
+            self.assertEqual(result["cases_with_execution_issues"],2)
+            checks = rows(root/"results.csv")
+            self.assertEqual([r["correct"] for r in checks],["True","False"])
+            self.assertEqual([r["execution_issues"] for r in checks],["missing_frozen_response"]*2)
+
     def test_batch_distinguishes_unreadable_input_from_broken_reader(self):
         from evaluate import rows
         with tempfile.TemporaryDirectory() as folder:

@@ -29,7 +29,8 @@ def write_csv(path, data, columns):
         writer.writerows(data)
     tmp.replace(path)
 
-UNAVAILABLE = {"no_index","provider_disabled","provider_failure","invalid_model_output","invalid_contract"}
+UNAVAILABLE = {"no_index","provider_disabled","provider_failure","missing_frozen_response",
+               "invalid_model_output","invalid_contract"}
 
 def match_expected(text, teacher):
     """A team may use structured case expectations or keep narrative expectations for human assessment."""

@@ -2,6 +2,8 @@
 
 ## Current handoff
 
+On 12 November, a frozen-cache regression check found that the course evaluator could count an unavailable model response as a successful targeted referral. It now records `missing_frozen_response` as an execution issue and fails that targeted expectation. On the same fixture, a genuine Q17 invalid-choice referral still passes. The suite now includes 45 tests. This change affects the course evaluator. The four-paper grading measurements use separately archived proposals.
+
 **The grading branch is ready for joint integration testing. The complete course submission still needs team evidence.**
 
 The latest test used four previously unseen papers (13, 18, 35 and 22) with the revised grader frozen at `c4b76bb`. Across 56 written slots, it proposed 31 marks and referred 25 (45%). Of 30 proposals with numerical teacher marks, 16 agreed exactly and 17 were within half a point. Mean absolute error was 0.55/2, compared with 0.52/2 for the question-mean baseline on the same 30. Twelve proposals were at least a point below the teacher and one was at least a point above. Q32 was excluded because all 50 responses had been used in development. [Four-paper evaluation](eval/written_validation_four.json)
