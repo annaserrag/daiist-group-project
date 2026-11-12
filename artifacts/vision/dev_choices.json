@@ -1,0 +1,15 @@
+{
+  "reader": "Qwen3-VL-2B, page",
+  "lowest_error_rate": "Qwen3-VL-4B, page",
+  "blank_ink": 0.001,
+  "generate": {
+    "repetition_penalty": 1.05
+  },
+  "dev_set": {
+    "answersheet": 21,
+    "asap": 40,
+    "blank": 4,
+    "short": 10,
+    "smhd": 39
+  }
+}

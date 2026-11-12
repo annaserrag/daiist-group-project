@@ -1,0 +1,11 @@
+dataset,similarity,a,a_split,a_group,b,b_split,b_group,same_group
+lines,0.965584397315979,eng_AF_013_jpg,train,eng_AF_013_jpg,eng_AF_089_jpg,valid,eng_AF_089_jpg,False
+lines,0.9648361206054688,WhatsApp-Image-2024-04-05-at-13-52-53_9341ed43_jpg,train,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-43-01_c7891603_jpg,valid,WhatsApp-2024-04-05-session,True
+lines,0.960750937461853,WhatsApp-Image-2024-04-05-at-13-50-52_738c597f_jpg,train,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-50-52_ab850356_jpg,valid,WhatsApp-2024-04-05-session,True
+lines,0.9516372680664062,WhatsApp-Image-2024-04-05-at-13-50-52_738c597f_jpg,train,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-50-13_4b29a3c2_jpg,valid,WhatsApp-2024-04-05-session,True
+lines,0.9512889385223389,WhatsApp-Image-2024-04-05-at-13-41-53_5f0d6bbe_jpg,train,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-43-01_c7891603_jpg,valid,WhatsApp-2024-04-05-session,True
+lines,0.9504780769348145,WhatsApp-Image-2024-04-05-at-13-41-53_5f0d6bbe_jpg,train,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-43-21_b2120553_jpg,test,WhatsApp-2024-04-05-session,True
+lines,0.9461413621902466,WhatsApp-Image-2024-04-05-at-13-50-52_738c597f_jpg,train,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-50-38_d9bde22c_jpg,valid,WhatsApp-2024-04-05-session,True
+lines,0.9452456831932068,eng_AF_103_jpg,train,eng_AF_103_jpg,eng_AF_089_jpg,valid,eng_AF_089_jpg,False
+lines,0.9451350569725037,eng_AF_016_jpg,train,eng_AF_016_jpg,eng_AF_089_jpg,valid,eng_AF_089_jpg,False
+lines,0.939845085144043,WhatsApp-Image-2024-04-05-at-13-43-01_c7891603_jpg,valid,WhatsApp-2024-04-05-session,WhatsApp-Image-2024-04-05-at-13-43-21_b2120553_jpg,test,WhatsApp-2024-04-05-session,True

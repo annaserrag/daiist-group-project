@@ -1,0 +1,5 @@
+dataset,roboflow_split,images,source_photos,groups,images_without_boxes,boxes
+answersheet,train,576,192,8,0,2385
+lines,test,52,13,12,6,211
+lines,train,1116,93,79,89,3778
+lines,valid,112,28,24,8,491

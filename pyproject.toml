@@ -8,6 +8,14 @@ dependencies = [
     "huggingface-hub>=0.30",
     "numpy>=2.0",
     "pandas>=2.2",
+    # the exam reader (vision/reader.py): TrOCR, the YOLO detectors, PDF pages
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "transformers>=4.46",
+    "ultralytics>=8.4,<8.5",
+    "opencv-python-headless>=4.10",
+    "pypdfium2>=4.30",
+    "pillow>=10.0",
 ]
 
 # Only for running evaluate.ipynb locally; not installed on the Space.
@@ -15,6 +23,12 @@ dependencies = [
 dev = [
     "nbconvert>=7.16",
     "ipykernel>=6.29",
+]
+# Only for training the vision detectors (vision/train_detector.py); not installed on the Space.
+# (torch, ultralytics and opencv are already in the main dependencies, for the reader.)
+train = [
+    "roboflow>=1.7",
+    "matplotlib>=3.9",
 ]
 
 [tool.uv]
