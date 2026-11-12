@@ -18,9 +18,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langsmith import tracing_context
 from pydantic import BaseModel, Field
 from .catalog import DATA, QUESTIONS
-from .rubric import CRITERIA
+from .rubric import CRITERIA, EVIDENCE_GUIDANCE
 
 GUIDES = {QUESTIONS[q]: guide for q, guide in CRITERIA.items()}
+GUIDANCE_BY_QUESTION = {QUESTIONS[q]: note for q, note in EVIDENCE_GUIDANCE.items()}
 
 class Deduction(BaseModel):
     criterion: str = Field(description="Exact criterion ID from the marking guide.")
@@ -47,6 +48,20 @@ class CriterionEvidence(BaseModel):
 
 class EvidenceReport(BaseModel):
     evidence: list[CriterionEvidence]
+
+class BinningApplication(BaseModel):
+    verdict: Literal["valid", "invalid", "absent", "uncertain"]
+    student_quote: str = Field(description="Exact contiguous student text containing the example, or empty if absent.")
+    explanation: str = Field(description="Explain how the student's values fit their bins, or which part fails.")
+
+class BinningEvidenceReport(EvidenceReport):
+    application: BinningApplication
+
+BINNING_CHECK = """Evaluate the example in the application field separately from locating course quotes.
+Check that the student gives a concrete numeric quantity or values and coherent categories or intervals.
+Check any stated assignments, units and boundaries. A valid example can be stated entirely in words.
+When the course body teaches binning, cite that rule under method. The application verdict concerns the
+student's own construction. A correct application does not require a worked example in the excerpt."""
 
 EVIDENCE_PROMPT = """Decide which rubric criteria can be substantiated by the supplied excerpts.
 Only the text of an excerpt is evidence. The rubric, question, student answer and deductions
@@ -123,6 +138,7 @@ class Gemini:
         llm = ChatGoogleGenerativeAI(model=model,api_key=key,vertexai=False,temperature=0,
                                     max_tokens=700,max_retries=0,timeout=40)
         self.evidence_checker = llm.with_structured_output(EvidenceReport, method="json_schema")
+        self.binning_checker = llm.with_structured_output(BinningEvidenceReport, method="json_schema")
         middleware = [ModelCallLimitMiddleware(run_limit=2,exit_behavior="error"),
                       ToolCallLimitMiddleware(tool_name="open_course_passage",run_limit=1,
                                               exit_behavior="continue" if finalize_lookup else "error")]
@@ -162,6 +178,13 @@ class Session:
             raise RuntimeError("Exam call limit")
         data = dict(question=question,reference_answer=key,marking_guide=GUIDES.get(question, {}),student_answer=text,
                     evidence=[{k:h[k] for k in ("id","title","heading","text")} for h in hits])
+        # Include the exact question-specific instruction in the request fingerprint.
+        guidance = GUIDANCE_BY_QUESTION.get(question)
+        if guidance:
+            data["criterion_interpretation"] = guidance
+        binning = question == QUESTIONS[30]
+        signature = ([*self.owner.signature, BinningEvidenceReport.model_json_schema(), BINNING_CHECK]
+                     if binning else self.owner.signature)
         def generate():
             call = Meter()
             full={h["id"]:h["text"] for h in hits}
@@ -178,10 +201,15 @@ class Session:
                 audit = {"question":question, "rubric":data["marking_guide"], "student_answer":text,
                          "deductions":answer["deductions"], "excerpts":excerpts}
                 with tracing_context(enabled=False):
-                    report = self.owner.evidence_checker.invoke(
-                        [("system", EVIDENCE_PROMPT), ("human", json.dumps(audit,ensure_ascii=False))],
+                    checker = self.owner.binning_checker if binning else self.owner.evidence_checker
+                    instructions = "\n".join(s for s in (EVIDENCE_PROMPT, guidance, BINNING_CHECK if binning else "") if s)
+                    report = checker.invoke(
+                        [("system", instructions),
+                         ("human", json.dumps(audit,ensure_ascii=False))],
                         config={"callbacks":[call]})
                 answer["criterion_evidence"] = [e.model_dump() for e in report.evidence]
+                if binning:
+                    answer["binning_application"] = report.application.model_dump()
                 return {"proposal":answer,"opened":opened}, (call.inputs,call.outputs) if call.complete else None
             finally:
                 self.meter.calls += call.calls
@@ -191,7 +219,7 @@ class Session:
         if self.owner.cache is None:
             bundle=generate()[0]
         else:
-            bundle, counts, hit = self.owner.cache.get_or_generate(self.owner.signature, data, generate)
+            bundle, counts, hit = self.owner.cache.get_or_generate(signature, data, generate)
             if hit:
                 self.cache_hits += 1
                 self.cached_inputs += counts[0]

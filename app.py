@@ -87,7 +87,8 @@ def display(raw_input, library=None, course=BUILTIN):
                          ", ".join(item.get("opened_passages",[])) or "",
                          "\n".join(f"{criterion} ({c['coverage']}) · {c['title']}"
                                    + (f", p. {c['page']}" if "page" in c else "")
-                                   + f" · {c['quote']}" for criterion,c in item.get("criterion_evidence",{}).items())])
+                                   + f" · {c['quote']}" + (f" · Example check: {c['basis']}" if "basis" in c else "")
+                                   for criterion,c in item.get("criterion_evidence",{}).items())])
         marks.append([item["question_id"], item["mark"]])
     count = teacher["review_count"]
     if teacher["input_type"] == "pdf_awaiting_reader":

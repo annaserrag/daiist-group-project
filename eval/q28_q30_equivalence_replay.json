@@ -1,0 +1,107 @@
+{
+  "scope": "Paired replay of the three fixed answer-only papers using the full course index; 42 written slots excluding Q32. The two previous referral examples motivated the change; this is a regression cohort.",
+  "baseline_commit": "de6071c",
+  "input_sha256": [
+    "0a58897c874f851d784515d7008dc931d353f7bfb057519072bf762fb6ce444f",
+    "4bc7ebef1df5fc70e4997ba7b04d2fe5494246633e80d5f2df89460eb3b8540b",
+    "c18077abf5f7d85ff0b32213668473e5fdf679eab753f50310d37352c253ebce"
+  ],
+  "teacher_reference_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+  "threshold": 0.4,
+  "cache_method": "Same production pipeline, exact-request cache hits for unchanged prompts. Regenerated affected live responses, then replayed all three through the final validator. 36 non-target teacher rows verified identical, including marks, citations, feedback and reasons.",
+  "before": {
+    "proposed": 9,
+    "reviews": 33,
+    "compared": 9,
+    "exact": 6,
+    "within_half": 6,
+    "mae": 0.4444
+  },
+  "after": {
+    "proposed": 11,
+    "reviews": 31,
+    "compared": 11,
+    "exact": 8,
+    "within_half": 8,
+    "mae": 0.3636
+  },
+  "matched_proposals_before": {
+    "proposed": 9,
+    "reviews": 0,
+    "compared": 9,
+    "exact": 6,
+    "within_half": 6,
+    "mae": 0.4444
+  },
+  "matched_proposals_after": {
+    "proposed": 9,
+    "reviews": 0,
+    "compared": 9,
+    "exact": 6,
+    "within_half": 6,
+    "mae": 0.4444
+  },
+  "target_slots": [
+    {
+      "paper": 1,
+      "q": 28,
+      "teacher": 2.0,
+      "before": 2.0,
+      "after": 2.0,
+      "reason": "grounded_proposal"
+    },
+    {
+      "paper": 1,
+      "q": 30,
+      "teacher": 2.0,
+      "before": null,
+      "after": 2.0,
+      "reason": "grounded_proposal"
+    },
+    {
+      "paper": 2,
+      "q": 28,
+      "teacher": 2.0,
+      "before": null,
+      "after": 2.0,
+      "reason": "grounded_proposal"
+    },
+    {
+      "paper": 2,
+      "q": 30,
+      "teacher": null,
+      "before": null,
+      "after": null,
+      "reason": "missing_detection"
+    },
+    {
+      "paper": 3,
+      "q": 28,
+      "teacher": 1.0,
+      "before": 0.0,
+      "after": 0.0,
+      "reason": "grounded_proposal"
+    },
+    {
+      "paper": 3,
+      "q": 30,
+      "teacher": null,
+      "before": null,
+      "after": null,
+      "reason": "missing_detection"
+    }
+  ],
+  "newly_marked": 2,
+  "newly_marked_lacking_substantive_support": 0,
+  "audit_method": "Each newly accepted proposal was checked against the answer, the rubric and the cited source. Q28's source explicitly describes transforming raw features into suitable model inputs. Q30's source teaches grouping numerical data into bins; the student's displayed values each fit one stated interval. Teacher agreement assessed separately.",
+  "prior_justified_blocks": 7,
+  "prior_justified_blocks_released": 0,
+  "direct_evidence_blocks_after": 13,
+  "live_controls": {
+    "Q28 irrelevant passage": "review",
+    "Q30 valid numeric bins with irrelevant passage": "review",
+    "Q30 novel prose pressure example with a binning definition": "2/2",
+    "Q30 uncovered value with a binning definition": "review"
+  }
+}

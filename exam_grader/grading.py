@@ -6,7 +6,7 @@ from hashlib import sha256
 import json
 from .catalog import KEY, KEY_URL, OPTIONS, QUESTIONS
 from .rubric import CRITERIA
-from .rubric import supports_criterion
+from .rubric import check_interval_example, states_binning_rule, supports_criterion
 from .evaluation_cache import MissingFrozenResponse
 from . import hyperparameters
 
@@ -79,7 +79,7 @@ def checked_mark(q, response, hits, searches):
     return row(q,"grounded_proposal",m,feedback=feedback,citation=cite,**fields) | {"deductions": deductions}
 
 
-def checked(q, response, hits, searches):
+def checked(q, response, hits, searches, student_text=""):
     """Require source-backed evidence for every criterion, including deductions."""
     decision = checked_mark(q, response, hits, searches)
     guide = CRITERIA[q]
@@ -103,6 +103,27 @@ def checked(q, response, hits, searches):
             continue
         citations[criterion] = {k:hit[k] for k in ("id","title","heading","url","page") if k in hit}
         citations[criterion].update(quote=quote, coverage=e["coverage"])
+    if q == 30 and decision["mark"] is not None:
+        valid = check_interval_example(student_text)
+        arithmetic = valid is not None
+        application = response.get("binning_application") or {}
+        if valid is None and isinstance(application, dict):
+            quote = application.get("student_quote")
+            if (isinstance(quote, str) and quote.strip() and quote in student_text
+                    and isinstance(application.get("explanation"), str) and application["explanation"].strip()
+                    and application.get("verdict") in ("valid", "invalid")):
+                valid = application["verdict"] == "valid"
+        example_deducted = any(d["criterion"] == "example" for d in decision["deductions"])
+        method = citations.get("method")
+        if (valid is True and not example_deducted and method and method["coverage"] == "full"
+                and states_binning_rule(method["quote"])):
+            basis = ("checked numeric interval membership" if arithmetic else application["explanation"])
+            citations["example"] = dict(method, basis=basis)
+        elif application and valid is None and not example_deducted:
+            citations.pop("example", None)
+        elif (valid is False and not example_deducted) or (valid is True and example_deducted):
+            # The proposed credit must also agree with the actual interval assignments.
+            citations.pop("example", None)
     missing = [c for c in guide if citations.get(c, {}).get("coverage") != "full"]
     if missing:
         details = " ".join(f"{c}: {guide[c][1]}" for c in missing)
@@ -205,7 +226,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                 failed["execution_issue"] = detail
             return failed
         visible = session.visible_evidence(hits) if hasattr(session,"visible_evidence") else hits
-        proposal = checked(q,answer,visible,searches) | {"opened_passages":list(getattr(session,"last_opened",[]))}
+        proposal = checked(q,answer,visible,searches,txt) | {"opened_passages":list(getattr(session,"last_opened",[]))}
         if p.written_review_at_or_below is not None and proposal["mark"] is not None and proposal["mark"] <= p.written_review_at_or_below:
             candidate = proposal["mark"]
             proposal.update(mark=None, status="review", reason="written_mark_review", candidate_mark=candidate,
@@ -250,7 +271,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                         "latency_s":elapsed}},
               "versions":{"component_a":"UNSET-by-vision-owner","component_b":getattr(agent,"version","no-provider"),
                           "retrieval":getattr(index,"version","no-index"),"contract":"vision.exam.v1","q32_rule":hyperparameters.VERSION,
-                          "evidence_rule":"per-criterion-v1",
+                          "evidence_rule":"per-criterion-v2-equivalence",
                           "policy":sha256(json.dumps(asdict(p),sort_keys=True).encode()).hexdigest()[:12]},
               "review":bool(reviewed or near_pass),"tokens":usage["tokens"],"cost_eur":usage["cost_eur"]}
     return {"teacher":teacher,"record":record}

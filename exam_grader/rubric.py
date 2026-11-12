@@ -1,5 +1,62 @@
 """Written marking guide derived from the public questions and instructor key."""
 import re
+from decimal import Decimal
+
+
+# These questions ask for an equivalent definition or an application of a rule.
+# The source supplies the rule; the student's words and numbers supply the application.
+EVIDENCE_GUIDANCE = {
+    28: (
+        "For purpose, cleaning and transforming are alternative ways of preparing raw data. "
+        "A passage describing either operation and its purpose in analysis or modelling fully supports "
+        "an equivalent definition. For instance, transforming raw features into a representation suitable "
+        "for estimators establishes preparation for modelling. Do not demand a second quote for cleaning "
+        "when transformation already establishes the credited definition. A mere operation name, a title, "
+        "or collecting data alone does not establish this purpose."
+    ),
+    30: (
+        "For method and example, cite body text teaching the rule that numerical values are grouped "
+        "into discrete bins, intervals or categories. For the example point, apply that rule to the "
+        "student's illustration: verify a numeric quantity or set of values and a meaningful grouping "
+        "or boundary. Explicit numeric values can stand for an unnamed variable. Check assignments "
+        "and boundaries for consistency. The source need not contain the same values, units, or bins. "
+        "The same substantive rule quote can fully support both criterion IDs. A method alone earns no "
+        "example point. Do not approve an invented, contradictory or ambiguous assignment as a valid "
+        "example. Without an excerpt teaching the binning rule, an apparently correct example alone "
+        "cannot support a proposal."
+    ),
+}
+
+_NUMBER = r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)"
+_INTERVAL = rf"({_NUMBER})\s*(?:[-–—]|\bto\b)\s*({_NUMBER})"
+
+
+def states_binning_rule(quote):
+    """Conservative fallback for reusing a verified method quote as example evidence."""
+    return (re.search(r"\b(?:group|divid|partition|assign|convert|split|map|discreti[sz])\w*\b", quote, re.I)
+            and re.search(r"\b(?:numer\w*|continuous|values|measurements)\b", quote, re.I)
+            and re.search(r"\b(?:bins?|buckets?|intervals?|categor(?:y|ies)|ranges?)\b", quote, re.I)
+            and not re.search(r"\b(?:no|not|never|cannot|without)\b", quote, re.I))
+
+
+def check_interval_example(answer):
+    """Check an explicit list mapped to closed numeric ranges. Leave other notation to the assessor."""
+    example = re.split(r"\b(?:for example|example|e\.g\.)\s*[:,]?\s*|[.!?]\s+", answer, flags=re.I)[-1]
+    parts = re.split(r"\s*(?:->|→|\b(?:grouped|binned|split) into\b)\s*", example.rstrip().removesuffix("."), flags=re.I)
+    if len(parts) != 2:
+        return None
+    values = [v.strip() for v in parts[0].split(",")]
+    ranges = [re.fullmatch(_INTERVAL, part.strip(), re.I) for part in parts[1].split(",")]
+    if not all(re.fullmatch(_NUMBER, v) for v in values) or not all(ranges):
+        return None
+    bounds = sorted((Decimal(r[1]), Decimal(r[2])) for r in ranges)
+    data = [Decimal(v) for v in values]
+    if len(set(data)) < 2 or len(bounds) < 2 or any(low > high for low, high in bounds):
+        return False
+    if any(right >= next_left for (_, right), (next_left, _) in zip(bounds, bounds[1:])):
+        return False
+    return (all(any(lo <= value <= hi for lo, hi in bounds) for value in data)
+            and sum(any(lo <= value <= hi for value in data) for lo, hi in bounds) >= 2)
 
 
 def supports_criterion(question, criterion, quote):
