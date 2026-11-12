@@ -60,6 +60,17 @@ On a subsequent replay of the same 28 independent-test slots, the revised agent 
 
 The final Component 2 test froze the revised grader at `c4b76bb` and used four further papers from the existing sampling order. Across 56 written slots excluding Q32, 31 received proposals and 25 went to review. Of 30 paired proposals, 16 matched the teacher and 17 were within half a point. The question-mean baseline, trained on 40 other papers, achieved 7 exact matches and 24 within half a point on the same 30. Respective mean absolute errors were 0.55/2 and 0.52/2. Twelve proposals were at least one point below the teacher and one was at least a point above. All 20 below-full-credit proposals accounted for their deductions. The test used manual transcriptions to isolate the grading component. [Four-paper test](eval/written_validation_four.json)
 
+### Written feedback and judge agreement
+
+Javi reviewed 23 written feedback examples from four papers graded with the earlier lexical retrieval system. A Pass required the feedback to describe the student's answer accurately, justify the proposed mark under the rubric and cite a passage supporting the explanation. The Gemini judge's predictions were frozen before the review. Javi recorded four decisions after discussing an uncertain citation, then reviewed and approved Codex's recommendations for the remaining 19. These are reviewer-approved, AI-assisted labels. The sample covers the earlier grader.
+
+| Javi's decision | Judge Pass | Judge Fail |
+|---|---:|---:|
+| Pass | 11 | 0 |
+| Fail | 10 | 2 |
+
+Agreement was **13/23 (56.5%)**. The judge flagged two of the 12 examples Javi failed. Q24 accounted for four of the ten disagreements. On paper A, Javi agreed that both points were earned. The cited passage supported the effect of dirty data on accuracy but did not support the student's point about time and memory. The judge passed that feedback. [All 23 reviewer labels](eval/human_labels.csv) · [Frozen judge predictions](eval/judge_results.csv) · [Ten disagreements by item](eval/feedback_agreement.json)
+
 ### End to end
 
 *How you wrote `eval/cases.csv` (counts by kind, two examples). Results against the baseline. Where the output is free text: the judge's rubric and your agreement with it on your own labels.*
@@ -106,4 +117,4 @@ Both public retrieval indexes are bundled. The synthetic example can run locally
 
 ## AI use
 
-Codex assisted with the Component 2 implementation, test harnesses, rubric and retrieval experiments, local transcription and evaluation tooling, and compilation of the technical measurements above. Retrieval page recommendations were reviewed with the component owner. Team members should add their individual contributions, human labels, decisions, interpretation of the results and any additional AI use before submission.
+Codex assisted with the Component 2 implementation, test harnesses, rubric and retrieval experiments, local transcription and evaluation tooling, and compilation of the technical measurements above. Javi reviewed the retrieval recommendations and approved the feedback labels using the process described in the judge comparison. Each member should record any additional AI use before submission.

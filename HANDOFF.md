@@ -17,6 +17,14 @@ git fetch "$env:USERPROFILE/Documents/component-2-grading.bundle" refs/heads/com
 git worktree add --detach ../grading-integration-check handoff/component-2-grading
 ```
 
+## Reproduce Javi's feedback comparison
+
+The grading branch includes all 23 approved labels and the frozen judge predictions for the earlier lexical grader. Run this from the grading checkout to reproduce 11 mutual passes, two mutual fails and ten judge passes that Javi failed. It runs offline with the project's dependencies installed. [Evaluation and review method](REPORT.md#written-feedback-and-judge-agreement)
+
+```powershell
+uv run --locked --no-dev python -m exam_grader.metrics agreement eval/human_labels.csv --judge-results eval/judge_results.csv
+```
+
 ## Vision produces one object per exam
 
 | Field | Meaning |

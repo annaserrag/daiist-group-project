@@ -1,0 +1,73 @@
+{
+  "scope": "23 feedback examples from archived lexical grading runs. Reviewer approved AI-assisted recommendations. Judge predictions were frozen before review.",
+  "agreed": 13,
+  "n": 23,
+  "exact_agreement": 0.5652173913043478,
+  "human/judge": {
+    "pass/pass": 11,
+    "fail/pass": 10,
+    "fail/fail": 2
+  },
+  "disagreements": [
+    {
+      "item": 2,
+      "id": "paper-a-q23",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 3,
+      "id": "paper-a-q24",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 6,
+      "id": "paper-a-q29",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 8,
+      "id": "paper-a-q35",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 11,
+      "id": "paper-b-q24",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 12,
+      "id": "paper-b-q26",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 16,
+      "id": "paper-b-q35",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 18,
+      "id": "paper-c-q24",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 22,
+      "id": "paper-d-q24",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 23,
+      "id": "paper-d-q31",
+      "reviewer": "fail",
+      "judge": "pass"
+    }
+  ]
+}
