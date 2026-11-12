@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .catalog import DATA, KEY, QUESTIONS
 from .gemini import PREVIEW, Proposal
-from .grading import checked
+from .grading import checked_mark
 from .heldout_written import FRESH_PAPERS, PAPERS
 from .integration import file_sha256
 from .judge import prepare_items
@@ -40,7 +40,8 @@ def recover(db, version, index, transcript, archived):
         raise ValueError(f"Q{q} has no exact request match in the frozen cache.")
     bundle = json.loads(record[0])
     visible = [h if h["id"] in bundle["opened"] else h | {"text": h["text"][:PREVIEW]} for h in hits]
-    row = checked(q, bundle["proposal"], visible, searches)
+    # Reconstruct the historical single-citation rubric for already-frozen human labels.
+    row = checked_mark(q, bundle["proposal"], visible, searches)
     for field, original in (("reason", "reason"), ("mark", "proposed_mark"), ("feedback", "feedback"),
                             ("deductions", "deductions")):
         if row[field] != archived[original]:

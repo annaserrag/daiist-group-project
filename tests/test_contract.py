@@ -7,6 +7,7 @@ from exam_grader.catalog import DATA,KEY
 from exam_grader.grading import grade_exam,Policy
 from exam_grader.integration import connect,file_sha256
 from exam_grader.retrieval import Index
+from exam_grader.catalog import QUESTIONS
 from exam_grader.metrics import grading
 
 def a(q,txt,**changes):
@@ -21,7 +22,7 @@ class Search:
     version="fixture"
     def search(self,q,answer="",k=3):
         return [dict(id="demo",title="Synthetic note",url="https://example.org",heading="Demo",
-                     text="Examples carry known target labels.",score=.2 if answer else .9)]
+                     text="Examples carry known target labels. Group values into bins. Ages can be grouped by decade.",score=.2 if answer else .9)]
 class Fake:
     version="test-double"
     def __init__(self,**overrides):
@@ -29,9 +30,11 @@ class Fake:
         self.calls=0
     def open_session(self):
         return self
-    def grade(self,*args):
+    def grade(self,question,*args):
         self.calls+=1
+        quotes = {"method":"Group values into bins.", "example":"Ages can be grouped by decade."} if question == QUESTIONS[30] else {"definition":"known target labels"}
         return dict(mark=1.5,passage_id="demo",quote="known target labels",feedback="Identifies labels.",needs_review=False,
+                    criterion_evidence=[dict(criterion=c, quote=t, coverage="full", passage_id="demo") for c,t in quotes.items()],
                     deductions=[{"criterion":"definition","points":.5,"reason":"Does not say the examples are used to train the model."}]) | self.overrides
     def usage(self):
         return dict(tokens=self.calls*10,cost_eur=self.calls*.001,calls=self.calls,usage_complete=True)

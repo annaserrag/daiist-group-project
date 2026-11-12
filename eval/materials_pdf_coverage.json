@@ -1,0 +1,516 @@
+{
+  "pdf": "ml-course-notes.pdf",
+  "sha256": "216c0af854200e823548ae37faee0b74ab2e48cdd70a989510c1821177d48614",
+  "utc": "2026-11-12T11:33:51.815348+00:00",
+  "index": "course-pdf-v1:54217d421ed86103:gemini-embedding-2",
+  "grader": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+  "input": "Public answer key used as a synthetic response for each Q21-Q35.",
+  "coverage_method": "Assistant comparison of PDF pages with the published questions and written rubric; partial means the page cannot substantiate the full answer.",
+  "rows": [
+    {
+      "question": 21,
+      "coverage": "full",
+      "support_page": 3,
+      "preview": [
+        {
+          "page": 3,
+          "score": 0.753
+        },
+        {
+          "page": 1,
+          "score": 0.589
+        },
+        {
+          "page": 2,
+          "score": 0.558
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p3-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 3",
+        "url": "",
+        "quote": "Supervised learning trains a model on examples paired with known target labels.",
+        "page": 3
+      },
+      "grading_search_score": 0.710237019335769
+    },
+    {
+      "question": 22,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 3,
+          "score": 0.582
+        },
+        {
+          "page": 1,
+          "score": 0.577
+        },
+        {
+          "page": 2,
+          "score": 0.544
+        }
+      ],
+      "actual_status": "review",
+      "reason": "context_check",
+      "execution_issue": null,
+      "mark": null,
+      "citation": null,
+      "grading_search_score": null
+    },
+    {
+      "question": 23,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 1,
+          "score": 0.524
+        },
+        {
+          "page": 3,
+          "score": 0.518
+        },
+        {
+          "page": 2,
+          "score": 0.454
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p3-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 3",
+        "url": "",
+        "quote": "Supervised learning trains a model on examples paired with known target labels.",
+        "page": 3
+      },
+      "grading_search_score": 0.4191252487206815
+    },
+    {
+      "question": 24,
+      "coverage": "partial",
+      "support_page": 2,
+      "preview": [
+        {
+          "page": 2,
+          "score": 0.709
+        },
+        {
+          "page": 1,
+          "score": 0.647
+        },
+        {
+          "page": 3,
+          "score": 0.635
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p1-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 1",
+        "url": "",
+        "quote": "Component 2 | Machine learning course notes",
+        "page": 1
+      },
+      "grading_search_score": 0.5871822359460523
+    },
+    {
+      "question": 25,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 2,
+          "score": 0.558
+        },
+        {
+          "page": 3,
+          "score": 0.547
+        },
+        {
+          "page": 1,
+          "score": 0.505
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p3-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 3",
+        "url": "",
+        "quote": "Supervised learning trains a model on examples paired with known target labels.",
+        "page": 3
+      },
+      "grading_search_score": 0.44613754526694216
+    },
+    {
+      "question": 26,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 3,
+          "score": 0.566
+        },
+        {
+          "page": 2,
+          "score": 0.538
+        },
+        {
+          "page": 1,
+          "score": 0.508
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p1-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 1",
+        "url": "",
+        "quote": "Component 2 | Machine learning course notes",
+        "page": 1
+      },
+      "grading_search_score": 0.45271073751722657
+    },
+    {
+      "question": 27,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 2,
+          "score": 0.534
+        },
+        {
+          "page": 3,
+          "score": 0.488
+        },
+        {
+          "page": 1,
+          "score": 0.462
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p1-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 1",
+        "url": "",
+        "quote": "Component 2 | Machine learning course notes",
+        "page": 1
+      },
+      "grading_search_score": 0.42752222650544697
+    },
+    {
+      "question": 28,
+      "coverage": "partial",
+      "support_page": 2,
+      "preview": [
+        {
+          "page": 2,
+          "score": 0.598
+        },
+        {
+          "page": 3,
+          "score": 0.569
+        },
+        {
+          "page": 1,
+          "score": 0.497
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "mark": 2.0,
+      "citation": {
+        "id": "pdf-216c0af854200e823548-p2-0",
+        "title": "ml-course-notes.pdf",
+        "heading": "PDF page 2",
+        "url": "",
+        "quote": "Preparing numerical features",
+        "page": 2
+      },
+      "grading_search_score": 0.5321977444838636
+    },
+    {
+      "question": 29,
+      "coverage": "partial",
+      "support_page": 2,
+      "preview": [
+        {
+          "page": 2,
+          "score": 0.662
+        },
+        {
+          "page": 3,
+          "score": 0.52
+        },
+        {
+          "page": 1,
+          "score": 0.514
+        }
+      ],
+      "actual_status": "review",
+      "reason": "provider_failure",
+      "execution_issue": "provider_rate_limit",
+      "mark": null,
+      "citation": null,
+      "grading_search_score": 0.6185390815727797,
+      "retry_after_rate_limit": {
+        "actual_status": "proposed",
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "mark": 2.0,
+        "citation": {
+          "id": "pdf-216c0af854200e823548-p2-0",
+          "title": "ml-course-notes.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "quote": "A feature with a much larger range can dominate a distance calculation.",
+          "page": 2
+        }
+      }
+    },
+    {
+      "question": 30,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 2,
+          "score": 0.597
+        },
+        {
+          "page": 1,
+          "score": 0.55
+        },
+        {
+          "page": 3,
+          "score": 0.503
+        }
+      ],
+      "actual_status": "review",
+      "reason": "provider_failure",
+      "execution_issue": "provider_rate_limit",
+      "mark": null,
+      "citation": null,
+      "grading_search_score": 0.5085681447478306,
+      "retry_after_rate_limit": {
+        "actual_status": "proposed",
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "mark": 2.0,
+        "citation": {
+          "id": "pdf-216c0af854200e823548-p1-0",
+          "title": "ml-course-notes.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "quote": "Component 2 | Machine learning course notes",
+          "page": 1
+        }
+      }
+    },
+    {
+      "question": 31,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 1,
+          "score": 0.58
+        },
+        {
+          "page": 2,
+          "score": 0.574
+        },
+        {
+          "page": 3,
+          "score": 0.568
+        }
+      ],
+      "actual_status": "review",
+      "reason": "provider_failure",
+      "execution_issue": "provider_rate_limit",
+      "mark": null,
+      "citation": null,
+      "grading_search_score": 0.46399044835728276,
+      "retry_after_rate_limit": {
+        "actual_status": "proposed",
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "mark": 2.0,
+        "citation": {
+          "id": "pdf-216c0af854200e823548-p1-0",
+          "title": "ml-course-notes.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "quote": "Component 2 | Machine learning course notes",
+          "page": 1
+        }
+      }
+    },
+    {
+      "question": 32,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 3,
+          "score": 0.64
+        },
+        {
+          "page": 2,
+          "score": 0.635
+        },
+        {
+          "page": 1,
+          "score": 0.595
+        }
+      ],
+      "actual_status": "proposed",
+      "reason": "counted_hyperparameters",
+      "execution_issue": null,
+      "mark": 2,
+      "citation": {
+        "id": "key-Q32",
+        "title": "Published Q32 answer key",
+        "url": "https://doi.org/10.17632/sf3kvjwknt.1",
+        "quote": "K in K-NN, Learning Rate, Number of Estimators/Trees, Max Depth, or Batch Size."
+      },
+      "grading_search_score": null
+    },
+    {
+      "question": 33,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 3,
+          "score": 0.541
+        },
+        {
+          "page": 1,
+          "score": 0.519
+        },
+        {
+          "page": 2,
+          "score": 0.501
+        }
+      ],
+      "actual_status": "review",
+      "reason": "provider_failure",
+      "execution_issue": "provider_rate_limit",
+      "mark": null,
+      "citation": null,
+      "grading_search_score": 0.4325552762058822,
+      "retry_after_rate_limit": {
+        "actual_status": "proposed",
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "mark": 2.0,
+        "citation": {
+          "id": "pdf-216c0af854200e823548-p3-0",
+          "title": "ml-course-notes.pdf",
+          "heading": "PDF page 3",
+          "url": "",
+          "quote": "Component 2 | Machine learning course notes",
+          "page": 3
+        }
+      }
+    },
+    {
+      "question": 34,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 1,
+          "score": 0.551
+        },
+        {
+          "page": 2,
+          "score": 0.52
+        },
+        {
+          "page": 3,
+          "score": 0.514
+        }
+      ],
+      "actual_status": "review",
+      "reason": "context_check",
+      "execution_issue": null,
+      "mark": null,
+      "citation": null,
+      "grading_search_score": null
+    },
+    {
+      "question": 35,
+      "coverage": "absent",
+      "support_page": null,
+      "preview": [
+        {
+          "page": 3,
+          "score": 0.514
+        },
+        {
+          "page": 2,
+          "score": 0.507
+        },
+        {
+          "page": 1,
+          "score": 0.502
+        }
+      ],
+      "actual_status": "review",
+      "reason": "provider_failure",
+      "execution_issue": "provider_rate_limit",
+      "mark": null,
+      "citation": null,
+      "grading_search_score": 0.4113408958319201,
+      "retry_after_rate_limit": {
+        "actual_status": "proposed",
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "mark": 2.0,
+        "citation": {
+          "id": "pdf-216c0af854200e823548-p3-0",
+          "title": "ml-course-notes.pdf",
+          "heading": "PDF page 3",
+          "url": "",
+          "quote": "Supervised learning trains a model on examples paired with known target labels.",
+          "page": 3
+        }
+      }
+    }
+  ],
+  "summary_after_retry": {
+    "pdf_proposals": 12,
+    "pdf_proposals_without_full_support": 11,
+    "reviews": 2,
+    "key_rule_proposals": 1
+  }
+}

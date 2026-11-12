@@ -1,4 +1,15 @@
 """Written marking guide derived from the public questions and instructor key."""
+import re
+
+
+def supports_criterion(question, criterion, quote):
+    # A distance fact alone cannot establish how a nearest-neighbor method selects examples.
+    if (question, criterion) == (29, "distance"):
+        neighbor = re.search(r"\b(?:k[\s-]*nn|neighbou?rs?|closest (?:points|examples|samples)|nearest (?:points|examples|samples))\b", quote, re.I)
+        body = re.sub(r"\bk[\s-]*nearest[\s-]*neighbou?rs?\b", "", quote, flags=re.I)
+        proximity = re.search(r"\b(?:distances?|metrics?|proximity|closest|nearest|euclidean|manhattan)\b", body, re.I)
+        return bool(neighbor and proximity)
+    return True
 # Each criterion lists its maximum and the standard for full credit.
 CRITERIA = {
     21: {"definition": (2, "Learns from labelled examples or paired inputs and known outputs. Either wording suffices. No example, application or prediction step is required.")},

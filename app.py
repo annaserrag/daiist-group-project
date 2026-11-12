@@ -84,7 +84,10 @@ def display(raw_input, library=None, course=BUILTIN):
         evidence.append([item["question_id"], item["question"], " | ".join(item["readings"]), item["max_mark"], item["mark"],
                          item["reason"].replace("_", " "), feedback,
                          source.get("title", ""), source.get("page"), source.get("url", ""), source.get("quote", ""),
-                         ", ".join(item.get("opened_passages",[])) or ""])
+                         ", ".join(item.get("opened_passages",[])) or "",
+                         "\n".join(f"{criterion} ({c['coverage']}) · {c['title']}"
+                                   + (f", p. {c['page']}" if "page" in c else "")
+                                   + f" · {c['quote']}" for criterion,c in item.get("criterion_evidence",{}).items())])
         marks.append([item["question_id"], item["mark"]])
     count = teacher["review_count"]
     if teacher["input_type"] == "pdf_awaiting_reader":
@@ -168,7 +171,7 @@ def build_app():
                 go = gr.Button("Grade uploaded exam", variant="primary")
                 example = gr.Button("Try synthetic OCR example")
             status = gr.Textbox(label="Grading status", interactive=False)
-            evidence = gr.Dataframe(headers=["Q","Question","OCR reading","Out of","Proposal","Decision","Feedback","Source","PDF page","Source URL","Supporting quote","Passage opened by model"],
+            evidence = gr.Dataframe(headers=["Q","Question","OCR reading","Out of","Proposal","Decision","Feedback","Source","PDF page","Source URL","Supporting quote","Passage opened by model","Evidence by rubric point"],
                                     interactive=False, label="Proposals and evidence")
             teacher_marks = gr.Dataframe(headers=["Q","Teacher mark"], type="array", datatype=["number","number"],
                                          interactive=True, label="Teacher marks · complete empty cells before sign-off")

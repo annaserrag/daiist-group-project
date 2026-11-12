@@ -30,17 +30,19 @@ class ProviderContract(unittest.TestCase):
                 {"id":ident,"name":name,"args":args,"type":"tool_call"}],
                 usage_metadata={"input_tokens":12,"output_tokens":3,"total_tokens":15}))])
         responses=[message("open_course_passage",{"passage_id":"p1"},"a"),message("Proposal",data,"b")]
+        responses.append(ChatResult(generations=[ChatGeneration(message=AIMessage(content='{"evidence":[]}',
+            usage_metadata={"input_tokens":12,"output_tokens":3,"total_tokens":15}))]))
         responses[0].generations[0].message.tool_calls.append(
             {"id":"extra","name":"open_course_passage","args":{"passage_id":"p2"},"type":"tool_call"})
         with patch.dict(os.environ,{"GEMINI_API_KEY":"offline-test-only"}), patch.object(
                 ChatGoogleGenerativeAI,"_generate",side_effect=responses) as transport:
             session=Gemini(finalize_lookup=True).open_session()
-            self.assertEqual(session.grade("Q","key","synthetic",[hit,other]),data)
+            self.assertEqual(session.grade("Q","key","synthetic",[hit,other]),data | {"criterion_evidence":[]})
             self.assertEqual(session.last_opened,["p1"])
             self.assertNotIn(data["quote"],str(transport.call_args_list[0].args[0]))
             self.assertIn(data["quote"],str(transport.call_args_list[1].args[0]))
             self.assertEqual([data["quote"] in h["text"] for h in session.visible_evidence([hit,other])],[True,False])
-            self.assertEqual(session.usage()["calls"],2)
+            self.assertEqual(session.usage()["calls"],3)
             self.assertIn("open_course_passage", str(transport.call_args_list[0].kwargs["tools"]))
             self.assertNotIn("open_course_passage", str(transport.call_args_list[1].kwargs["tools"]))
             self.assertIn("Proposal", str(transport.call_args_list[1].kwargs["tools"]))
@@ -52,12 +54,14 @@ class ProviderContract(unittest.TestCase):
         msg=AIMessage(content="",tool_calls=[{"id":"call_1","name":"Proposal","args":data,"type":"tool_call"}],
                       usage_metadata={"input_tokens":60,"output_tokens":10,"total_tokens":70})
         with patch.dict(os.environ,{"GEMINI_API_KEY":"offline-test-only"}), patch.object(
-            ChatGoogleGenerativeAI,"_generate",return_value=ChatResult(generations=[ChatGeneration(message=msg)])) as transport:
+            ChatGoogleGenerativeAI,"_generate",side_effect=[
+                ChatResult(generations=[ChatGeneration(message=m)]) for m in
+                (msg,AIMessage(content='{"evidence":[]}',usage_metadata=msg.usage_metadata))]) as transport:
             g=Gemini(input_eur_per_million=1,output_eur_per_million=2)
             s=g.open_session()
             r=s.grade("Q","teacher key","synthetic",[])
-            self.assertEqual(r,data)
-            self.assertEqual(transport.call_count,1)
-            self.assertEqual(s.usage()["tokens"],70)
-            self.assertAlmostEqual(s.usage()["cost_eur"],.00008)
+            self.assertEqual(r,data | {"criterion_evidence":[]})
+            self.assertEqual(transport.call_count,2)
+            self.assertEqual(s.usage()["tokens"],140)
+            self.assertAlmostEqual(s.usage()["cost_eur"],.00016)
             self.assertTrue(s.usage()["usage_complete"])

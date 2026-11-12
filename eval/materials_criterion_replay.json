@@ -1,0 +1,475 @@
+{
+  "pdf": "ml-course-notes.pdf",
+  "sha256": "216c0af854200e823548ae37faee0b74ab2e48cdd70a989510c1821177d48614",
+  "index": "course-pdf-v1:54217d421ed86103:gemini-embedding-2",
+  "grader": "gemini-3.5-flash-lite:prompt-699fe758c73c:rubric-683efac0520a:final-after-lookup-v1:evidence-3b693d9c2bf6",
+  "utc": "2026-11-12T11:47:33.026734+00:00",
+  "input": "Public answer key used as a synthetic response for each Q21-Q35.",
+  "usage": [
+    {
+      "calls": 24,
+      "tokens": 17678,
+      "cost_eur": null
+    },
+    {
+      "calls": 21,
+      "tokens": 19147,
+      "cost_eur": null
+    },
+    {
+      "calls": 11,
+      "tokens": 10542,
+      "cost_eur": null
+    },
+    {
+      "calls": 3,
+      "tokens": 3168,
+      "cost_eur": null
+    }
+  ],
+  "rows": [
+    {
+      "question": 21,
+      "baseline_coverage": "full",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_unavailable",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_unavailable",
+          "feedback": ""
+        },
+        {
+          "status": "proposed",
+          "reason": "grounded_proposal",
+          "mark": 2.0,
+          "citation": {
+            "id": "pdf-216c0af854200e823548-p3-0",
+            "title": "ml-course-notes.pdf",
+            "heading": "PDF page 3",
+            "url": "",
+            "page": 3,
+            "quote": "Supervised learning trains a model on examples paired with known target labels.",
+            "coverage": "full"
+          },
+          "criterion_evidence": {
+            "definition": {
+              "id": "pdf-216c0af854200e823548-p3-0",
+              "title": "ml-course-notes.pdf",
+              "heading": "PDF page 3",
+              "url": "",
+              "page": 3,
+              "quote": "Supervised learning trains a model on examples paired with known target labels.",
+              "coverage": "full"
+            }
+          },
+          "criteria_needing_evidence": [],
+          "feedback": "The student correctly defines supervised learning as training a model on labeled data with known inputs and outputs."
+        }
+      ]
+    },
+    {
+      "question": 22,
+      "baseline_coverage": "absent",
+      "before_mark": null,
+      "before_status": "review",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "context_check",
+          "mark": null,
+          "citation": null,
+          "feedback": ""
+        }
+      ]
+    },
+    {
+      "question": 23,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "relationship"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. relationship: Explains estimating a numeric outcome from predictors or modelling a response's relationship to explanatory variables. Naming continuous output alone is partial understanding."
+        }
+      ]
+    },
+    {
+      "question": 24,
+      "baseline_coverage": "partial",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "first",
+            "second"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. first: First distinct, valid ML challenge plus what makes it a challenge. A name alone earns 0.5. second: Another distinct ML challenge with explanation. Accept valid alternatives to the sample key."
+        }
+      ]
+    },
+    {
+      "question": 25,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "first",
+            "second"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. first: One concrete real-world use of data science. A short recognizable task suffices. second: A different concrete application. Examples in the key are illustrative."
+        }
+      ]
+    },
+    {
+      "question": 26,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "structured",
+            "semi_structured"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. structured: Identifies a fixed schema or regular fields, rows and columns. semi_structured: Identifies flexible records organised by tags, keys or markers. Accept accurate examples as supporting detail."
+        }
+      ]
+    },
+    {
+      "question": 27,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "detection",
+            "handling"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. detection: Describes a valid way to detect outliers, such as distance from the mean, IQR fences or a plot. handling: Describes a valid treatment, such as trimming, capping, replacing, or justified retention."
+        }
+      ]
+    },
+    {
+      "question": 28,
+      "baseline_coverage": "partial",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_unavailable",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "purpose"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. purpose: Preparing raw data for analysis or modelling by cleaning or transforming it. A clear definition or equivalent description suffices."
+        }
+      ]
+    },
+    {
+      "question": 29,
+      "baseline_coverage": "partial",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": {
+            "id": "pdf-216c0af854200e823548-p2-0",
+            "title": "ml-course-notes.pdf",
+            "heading": "PDF page 2",
+            "url": "",
+            "page": 2,
+            "quote": "A feature with a much larger range can dominate a distance calculation.",
+            "coverage": "full"
+          },
+          "criterion_evidence": {
+            "scale": {
+              "id": "pdf-216c0af854200e823548-p2-0",
+              "title": "ml-course-notes.pdf",
+              "heading": "PDF page 2",
+              "url": "",
+              "page": 2,
+              "quote": "A feature with a much larger range can dominate a distance calculation.",
+              "coverage": "full"
+            }
+          },
+          "criteria_needing_evidence": [
+            "distance"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. distance: Recognizes that K-NN chooses neighbors using distances."
+        }
+      ]
+    },
+    {
+      "question": 30,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "method",
+            "example"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. method: Groups continuous numeric values into discrete intervals or categories. example: Gives a concrete illustration with a variable and a grouping or boundary."
+        }
+      ]
+    },
+    {
+      "question": 31,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "clusters"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. clusters: K is the number of clusters or groups. This statement alone earns 2. Neighborhood size or votes describe another algorithm."
+        }
+      ]
+    },
+    {
+      "question": 32,
+      "baseline_coverage": "absent",
+      "before_mark": 2,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "proposed",
+          "reason": "counted_hyperparameters",
+          "mark": 2,
+          "citation": {
+            "id": "key-Q32",
+            "title": "Published Q32 answer key",
+            "url": "https://doi.org/10.17632/sf3kvjwknt.1",
+            "quote": "K in K-NN, Learning Rate, Number of Estimators/Trees, Max Depth, or Batch Size."
+          },
+          "feedback": "Credited 5 distinct settings. Counted neighbor count, learning rate, number of estimators, maximum tree depth, batch size."
+        }
+      ]
+    },
+    {
+      "question": 33,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "objective",
+            "update"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. objective: Identifies iterative minimization of loss or an objective. update: Describes changing parameters opposite the gradient, or equivalently moving downhill using the slope."
+        }
+      ]
+    },
+    {
+      "question": 34,
+      "baseline_coverage": "absent",
+      "before_mark": null,
+      "before_status": "review",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "context_check",
+          "mark": null,
+          "citation": null,
+          "feedback": ""
+        }
+      ]
+    },
+    {
+      "question": 35,
+      "baseline_coverage": "absent",
+      "before_mark": 2.0,
+      "before_status": "proposed",
+      "attempts": [
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_rate_limit",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "provider_failure",
+          "mark": null,
+          "citation": null,
+          "execution_issue": "provider_unavailable",
+          "feedback": ""
+        },
+        {
+          "status": "review",
+          "reason": "insufficient_evidence",
+          "mark": null,
+          "citation": null,
+          "criterion_evidence": {},
+          "criteria_needing_evidence": [
+            "similarity",
+            "boundary"
+          ],
+          "feedback": "Teacher review. The passages do not fully support these rubric points. similarity: Describes distance-based similarity or an implicit higher-dimensional feature mapping. boundary: Connects it to nonlinear separation in input space or linear separation in the transformed space."
+        }
+      ]
+    }
+  ],
+  "comparison": {
+    "questions": 15,
+    "previous_reviews": 2,
+    "current_reviews": 13,
+    "new_reviews": [
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      33,
+      35
+    ],
+    "final_execution_issues": []
+  },
+  "evidence_rule": "per-criterion-v1"
+}

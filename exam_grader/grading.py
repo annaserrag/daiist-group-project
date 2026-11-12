@@ -6,6 +6,7 @@ from hashlib import sha256
 import json
 from .catalog import KEY, KEY_URL, OPTIONS, QUESTIONS
 from .rubric import CRITERIA
+from .rubric import supports_criterion
 from .evaluation_cache import MissingFrozenResponse
 from . import hyperparameters
 
@@ -37,7 +38,7 @@ def row(q, reason, mark=None, *, feedback="", citation=None, score=None, searche
                 status="review" if mark is None else "proposed", reason=reason,
                 feedback=feedback, citation=citation, retrieval_score=score, searches=searches)
 
-def checked(q, response, hits, searches):
+def checked_mark(q, response, hits, searches):
     score = hits[0]["score"]
     fields = dict(score=score,searches=searches)
     if not isinstance(response,dict) or response.get("needs_review") is not False:
@@ -76,6 +77,41 @@ def checked(q, response, hits, searches):
         cite["page"] = hit["page"]
     feedback = " ".join([" ".join(f.split()), *explanations])
     return row(q,"grounded_proposal",m,feedback=feedback,citation=cite,**fields) | {"deductions": deductions}
+
+
+def checked(q, response, hits, searches):
+    """Require source-backed evidence for every criterion, including deductions."""
+    decision = checked_mark(q, response, hits, searches)
+    guide = CRITERIA[q]
+    entries = response.get("criterion_evidence") if isinstance(response, dict) else None
+    entries = entries if isinstance(entries, list) else []
+    sources = {hit["id"]: hit for hit in hits}
+    citations = {}
+    for criterion in guide:
+        matching = [e for e in entries if isinstance(e, dict) and e.get("criterion") == criterion]
+        if len(matching) != 1:
+            continue
+        e = matching[0]
+        hit = sources.get(e["passage_id"]) if isinstance(e.get("passage_id"), str) else None
+        quote = e["quote"].strip() if isinstance(e.get("quote"), str) else ""
+        if not hit or e.get("coverage") not in ("full", "partial") or len(quote) < 12 or quote not in hit["text"]:
+            continue
+        labels = [hit["title"], hit["heading"], *hit.get("labels", [])]
+        if any(quote.casefold() in label.casefold() for label in labels):
+            continue
+        if not supports_criterion(q, criterion, quote):
+            continue
+        citations[criterion] = {k:hit[k] for k in ("id","title","heading","url","page") if k in hit}
+        citations[criterion].update(quote=quote, coverage=e["coverage"])
+    missing = [c for c in guide if citations.get(c, {}).get("coverage") != "full"]
+    if missing:
+        details = " ".join(f"{c}: {guide[c][1]}" for c in missing)
+        decision = row(q, "insufficient_evidence", score=hits[0]["score"], searches=searches,
+                       feedback="Teacher review. The passages do not fully support these rubric points. " + details)
+    decision["citation"] = next(iter(citations.values()), None)
+    decision["criterion_evidence"] = citations
+    decision["criteria_needing_evidence"] = missing
+    return decision
 
 def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=False):
     """Return a teacher view and a separate record suitable for the course logger.
@@ -214,6 +250,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                         "latency_s":elapsed}},
               "versions":{"component_a":"UNSET-by-vision-owner","component_b":getattr(agent,"version","no-provider"),
                           "retrieval":getattr(index,"version","no-index"),"contract":"vision.exam.v1","q32_rule":hyperparameters.VERSION,
+                          "evidence_rule":"per-criterion-v1",
                           "policy":sha256(json.dumps(asdict(p),sort_keys=True).encode()).hexdigest()[:12]},
               "review":bool(reviewed or near_pass),"tokens":usage["tokens"],"cost_eur":usage["cost_eur"]}
     return {"teacher":teacher,"record":record}

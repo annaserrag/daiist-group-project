@@ -75,7 +75,10 @@ class RepeatEvaluation(unittest.TestCase):
         source={name:{q:("A" if q<=20 else value) for q in range(1,36)}
                 for name,value in (("training","0"),("heldout","2"))}
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ,{"GEMINI_API_KEY":"offline-fixture"}), patch.object(
-                ChatGoogleGenerativeAI,"_generate",return_value=ChatResult(generations=[ChatGeneration(message=msg)])) as transport:
+                ChatGoogleGenerativeAI,"_generate",side_effect=[
+                    ChatResult(generations=[ChatGeneration(message=m)]) for m in
+                    (msg, AIMessage(content=json.dumps({"evidence":[{"criterion":"definition","coverage":"full",
+                        "passage_id":best["id"],"quote":data["quote"]}]}),usage_metadata=msg.usage_metadata))]) as transport:
             root=Path(tmp)
             agent=Gemini(input_eur_per_million=1,output_eur_per_million=2)
             from exam_grader.integration import file_sha256
@@ -84,13 +87,13 @@ class RepeatEvaluation(unittest.TestCase):
                 reports=[evaluate(cases,root/run,links={"demo":"heldout"},reference=source,
                                   training_ids=["training"],evaluation_cache=EvaluationCache(root/"cache.sqlite"))
                          for run in ("first","second")]
-            self.assertEqual(transport.call_count,1)
+            self.assertEqual(transport.call_count,2)
             self.assertEqual([r["cache_hits"] for r in reports],[0,1])
             self.assertEqual(reports[0]["held_out_written_comparison"],reports[1]["held_out_written_comparison"])
             first,second=[rows(root/run/"results.csv") for run in ("first","second")]
             self.assertEqual(second[0]["uncached_cost_eur"],first[0]["cost_eur"])
             self.assertEqual(float(second[0]["cost_eur"]),0)
-            self.assertEqual((int(second[0]["tokens"]),int(second[0]["uncached_tokens"])),(0,70))
+            self.assertEqual((int(second[0]["tokens"]),int(second[0]["uncached_tokens"])),(0,140))
             self.assertNotIn(transcript.encode(),(root/"cache.sqlite").read_bytes())
             costs=dict(hourly_eur=20,signoff_seconds=5,review_seconds=20,manual_seconds=30,wrong_eur=1,
                        accepted_catch_rate=0,reviewed_error_rate=0,manual_error_rate=0,exams_per_day=1)

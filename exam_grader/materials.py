@@ -1,5 +1,7 @@
 """Page-preserving course PDF ingestion for a single Gradio session."""
 import os
+import re
+from collections import Counter
 from io import BytesIO
 from pathlib import Path
 
@@ -21,21 +23,35 @@ def extract(path, raw, source):
         if len(pdf.pages) > 200:
             raise ValueError("Choose a PDF of up to 200 pages.")
         rows, skipped = [], 0
+        running, edges = Counter(), {}
         for page, sheet in enumerate(pdf.pages, start=1):
-            words = (sheet.extract_text() or "").split()
+            lines = [" ".join(line.split()) for line in (sheet.extract_text() or "").splitlines() if line.strip()]
+            words = " ".join(lines).split()
+            # Preserve printed labels for citation checks without changing chunk text or rankings.
+            labels = [" ".join(line.split()) for line in lines
+                      if re.fullmatch(r"(?:PDF\s+)?page\s+\d+", line, re.I)
+                      or (line in lines[:2] and re.match(r"^\d+[.)]\s", line)
+                          and len(line.split()) <= 10 and not line.endswith((".", "?", "!")))]
             if not words:
                 skipped += 1
                 continue
+            edges[page] = {lines[0],lines[-1]}
+            running.update(edges[page])
             start = 0
             while start < len(words):
                 end = min(start + 160, len(words))
                 rows.append(dict(source=source, id=f"{source}-p{page}-{start}", title=path.name,
-                                 heading=f"PDF page {page}", page=page, url="", text=" ".join(words[start:end])))
+                                 heading=f"PDF page {page}", page=page, url="", text=" ".join(words[start:end]),
+                                 labels=labels))
                 if len(rows) > MAX_PASSAGES:
                     raise ValueError("This PDF is too long. Upload a shorter course reading.")
                 if end == len(words):
                     break
                 start = end - 24
+        for row in rows:
+            row["labels"] = row["labels"] + sorted(line for line in edges[row["page"]]
+                                                   if running[line] > 1 and len(line.split()) <= 16
+                                                   and not line.endswith((".", "?", "!")))
     except (PyPdfError, OSError, KeyError, IndexError, RecursionError) as exc:
         raise ValueError("Could not read this PDF. Try exporting a new copy.") from exc
     if not rows:

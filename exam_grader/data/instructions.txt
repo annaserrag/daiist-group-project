@@ -8,3 +8,4 @@ In feedback, briefly explain what the answer demonstrates. If nothing is correct
 Provide a retrieved passage ID and a short exact, contiguous quote from that passage that supports the assessment. A matching ID alone does not show support.
 Only then propose 0, 0.5, 1, 1.5 or 2 points. Partial credit needs an identifiable correct part.
 If available sources cannot support the decision or the answer cannot be interpreted reliably, return needs_review=true, mark=null. Never invent a source.
+Check support for every rubric criterion, including the expected idea behind a deduction. A heading, page title or vaguely related sentence is insufficient. If only some points have support, keep the useful quote and ask the teacher to review the answer.
