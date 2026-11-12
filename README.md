@@ -15,6 +15,14 @@ uv run --locked --no-dev python -m unittest discover -s tests -v
 uv run --locked --no-dev python -m exam_grader
 ~~~
 
+## Try a course PDF
+
+Open **Materials**, enter a course name, upload a searchable PDF and click **Index PDF and select course**. The active course applies to both the passage preview and subsequent grading runs. Add more PDFs under the same name to search them together. The built-in references and each named course have their own index. Courses are scoped to the current browser session.
+
+To reproduce the page check, upload [the three-page ML handout](eval/ml-course-notes.pdf), choose Q21 and click **Find supporting passages**. The definition of supervised learning appears on PDF page 3. In **App**, click **Try synthetic OCR example** and inspect the Q21 row for its mark, source filename, PDF page and supporting quote. The live test returned 2/2 and cited the first sentence of the definition on page 3. Page numbers count from the first physical page, including covers and pages without text.
+
+With the configured Gemini key and semantic index, the app embeds uploaded course passages once per session and reuses the bundled exam question vectors. Without a key, you can still index PDFs and preview lexical retrieval. Live written grading requires the configured key and an approved exam input. Image-only course PDFs need OCR before uploading.
+
 ## Demonstrate the grading component
 
 1. Start the app and click **Try synthetic OCR example**. Show why Q1 is a valid proposal and why Q17 needs a teacher to inspect its selected option. With Gemini enabled, inspect the Q21 mark, citation and quoted text.

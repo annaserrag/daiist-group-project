@@ -72,6 +72,8 @@ def checked(q, response, hits, searches):
     if not hit or not isinstance(quote,str) or len(quote.strip()) < 12 or quote.strip() not in hit["text"]:
         return row(q,"unverified_citation",**fields)
     cite = {"id":hit["id"],"title":hit["title"],"heading":hit["heading"],"url":hit["url"],"quote":quote.strip()}
+    if "page" in hit:
+        cite["page"] = hit["page"]
     feedback = " ".join([" ".join(f.split()), *explanations])
     return row(q,"grounded_proposal",m,feedback=feedback,citation=cite,**fields) | {"deductions": deductions}
 

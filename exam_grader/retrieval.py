@@ -62,6 +62,18 @@ class Index:
             self.version = f"{design}:{digest(raw)[:12]}:{MODEL}:hybrid-v3"
         if multipart:
             self.version += ":multipart-v1"
+        self._prepare_bags()
+
+    @classmethod
+    def from_passages(cls, rows, vectors, version, *, multipart=True):
+        """Build an independent index for the active course in a teacher's session."""
+        index = cls.__new__(cls)
+        index.rows, index.vectors = rows, vectors
+        index.version, index.multipart = version, multipart
+        index._prepare_bags()
+        return index
+
+    def _prepare_bags(self):
         bags = []
         for row in self.rows:
             topic = " ".join((row["title"], row["heading"], row["text"]))

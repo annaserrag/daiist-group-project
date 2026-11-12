@@ -48,9 +48,11 @@ def read_export(path):
     with path.open(encoding="utf-8-sig") as stream:
         return json.load(stream)
 
-def run_views(raw_input, *, policy=None, evaluation_cache=None):
+def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=None):
     path = Path(raw_input)
     index, agent, approved = resources()
+    if course_index is not None:
+        index = course_index
     if agent is not None and evaluation_cache is not None:
         agent = agent.for_evaluation(evaluation_cache)
     elif evaluation_cache is not None and evaluation_cache.read_only:

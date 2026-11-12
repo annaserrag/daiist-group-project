@@ -10,6 +10,7 @@ dependencies = [
     "langchain-google-genai==4.4.3",
     "numpy>=2.0",
     "pandas>=2.2",
+    "pypdf>=6,<8",
 ]
 
 # Only for running evaluate.ipynb locally; not installed on the Space.
