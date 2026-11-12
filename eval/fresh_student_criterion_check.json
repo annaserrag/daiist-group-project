@@ -1,0 +1,98 @@
+{
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "teacher_file_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "cohort": "First three numeric paper IDs outside the ten earlier written cohorts. Q21-35 excluding previously developed Q32; uncorrected pages manually transcribed and de-identified. Outcomes frozen before scoring.",
+  "papers": 3,
+  "slots": 42,
+  "hashes": [
+    "0a58897c874f851d784515d7008dc931d353f7bfb057519072bf762fb6ce444f",
+    "4bc7ebef1df5fc70e4997ba7b04d2fe5494246633e80d5f2df89460eb3b8540b",
+    "c18077abf5f7d85ff0b32213668473e5fdf679eab753f50310d37352c253ebce"
+  ],
+  "teacher_numeric": 34,
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+  "retrieval_threshold": 0.4,
+  "old": {
+    "commit": "fb6cbe2",
+    "model": "gemini-3.5-flash-lite:prompt-ae86c803e1c8:rubric-683efac0520a:final-after-lookup-v1",
+    "proposed": 25,
+    "reviews": 17,
+    "compared": 25,
+    "exact": 12,
+    "within_half": 14,
+    "mae": 0.56
+  },
+  "pre_evidence_same_generation": {
+    "proposed": 24,
+    "reviews": 18,
+    "compared": 24,
+    "exact": 12,
+    "within_half": 13,
+    "mae": 0.625
+  },
+  "new": {
+    "commit": "de6071c",
+    "model": "gemini-3.5-flash-lite:prompt-699fe758c73c:rubric-683efac0520a:final-after-lookup-v1:evidence-3b693d9c2bf6",
+    "proposed": 9,
+    "reviews": 33,
+    "compared": 9,
+    "exact": 6,
+    "within_half": 6,
+    "mae": 0.444
+  },
+  "paired_both_with_teacher": {
+    "old": {
+      "proposed": 9,
+      "reviews": 0,
+      "compared": 9,
+      "exact": 6,
+      "within_half": 7,
+      "mae": 0.278
+    },
+    "new": {
+      "proposed": 9,
+      "reviews": 0,
+      "compared": 9,
+      "exact": 6,
+      "within_half": 6,
+      "mae": 0.444
+    }
+  },
+  "new_reasons": {
+    "grounded_proposal": 9,
+    "context_check": 5,
+    "insufficient_evidence": 17,
+    "unverified_citation": 2,
+    "missing_detection": 8,
+    "unreadable": 1
+  },
+  "same_generation_blocks": 15,
+  "execution_failures": 0,
+  "referral_assessment_method": "Assistant inspection before joining teacher marks. For each numerical candidate removed by the new gate, compare the exact visible excerpts with the rubric and deductions. Likely avoidable means there was enough substantive support to assess the criterion; this does not establish that the proposed number is the teacher grade.",
+  "direct_blocks_by_assessment": {
+    "justified": {
+      "count": 7,
+      "teacher_comparable": 7,
+      "withheld_mark_matched_teacher": 1
+    },
+    "likely avoidable": {
+      "count": 4,
+      "teacher_comparable": 4,
+      "withheld_mark_matched_teacher": 3
+    },
+    "borderline": {
+      "count": 4,
+      "teacher_comparable": 4,
+      "withheld_mark_matched_teacher": 2
+    }
+  },
+  "historical_comparison": {
+    "old_mark_new_review": 16,
+    "old_review_new_mark": 0,
+    "both_review": 17,
+    "both_mark": 9
+  },
+  "models_reached": 28,
+  "review_fraction_among_answers_reaching_model": 0.6785714285714286,
+  "scope_notes": "All 42 slots included in review share. Q32 was examined on all 50 papers previously. Missing and unreadable scans are not scored as confirmed blanks. Accuracy conditional on numerical proposals and numerical teacher references. Transient provider and structured-output failures were retried using cached successes; completed decisions do not estimate first-attempt service reliability."
+}
