@@ -61,13 +61,13 @@ Which questions should be there, and which are multiple choice, comes from the t
 2. **From then on, nothing was decided on Mendeley.** The 50 exams are evaluation-only, so every later choice was made on a development set of public handwriting (`devset.py`), and Mendeley was read once, at the end.
 3. **The choices, on the development set** (`develop_reader.py`, `artifacts/vision/dev_*.csv`):
 
-| Reader | Character error, SMHD pages | Character error, ASAP answers | Numbers found at line starts (SMHD) |
-|---|---|---|---|
-| TrOCR base on the detected lines | 27.6% | 22.7% | 23% |
-| TrOCR large on the detected lines | 22.1% | 21.2% | 30% |
-| Qwen3-VL-2B on the detected lines | 18.9% | 15.6% | 56% |
-| **Qwen3-VL-2B on the whole page** | **7.3%** | **1.7%** | **89%** |
-| Qwen3-VL-4B on the whole page | 6.5% | 1.3% | 85% |
+| Reader | Character error, SMHD scans | Character error, ASAP answers | Character error, notebook photos | Numbers found at line starts (SMHD) |
+|---|---|---|---|---|
+| TrOCR base on the detected lines | 27.6% | 22.7% | 50.9% | 23% |
+| TrOCR large on the detected lines | 22.1% | 21.2% | 45.3% | 30% |
+| Qwen3-VL-2B on the detected lines | 18.9% | 15.6% | 31.9% | 56% |
+| **Qwen3-VL-2B on the whole page** | **7.3%** | **1.7%** | **5.1%** | **89%** |
+| Qwen3-VL-4B on the whole page | 6.5% | 1.3% | 4.0% | 85% |
 
 4B reads text a little more accurately, but finds fewer question numbers, takes twice as long (about 10 s a page on an Apple GPU), and needs more memory than a free Space has. So the product uses 2B, and 4B stays as a documented try.
 
@@ -106,7 +106,7 @@ uv run python -m vision.evaluate_reader            # all four modes on the 50 Me
 
 ## Every try, and why the product uses a pretrained vision-language model
 
-The vision component started as two trained detectors plus TrOCR. It ended as a pretrained vision-language model (Qwen3-VL-2B, the kind of model Session 10 uses) that reads whole pages. `artifacts/vision/tries.csv` records all 16 tries in order: what each used, what it found, and what was decided. The column `uses_mendeley` marks the three tries that looked at Mendeley exams before the rule that they are evaluation-only. Those tries were superseded and are not reported as evaluation. In short:
+The vision component started as two trained detectors plus TrOCR. It ended as a pretrained vision-language model (Qwen3-VL-2B, the kind of model Session 10 uses) that reads whole pages. `artifacts/vision/tries.csv` records all 17 tries in order: what each used, what it found, and what was decided. The column `uses_mendeley` marks the three tries that looked at Mendeley exams before the rule that they are evaluation-only. Those tries were superseded and are not reported as evaluation. In short:
 
 1. **Training works on its own data.** The fine-tuned detectors beat the rules and COCO zero-shot by a wide margin on their test splits (AP50 0.79 for question numbers, 0.88 for lines).
 2. **The question-number detector does not transfer.** It learnt one source of answer sheets and found 11% of the questions on the Mendeley exams. No public dataset with handwritten question numbers exists to retrain it on (step 5), and fine-tuning a reader on the same narrow source would repeat the problem (step 9).
@@ -122,12 +122,13 @@ Every try's output is in `artifacts/vision/reads/`:
 
 ## The development set
 
-Download, and extract each into its own folder under `~/.cache/daiist-vision/devsets/` (about 320 MB):
+Download, and extract each into its own folder under `~/.cache/daiist-vision/devsets/` (about 690 MB):
 
 - `SMHD-forms.rar` from <https://doi.org/10.25439/rmt.24312715.v1> into `devsets/smhd/x/`: the Student Messy Handwritten Dataset (RMIT, CC BY-NC 4.0), student pages with line-by-line transcriptions.
 - `Handwritten-ASAP-SAS-V1.0.zip` from <https://zenodo.org/records/8088866> into `devsets/asap/x/`: handwritten short answers with their text (Gold and Zesch 2020, non-commercial research use).
+- `images.zip` and `annotations_*.json` from <https://huggingface.co/datasets/ai-forever/school_notebooks_EN> into `devsets/school_notebooks/`, with the images extracted into `devsets/school_notebooks/x/`: phone photos of English school notebooks, every word transcribed and grouped by line (MIT). Teacher comments are left out of the text.
 
-`devset.py` adds the Roboflow answer-sheet pages of the detectors' test booklet (question-number boxes, no text), real pages whitened below their second line, and blank pages. These parts check reading, question numbers, and invented text. No public dataset has whole exam pages with numbered answers and a key besides Mendeley, so handwritten multiple-choice lists like "7). B" are not in the development set.
+`devset.py` adds the Roboflow answer-sheet pages of the detectors' test booklet (question-number boxes, no text), real pages whitened below their second line, and blank pages. These parts check reading, question numbers, and invented text. Handwritten lists are rare in public data: SMHD has 21 pages with numbered lists, and School Notebooks 2. No public dataset has whole exam pages with numbered answers and a key besides Mendeley, so handwritten multiple-choice lists like "7). B" are not in the development set. A set of handwritten a/b/c/d answers exists on IEEE DataPort (CC BY 4.0, <https://ieee-dataport.org/documents/handwritten-text-dataset>) but needs a subscription.
 
 ## Evaluate it on the Mendeley exams
 

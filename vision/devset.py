@@ -11,14 +11,19 @@ together from the parts that exist:
                  and a random sample of the others.                     -> reading accuracy, numbers at line starts
     asap         Handwritten ASAP-SAS (Gold and Zesch 2020, non-commercial research use): short answers to one
                  exam prompt, rewritten by hand, with the original text. -> reading accuracy on exam answers
+    notebook     School Notebooks EN (ai-forever, MIT): photos of English school notebooks, every word boxed and
+                 transcribed by line. Every page with a numbered list and a random sample of the others; teacher
+                 comments are left out of the text, as exams arrive uncorrected. -> a second source of numbered lists
     answersheet  the Roboflow answer-sheet pages of the detectors' test booklet, one per photo, with the
                  number of question-number boxes (no text).             -> how many question numbers are found
     short        SMHD pages whitened below their second line: the reader must stop after two lines.
     blank        empty pages, white and lined.                           -> invented text, decoding loops
 
-Downloads (about 320 MB, into WORK/devsets/; see vision/README.md):
+Downloads (about 690 MB, into WORK/devsets/; see vision/README.md):
     SMHD-forms.rar                  https://doi.org/10.25439/rmt.24312715.v1
     Handwritten-ASAP-SAS-V1.0.zip   https://zenodo.org/records/8088866
+    school_notebooks_EN             https://huggingface.co/datasets/ai-forever/school_notebooks_EN (images.zip and
+                                    annotations_*.json)
 """
 
 from __future__ import annotations
@@ -26,6 +31,9 @@ from __future__ import annotations
 import random
 import re
 from pathlib import Path
+
+import json
+from collections import defaultdict
 
 import cv2
 import numpy as np
@@ -36,9 +44,11 @@ from vision import datasets
 DEVSETS = datasets.WORK / "devsets"
 SMHD = DEVSETS / "smhd" / "x" / "SMHD-forms"
 ASAP = DEVSETS / "asap" / "x" / "Handwritten ASAP SAS"
+NOTEBOOKS = DEVSETS / "school_notebooks"
 SYNTHETIC = DEVSETS / "synthetic"
 SEED = 0
-N_SMHD_OTHER, N_ASAP, N_SHORT, N_BLANK = 18, 40, 10, 4
+N_SMHD_OTHER, N_ASAP, N_NOTEBOOK_OTHER, N_SHORT, N_BLANK = 18, 40, 10, 10, 4
+STUDENT_TEXT = {0, 1}  # pupil_text and pupil_comment; 2 is teacher_comment, 3 the paper, 4 the line outlines
 
 # A numbered line in a transcription: '1)', '2:', '3.', 'Q4)'; the number must be followed by a separator.
 NUMBERED = re.compile(r"^\s*(?:q\.?\s*)?(\d{1,3})\s*[.):]", re.IGNORECASE)
@@ -73,6 +83,29 @@ def asap_answers() -> list[dict]:
     rows = info.sample(N_ASAP, random_state=SEED)
     return [{"kind": "asap", "image": str(ASAP / "prompt-3" / r.file), "truth": str(r.text).strip(), "numbers": []}
             for r in rows.itertuples()]
+
+
+def notebook_pages(rng: random.Random) -> list[dict]:
+    """Each word carries the id of its line (group_id): the words of a line, left to right, and the lines, top to
+    bottom, give the page's text."""
+    pages = []
+    for split in ("train", "val", "test"):
+        annotations = json.loads((NOTEBOOKS / f"annotations_{split}.json").read_text())
+        lines: dict = defaultdict(list)
+        for a in annotations["annotations"]:
+            if a["category_id"] in STUDENT_TEXT and a.get("group_id") is not None and a["attributes"].get("translation"):
+                xy = np.array(a["segmentation"][0]).reshape(-1, 2)
+                lines[(a["image_id"], a["group_id"])].append((xy[:, 0].mean(), xy[:, 1].mean(), a["attributes"]["translation"]))
+        for image in annotations["images"]:
+            rows = sorted((np.mean([w[1] for w in words]), " ".join(w[2] for w in sorted(words)))
+                          for (image_id, _), words in lines.items() if image_id == image["id"])
+            truth = clean_truth("\n".join(text for _, text in rows))
+            path = NOTEBOOKS / "x" / "images" / image["file_name"]
+            if truth and path.is_file():
+                pages.append({"kind": "notebook", "image": str(path), "truth": truth, "numbers": numbers_in(truth)})
+    numbered = [p for p in pages if len(p["numbers"]) >= 2]
+    others = [p for p in pages if len(p["numbers"]) < 2]
+    return numbered + rng.sample(others, N_NOTEBOOK_OTHER)
 
 
 def answersheet_pages() -> list[dict]:
@@ -130,10 +163,11 @@ def blank_pages() -> list[dict]:
 
 def build() -> pd.DataFrame:
     """The development set as one table: kind, image, truth (text, or None), numbers (expected at line starts)."""
-    missing = [p for p in (SMHD, ASAP) if not p.is_dir()]
+    missing = [p for p in (SMHD, ASAP, NOTEBOOKS / "x") if not p.is_dir()]
     if missing:
         raise SystemExit(f"Download and extract the development data first (see vision/README.md): {missing}")
     rng = random.Random(SEED)
     smhd = smhd_pages(rng)
-    rows = smhd + asap_answers() + answersheet_pages() + short_pages(smhd, rng) + blank_pages()
+    rows = (smhd + asap_answers() + notebook_pages(random.Random(SEED)) + answersheet_pages()
+            + short_pages(smhd, rng) + blank_pages())
     return pd.DataFrame(rows)

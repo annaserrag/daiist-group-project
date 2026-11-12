@@ -137,19 +137,20 @@ def number_scores(found: list[str], row) -> tuple[float, int]:
 
 def score(dev: pd.DataFrame, lines_of) -> dict:
     """Error rate, numbers found and invented lines over the development set, for one way of reading."""
-    out = {"smhd": [], "asap": [], "numbers_smhd": [], "numbers_answersheet": [], "extra": [], "invented": 0}
+    out = {"smhd": [], "asap": [], "notebook": [], "numbers_smhd": [], "numbers_notebook": [], "numbers_answersheet": [],
+           "extra": [], "invented": 0}
     for r in dev.itertuples():
         lines = lines_of(r)
-        if r.kind in ("smhd", "asap"):
+        if r.kind in ("smhd", "asap", "notebook"):
             out[r.kind].append(cer("\n".join(t for t, _ in lines), r.truth))
-        if r.kind == "answersheet" or (r.kind == "smhd" and r.numbers):
+        if r.kind == "answersheet" or (r.kind in ("smhd", "notebook") and r.numbers):
             found, extra = number_scores(numbers_read(lines), r)
             out[f"numbers_{r.kind}"].append(found)
             out["extra"].append(extra)
         if r.kind in ("short", "blank"):  # anything past the written lines is invented
             out["invented"] += max(len(lines) - len(r.truth.splitlines()), 0)
-    return {"cer_smhd": np.mean(out["smhd"]), "cer_asap": np.mean(out["asap"]),
-            "numbers_found_smhd": np.mean(out["numbers_smhd"]),
+    return {"cer_smhd": np.mean(out["smhd"]), "cer_asap": np.mean(out["asap"]), "cer_notebook": np.mean(out["notebook"]),
+            "numbers_found_smhd": np.mean(out["numbers_smhd"]), "numbers_found_notebook": np.mean(out["numbers_notebook"]),
             "numbers_found_answersheet": np.mean(out["numbers_answersheet"]),
             "extra_numbers_per_page": np.mean(out["extra"]), "invented_lines": out["invented"]}
 
@@ -181,7 +182,7 @@ unsplit = score(dev, lambda r: [tuple(x) for x in read_lines("TrOCR base, lines"
 reader.SPLIT_TALL = True
 split_table = pd.DataFrame({"cut tall boxes": rows["TrOCR base, lines"], "as detected": unsplit}).T
 print("\nTrOCR base, with tall line boxes cut into rows or read as detected:")
-print(split_table[["cer_smhd", "cer_asap"]].round(3).to_string())
+print(split_table[["cer_smhd", "cer_asap", "cer_notebook"]].round(3).to_string())
 
 # %% Part 3. Question numbers
 section("Part 3. Question numbers: the stray-mark prefix of the number rule")
@@ -191,7 +192,7 @@ reader.LEADING_NUMBER = re.compile(with_prefix.pattern.replace(r"^\W{0,3}(?:(?:q
 without = score(dev, lambda r: read_page(r.image, chosen_generate))
 reader.LEADING_NUMBER = with_prefix
 rules = pd.DataFrame({"with prefix": rows[PAGE_LABEL], "without prefix": without}).T
-print(rules[["numbers_found_smhd", "numbers_found_answersheet", "extra_numbers_per_page"]].round(3).to_string())
+print(rules[["numbers_found_smhd", "numbers_found_notebook", "numbers_found_answersheet", "extra_numbers_per_page"]].round(3).to_string())
 
 # %% Part 4. Blank pages and loops
 section("Part 4. Blank pages, and decoding loops of the page reader")
