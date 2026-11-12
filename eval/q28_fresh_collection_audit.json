@@ -1,0 +1,94 @@
+{
+  "question": 28,
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "source": "https://doi.org/10.17632/sf3kvjwknt.1",
+  "teacher_csv_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "scope": "All 37 papers outside the earlier Q28 written evaluations. Manually inspected the uncorrected scans and fixed answer descriptions before joining Q28 to the published teacher CSV by anonymous paper ID. No grader rerun.",
+  "excluded_prior_papers": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    13,
+    17,
+    18,
+    22,
+    35,
+    36,
+    41,
+    42
+  ],
+  "papers_inspected": 37,
+  "answers_located": 36,
+  "numeric_teacher_marks": 35,
+  "classification": "Count explicit acquisition of data (collecting or gathering) in the Q28 response itself. Taking raw data as input to a transformation, or loading an existing dataset, does not by itself state collection. Groups describe the answer, not a predicted grade.",
+  "blind_notes_sha256": "fd7309ae60371052a4257b3593d3fe43a2e906ca8a6d48fce45c86c5e4c7f7e8",
+  "teacher_marks_out_of_2_by_answer_group": {
+    "collection_only": {},
+    "collection_plus_preparation_purpose": {
+      "2": 1
+    },
+    "collection_plus_cleaning_or_transformation": {
+      "2": 1
+    },
+    "cleaning_or_transformation_without_explicit_collection": {
+      "2": 23,
+      "1": 6,
+      "1.5": 1,
+      "no_numeric_mark": 1
+    },
+    "other_located_wording": {
+      "1": 2,
+      "2": 1
+    },
+    "no_response_located": {
+      "no_numeric_mark": 1
+    }
+  },
+  "fresh_examples": [
+    {
+      "paper": 23,
+      "uncorrected_pdf_page": 3,
+      "answer_summary": "Collect data and prepare the dataset for training a machine learning algorithm; no specific operation described.",
+      "teacher_mark": 2.0
+    },
+    {
+      "paper": 39,
+      "uncorrected_pdf_page": 3,
+      "answer_summary": "Load an input dataset, mention features/models and a classification technique. Loading an existing dataset is an acquisition-adjacent case.",
+      "teacher_mark": 1.0
+    },
+    {
+      "paper": 48,
+      "uncorrected_pdf_page": 2,
+      "answer_summary": "Prepare data to make it ready for use in a data science application; no operation specified.",
+      "teacher_mark": 2.0
+    },
+    {
+      "paper": 49,
+      "uncorrected_pdf_page": 2,
+      "answer_summary": "Gather data, clean it, fill missing values and make it correct and usable for training.",
+      "teacher_mark": 2.0
+    }
+  ],
+  "missing_reference": {
+    "19": "No Q28 response located and no teacher mark.",
+    "21": "A written transformation answer was present but the teacher cell was empty."
+  },
+  "prior_comparisons_excluded_from_fresh_counts": [
+    {
+      "paper": 3,
+      "answer_summary": "Collect the data source before analysis, with no preparation operation or change described.",
+      "teacher_mark": 1.0,
+      "previous_grader_proposal": 0
+    },
+    {
+      "paper": 7,
+      "answer_summary": "Lists collecting, cleaning, modelling and implementation.",
+      "teacher_mark": 2.0
+    }
+  ],
+  "interpretation": "No fresh collection-only response tested the one-point hypothesis. Both fresh explicit-collection responses received two points, with additional content. Marks alone do not establish which phrase earned credit.",
+  "recommendation": "Retain the evidence-backed full-credit rubric. Recommend teacher review for collection plus timing alone if choosing between zero and one point. Do not award an automatic point for the word collect or cap mixed answers at one. No production change."
+}
