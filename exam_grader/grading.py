@@ -158,8 +158,8 @@ def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
         decision = row(q, "unsupported_deduction", score=hits[0]["score"], searches=searches,
                        feedback="Teacher review. A deduction relied on what the course excerpts omit. "
                                 "Check whether the student's example satisfies the criterion.")
-    elif decision["mark"] is not None and "independent_mark" in response:
-        second = response["independent_mark"]
+    elif decision["mark"] is not None and (custom_guide is not None or "independent_mark" in response):
+        second = response.get("independent_mark")
         if (type(second) not in (int, float) or second not in (0, .5, 1, 1.5, 2)
                 or abs(decision["mark"] - second) >= 1):
             decision = row(q, "mark_disagreement", score=hits[0]["score"], searches=searches,

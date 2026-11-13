@@ -106,6 +106,8 @@ class WrittenTransfer(unittest.TestCase):
             row = grade(second)
             self.assertEqual((row["reason"],row["mark"]), ("mark_disagreement", None))
             self.assertEqual(set(row["criterion_evidence"]), {"change","reason"})
+        missing_check = checked(32, response, [hit], 1, custom_guide={"change": (1,"Direction"), "reason": (1,"Reason")})
+        self.assertEqual((missing_check["mark"], missing_check["reason"]), (None, "mark_disagreement"))
         self.assertEqual(grade(1.5)["mark"], 2)
         self.assertIsNone(grade(2, entries[:1])["mark"])
         response["quote"] = "Two fragments ... joined by the assessor."
