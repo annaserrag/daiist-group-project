@@ -47,6 +47,29 @@ class ProviderContract(unittest.TestCase):
             self.assertNotIn("open_course_passage", str(transport.call_args_list[1].kwargs["tools"]))
             self.assertIn("Proposal", str(transport.call_args_list[1].kwargs["tools"]))
 
+    def test_custom_evidence_schema_uses_teacher_ids_for_partial_credit(self):
+        from exam_grader.gemini import custom_evidence_schema
+        guide = {"change":(1,"Identifies the change."), "reason":(1,"Explains its cause.")}
+        schema = custom_evidence_schema(guide)
+        self.assertEqual(schema["properties"]["standards"]["required"], list(guide))
+        quote = "Doubling frequency halves period because period is the reciprocal of frequency."
+        hit = dict(id="p", title="Waves", heading="Cycle time", text=quote)
+        data = dict(feedback="Identifies the change.", passage_id="p", quote=quote, needs_review=False,
+                    mark=1, deductions=[{"criterion":"reason", "points":1, "reason":"Omits the inverse relationship."}])
+        entry = {"coverage":"full","passage_id":"p","quote":quote}
+        import json
+        response = json.dumps({"standards":{"change":entry,"reason":entry},"independent_mark":1})
+        usage = {"input_tokens":50,"output_tokens":20,"total_tokens":70}
+        msgs = [AIMessage(content="", tool_calls=[{"id":"p","name":"Proposal","args":data}], usage_metadata=usage),
+                AIMessage(content=response, usage_metadata=usage)]
+        with patch.dict(os.environ, {"GEMINI_API_KEY":"offline-test-only"}), patch.object(
+                ChatGoogleGenerativeAI,"_generate",side_effect=[
+                    ChatResult(generations=[ChatGeneration(message=m)]) for m in msgs]):
+            session = Gemini().open_session()
+            result = session.grade("What changes?", "Half", "It halves.", [hit], guide=guide)
+            self.assertEqual(result["independent_mark"], 1)
+            self.assertEqual([e["criterion"] for e in result["criterion_evidence"]], ["change","reason"])
+
     def test_daily_quota_is_distinct_from_a_short_rate_limit(self):
         from google.genai.errors import ClientError
         from exam_grader.gemini import Session
