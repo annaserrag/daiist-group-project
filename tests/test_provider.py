@@ -47,6 +47,15 @@ class ProviderContract(unittest.TestCase):
             self.assertNotIn("open_course_passage", str(transport.call_args_list[1].kwargs["tools"]))
             self.assertIn("Proposal", str(transport.call_args_list[1].kwargs["tools"]))
 
+    def test_daily_quota_is_distinct_from_a_short_rate_limit(self):
+        from google.genai.errors import ClientError
+        from exam_grader.gemini import Session
+        for ident, expected in (("GenerateRequestsPerDayPerProjectPerModel-FreeTier", "provider_daily_quota"),
+                                ("GenerateRequestsPerMinutePerProjectPerModel-FreeTier", "provider_rate_limit")):
+            error = ClientError(429, {"error":{"message":"private service message",
+                                "details":[{"violations":[{"quotaId":ident}]}]}})
+            self.assertEqual(Session.failure_reason(error), expected)
+
     def test_schema_roundtrip_and_meter(self):
         data=dict(feedback="Identifies the target.",passage_id="test",
                   quote="known labels",needs_review=False,mark=1.5,

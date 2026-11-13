@@ -186,8 +186,18 @@ class Session:
             return "model_call_limit"
         if isinstance(error, StructuredOutputValidationError):
             return "structured_response_invalid"
-        code = getattr(error.__cause__ or error, "code", None)
+        api_error = error.__cause__ or error
+        code = getattr(api_error, "code", None)
         if code == 429:
+            payload = getattr(api_error, "details", None)
+            nested = payload.get("error") if isinstance(payload, dict) else None
+            details = nested.get("details") if isinstance(nested, dict) else None
+            if not isinstance(details, list):
+                return "provider_rate_limit"
+            for detail in details:
+                if isinstance(detail, dict) and isinstance(detail.get("violations"), list) and any("perday" in str(v.get("quotaId", "")).lower()
+                        for v in detail.get("violations", []) if isinstance(v, dict)):
+                    return "provider_daily_quota"
             return "provider_rate_limit"
         if code in (500, 502, 503, 504):
             return "provider_unavailable"

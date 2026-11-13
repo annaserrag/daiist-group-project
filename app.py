@@ -33,6 +33,7 @@ REVIEW_ACTIONS = {
     "lookup_limit": "The grader requested extra evidence beyond its lookup limit. Consult the course source.",
     "model_call_limit": "The grader reached its call limit. Inspect the answer against the key.",
     "provider_rate_limit": "The grading service reached its request limit. Retry later or mark manually.",
+    "provider_daily_quota": "The configured model reached its daily request limit. Mark manually or retry after the quota resets.",
     "provider_unavailable": "The grading service was unavailable. Retry or use the official key.",
     "missing_frozen_response": "This evaluation has no saved response for the exact request.",
     "invalid_model_output": "Check the rubric and enter a mark on the question's scale.",
