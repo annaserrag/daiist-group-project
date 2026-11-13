@@ -71,7 +71,7 @@ Set GRADE_INPUT_EUR_PER_M and GRADE_OUTPUT_EUR_PER_M to your verified tariffs fo
 ## Decisions to make together
 
 - **Answer key versus labels:** the PDF says both “grade against the key” and “key only for evaluation.” This implementation uses the public instructor key as runtime reference and reserves teacher marks for evaluation. Confirm that interpretation. The key is not a learner outcome and using it does not establish agreement with the teacher.
-- **Q22 vs Q34:** the published Q22 states 99% training and 30% testing accuracy. Q34 gives no three classifiers to compare. The conservative draft policy still flags both; decide whether to remove Q22 after checking the sheet used in evaluation. Do not assume every policy flag is an OCR failure.
+- **Q22 and Q34.** Q22 gives both training and test accuracies. The grader can propose full credit when both the diagnosis and its explanation have course evidence. For partial credit, the teacher sees the student's wording, the two criteria and the supporting evidence. Q34 requires the original classifier figure.
 - **Thresholds and pass mark:** Policy defaults just exercise the flow. Select thresholds on separate validation exams, then freeze and report held-out results. The default does not invent a pass mark. Supply the actual exam-level pass rule and margin if you use a boundary check.
 - **Ownership:** Anna owns OCR. You own retrieval, structured grading, evidence and Component 2 evaluation. Agree who edits the small shared pipeline/app/monitor files once. Record actual work in CONTRIBUTIONS.md and disclose AI assistance in REPORT.md.
 

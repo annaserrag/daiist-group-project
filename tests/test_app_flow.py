@@ -156,6 +156,14 @@ class AppFlow(unittest.TestCase):
             with self.assertRaises(ValueError):
                 prepare_items([row],set(),idx)
             self.assertEqual(item["quote"],h["text"][:30])
+            teacher["answers"][0]["criterion_evidence"] = {"definition":{"id":h["id"],"quote":h["text"][2:32]}}
+            path.write_text(json.dumps(teacher))
+            revised = prepare_items([row],approved,idx)[0][1]
+            self.assertEqual(revised["criterion_quotes"],{"definition":h["text"][2:32]})
+            teacher["answers"][0]["criterion_evidence"]["definition"]["quote"] = "Missing source text."
+            path.write_text(json.dumps(teacher))
+            with self.assertRaises(ValueError):
+                prepare_items([row],approved,idx)
             labels=[{"id":f"f{i}","label":"pass" if i%2 else "fail"} for i in range(20)]
             stats=compare_labels({r["id"]:"pass" for r in labels},labels)
             self.assertEqual(stats["exact_agreement"],.5)

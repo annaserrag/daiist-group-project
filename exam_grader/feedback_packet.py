@@ -87,6 +87,17 @@ def build(folder):
         writer = csv.DictWriter(f, fieldnames=list(manifests[0]))
         writer.writeheader()
         writer.writerows(manifests)
+    write_review_page(items, folder / "feedback-review.html")
+    labels = folder / "feedback-labels.csv"
+    if not labels.exists():
+        with labels.open("x", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["id", "label", "comment"])
+            writer.writerows((ident, "", "") for ident, _ in items)
+    return len(items)
+
+
+def write_review_page(items, destination):
     parts = []
     for ident, item in items:
         parts.append(f'<article data-id="{escape(ident)}"><h2>{escape(ident)}</h2><dl>')
@@ -94,6 +105,8 @@ def build(folder):
                              ("Proposed mark out of two", "mark"), ("Feedback", "feedback"),
                              ("Quoted evidence", "quote"), ("Source passage", "source")):
             parts.append(f"<dt>{label}</dt><dd>{escape(str(item[field]))}</dd>")
+        for criterion, quote in item.get("criterion_quotes", {}).items():
+            parts.append(f"<dt>{escape(criterion)} evidence</dt><dd>{escape(quote)}</dd>")
         parts.append("<dt>Marking guide</dt><dd><ul>")
         for points, description in item["marking_guide"].values():
             parts.append(f"<li>{points:g} points. {escape(description)}</li>")
@@ -105,14 +118,7 @@ def build(folder):
     packet_id = hashlib.sha256(json.dumps(items, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     template = (DATA / "feedback_review.html").read_text(encoding="utf-8")
     html = template.replace("{{PACKET_ID}}", packet_id).replace("{{ARTICLES}}", "".join(parts))
-    (folder / "feedback-review.html").write_text(html, encoding="utf-8")
-    labels = folder / "feedback-labels.csv"
-    if not labels.exists():
-        with labels.open("x", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(["id", "label", "comment"])
-            writer.writerows((ident, "", "") for ident, _ in items)
-    return len(items)
+    destination.write_text(html, encoding="utf-8")
 
 
 if __name__ == "__main__":

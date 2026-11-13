@@ -16,7 +16,7 @@ class Policy:
     min_read: float = 0.80
     min_id: float = 0.85
     min_similarity: float = 0.40
-    figure_questions: tuple = (22,34)  # Conservative team draft until Q22 is adjudicated.
+    figure_questions: tuple = (34,)  # Q22 supplies the training and test accuracies in the prompt.
     pass_mark: float | None = None     # The dataset does not establish a pass rule.
     pass_band: float = 0.0
     written_review_at_or_below: float | None = None
@@ -88,7 +88,13 @@ def checked(q, response, hits, searches, student_text=""):
     sources = {hit["id"]: hit for hit in hits}
     citations = {}
     for criterion in guide:
-        matching = [e for e in entries if isinstance(e, dict) and e.get("criterion") == criterion]
+        # Some evidence reports echo the complete rubric description in the ID field.
+        # Only an exact, unambiguous label from this question can identify the criterion.
+        accepted = [criterion]
+        description = guide[criterion][1]
+        if sum(text == description for _, text in guide.values()) == 1:
+            accepted.append(description)
+        matching = [e for e in entries if isinstance(e, dict) and e.get("criterion") in accepted]
         if len(matching) != 1:
             continue
         e = matching[0]
@@ -227,7 +233,17 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
             return failed
         visible = session.visible_evidence(hits) if hasattr(session,"visible_evidence") else hits
         proposal = checked(q,answer,visible,searches,txt) | {"opened_passages":list(getattr(session,"last_opened",[]))}
-        if p.written_review_at_or_below is not None and proposal["mark"] is not None and proposal["mark"] <= p.written_review_at_or_below:
+        # Published partial-credit decisions vary. An unconfirmed zero must not
+        # become an anchor for the teacher assessing the train/test explanation.
+        if q == 22 and proposal["mark"] is not None and proposal["mark"] < 2:
+            proposal.update(mark=None, status="review", reason="diagnosis_partial_review", deductions=[],
+                            feedback="Teacher review. Check whether the answer identifies overfitting and "
+                                     "explains why performance drops on unseen data. Decide partial credit "
+                                     "from the student's wording and the cited course evidence.")
+            return proposal
+        below_cutoff = (p.written_review_at_or_below is not None and proposal["mark"] is not None
+                        and proposal["mark"] <= p.written_review_at_or_below)
+        if below_cutoff:
             candidate = proposal["mark"]
             proposal.update(mark=None, status="review", reason="written_mark_review", candidate_mark=candidate,
                             feedback=f"Teacher check requested for the suggested {candidate:g}/2. " + proposal["feedback"])
@@ -271,7 +287,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                         "latency_s":elapsed}},
               "versions":{"component_a":"UNSET-by-vision-owner","component_b":getattr(agent,"version","no-provider"),
                           "retrieval":getattr(index,"version","no-index"),"contract":"vision.exam.v1","q32_rule":hyperparameters.VERSION,
-                          "evidence_rule":"per-criterion-v2-equivalence",
+                          "evidence_rule":"per-criterion-v3-exact-labels",
                           "policy":sha256(json.dumps(asdict(p),sort_keys=True).encode()).hexdigest()[:12]},
               "review":bool(reviewed or near_pass),"tokens":usage["tokens"],"cost_eur":usage["cost_eur"]}
     return {"teacher":teacher,"record":record}

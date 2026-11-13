@@ -1,0 +1,270 @@
+{
+  "baseline": "665c087",
+  "teacher_file_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "q22": {
+    "scope": "13 previously vetted answer-only papers, selected by availability. The old policy withheld every Q22. Diagnostic and final replays used the same cache for completed requests. Final run had no provider failures.",
+    "by_paper": [
+      {
+        "paper": 17,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "prior": "context_check",
+        "teacher": 2.0,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "insufficient_evidence"
+      },
+      {
+        "paper": 42,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "prior": "context_check",
+        "teacher": 2.0,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "insufficient_evidence"
+      },
+      {
+        "paper": 8,
+        "mark": null,
+        "reason": "missing_detection",
+        "prior": "missing_detection",
+        "teacher": null,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "missing_detection"
+      },
+      {
+        "paper": 36,
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "prior": "context_check",
+        "teacher": null,
+        "diagnostic_gate_removal_only_mark": 0.0,
+        "diagnostic_gate_removal_only_reason": "grounded_proposal"
+      },
+      {
+        "paper": 41,
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "prior": "context_check",
+        "teacher": 1.0,
+        "diagnostic_gate_removal_only_mark": 0.0,
+        "diagnostic_gate_removal_only_reason": "grounded_proposal"
+      },
+      {
+        "paper": 7,
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "prior": "context_check",
+        "teacher": 1.0,
+        "diagnostic_gate_removal_only_mark": 0.0,
+        "diagnostic_gate_removal_only_reason": "grounded_proposal"
+      },
+      {
+        "paper": 13,
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "prior": "context_check",
+        "teacher": 2.0,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "insufficient_evidence"
+      },
+      {
+        "paper": 18,
+        "mark": null,
+        "reason": "missing_detection",
+        "prior": "missing_detection",
+        "teacher": null,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "missing_detection"
+      },
+      {
+        "paper": 35,
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "prior": "context_check",
+        "teacher": 1.0,
+        "diagnostic_gate_removal_only_mark": 0.0,
+        "diagnostic_gate_removal_only_reason": "grounded_proposal"
+      },
+      {
+        "paper": 22,
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "prior": "context_check",
+        "teacher": 1.0,
+        "diagnostic_gate_removal_only_mark": 0.0,
+        "diagnostic_gate_removal_only_reason": "grounded_proposal"
+      },
+      {
+        "paper": 1,
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "prior": "context_check",
+        "teacher": 1.0,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "insufficient_evidence"
+      },
+      {
+        "paper": 2,
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "prior": "context_check",
+        "teacher": 1.5,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "provider_failure"
+      },
+      {
+        "paper": 3,
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "prior": "context_check",
+        "teacher": 2.0,
+        "diagnostic_gate_removal_only_mark": null,
+        "diagnostic_gate_removal_only_reason": "provider_failure"
+      }
+    ],
+    "first_run_provider_errors": 2,
+    "diagnostic_note": "Removing the figure gate alone under-awarded four numerically labelled answers at zero (teacher 1/2). Diagnostic run had two rate limits. The final cache includes successful retries. Final routing keeps lower candidates in review without displaying a suggested score."
+  },
+  "three_paper_written_replay": {
+    "scope": "All 42 written slots from the previous fixed cohort excluding Q32, read-only exact-response cache.",
+    "counts": {
+      "before_slots": 42,
+      "before_review": 31,
+      "before_comparable": 11,
+      "before_exact": 8,
+      "after_slots": 42,
+      "after_review": 31,
+      "after_comparable": 11,
+      "after_exact": 8
+    },
+    "changed": [
+      {
+        "paper": 1,
+        "q": 22,
+        "before": "context_check",
+        "after": "insufficient_evidence",
+        "old_mark": null,
+        "mark": null,
+        "teacher": 1.0
+      },
+      {
+        "paper": 2,
+        "q": 22,
+        "before": "context_check",
+        "after": "insufficient_evidence",
+        "old_mark": null,
+        "mark": null,
+        "teacher": 1.5
+      },
+      {
+        "paper": 3,
+        "q": 22,
+        "before": "context_check",
+        "after": "diagnosis_partial_review",
+        "old_mark": null,
+        "mark": null,
+        "teacher": 2.0
+      }
+    ]
+  },
+  "feedback_judge": {
+    "scope": "Paired replay on the historical 23 AI-assisted human labels. Prior disagreements informed the revision; calibration, not independent validation. Historical items have one citation each.",
+    "old": {
+      "exact": 13,
+      "false_pass": 10,
+      "false_fail": 0
+    },
+    "revised": {
+      "exact": 14,
+      "false_pass": 5,
+      "false_fail": 4
+    },
+    "changed": [
+      {
+        "id": "paper-a-q23",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "fail"
+      },
+      {
+        "id": "paper-a-q24",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "fail"
+      },
+      {
+        "id": "paper-a-q27",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "pass"
+      },
+      {
+        "id": "paper-a-q29",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "fail"
+      },
+      {
+        "id": "paper-a-q30",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "pass"
+      },
+      {
+        "id": "paper-b-q24",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "fail"
+      },
+      {
+        "id": "paper-b-q27",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "pass"
+      },
+      {
+        "id": "paper-b-q35",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "fail"
+      },
+      {
+        "id": "paper-c-q29",
+        "before": "pass",
+        "after": "fail",
+        "reviewer": "pass"
+      }
+    ],
+    "model": "gemini-3.5-flash-lite",
+    "predictions": {
+      "paper-a-q21": "pass",
+      "paper-a-q23": "fail",
+      "paper-a-q24": "fail",
+      "paper-a-q26": "fail",
+      "paper-a-q27": "fail",
+      "paper-a-q29": "fail",
+      "paper-a-q30": "fail",
+      "paper-a-q35": "pass",
+      "paper-b-q21": "pass",
+      "paper-b-q23": "pass",
+      "paper-b-q24": "fail",
+      "paper-b-q26": "pass",
+      "paper-b-q27": "fail",
+      "paper-b-q29": "pass",
+      "paper-b-q33": "pass",
+      "paper-b-q35": "fail",
+      "paper-c-q21": "pass",
+      "paper-c-q24": "pass",
+      "paper-c-q26": "fail",
+      "paper-c-q29": "fail",
+      "paper-c-q33": "pass",
+      "paper-d-q24": "pass",
+      "paper-d-q31": "pass"
+    }
+  },
+  "unlabelled_current_packet": {
+    "items": 20,
+    "papers": 7,
+    "selection": "First available grounded proposals in predetermined question and paper order, then shuffled. Convenience sample of proposed marks; excludes referrals. Human labels pending."
+  }
+}

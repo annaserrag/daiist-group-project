@@ -177,9 +177,9 @@ def compare_q22_context(folder, teacher_csv=None):
     provider = provider.for_evaluation(PacedCache(folder / "responses.sqlite"))
     rows = []
     for name, payload in exports.items():
-        default = grade_exam(payload, index=index, agent=provider, allow_remote=True)["teacher"]["answers"][21]
-        variant = grade_exam(payload, policy=Policy(figure_questions=(34,)), index=index,
+        default = grade_exam(payload, policy=Policy(figure_questions=(22,34)), index=index,
                              agent=provider, allow_remote=True)["teacher"]["answers"][21]
+        variant = grade_exam(payload, index=index, agent=provider, allow_remote=True)["teacher"]["answers"][21]
         rows.append({"paper":name,"default_route":default["reason"],"default_mark":default["mark"],
                      "candidate_route":variant["reason"],"candidate_mark":variant["mark"]})
     exams = teacher_data(teacher_csv)

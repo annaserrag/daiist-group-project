@@ -2,6 +2,8 @@
 
 ## Current handoff
 
+On 13 November, the revised Q22 route proposed 2/2 on two of 13 vetted transcriptions. Both agreed with the teacher. Six partial-credit decisions went to the teacher, three answers had insufficient verified evidence, and two readings were missing. The full 42-slot regression set still required 31 reviews. On the historical feedback packet, judging each claim against the displayed quotes reduced false passes from ten to five and introduced four false fails. [Paired results](eval/q22_routing_and_judge_replay.json)
+
 On 12 November, a frozen-cache regression check found that the course evaluator could count an unavailable model response as a successful targeted referral. It now records `missing_frozen_response` as an execution issue and fails that targeted expectation. On the same fixture, a genuine Q17 invalid-choice referral still passes. The suite now includes 45 tests. This change affects the course evaluator. The four-paper grading measurements use separately archived proposals.
 
 **The grading branch is ready for joint integration testing. The complete course submission still needs team evidence.**
@@ -40,7 +42,7 @@ The plan's direct-scan baseline has now been tested on the same synthetic printe
 
 Paper 23 also lists several algorithms, including linear regression, SVM and KNN, and received 0/2. Paper 24 lists preprocessing and evaluation concepts and received 0/2. These examples do not support a consistent automatic point for naming algorithms or describing related workflow. Teacher review can distinguish a relevant concept from a named hyperparameter and ask which setting the student would change. The production rule was retained. [Corrected_Pdf and anonymized teacher marks, Mendeley Data v1](https://doi.org/10.17632/sf3kvjwknt.1)
 
-The Q22 question states both accuracies. Removing its context gate on four development papers yielded two proposals, one of which had a numeric teacher reference and matched it. One other request failed and one paper had no located answer. The production policy continues to refer Q22 and Q34 pending the team's decision. [Q22 comparison](eval/q22_context_comparison.json)
+The first Q22 context experiment on four development papers yielded two proposals, one of which had a numeric teacher reference and matched it. One other request failed and one paper had no located answer. The 13 November replay above supersedes this experiment for current routing. [Earlier Q22 comparison](eval/q22_context_comparison.json)
 
 **Component 2 is ready for integration testing.** The multiple-choice replay covers 50 published exams. The revised written rubric awards two points for a complete answer and itemizes deductions. At 0.25 on the two pilot papers, both versions marked 14 of the same answers. Exact teacher matches rose from three to six, and mean absolute error fell from 0.96 to 0.71 points. The semantic index, broader grading validation and an end-to-end trial with Anna’s reader remain open. [Original pilot](eval/heldout_written_pilot.json) · [Revised pilot](eval/written_rubric_v2_pilot.json)
 

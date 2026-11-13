@@ -40,6 +40,34 @@ class Fake:
         return dict(tokens=self.calls*10,cost_eur=self.calls*.001,calls=self.calls,usage_complete=True)
 
 class Contract(unittest.TestCase):
+    def test_q22_uses_its_stated_context_and_reviews_contested_deductions(self):
+        from exam_grader.rubric import CRITERIA
+        quote = "Overfitting occurs when a model performs well on training data but poorly on unseen data."
+        hit = dict(id="overfit", title="Notes", heading="Generalization", url="", text=quote, score=.9)
+        from unittest.mock import Mock
+        index = Mock()
+        index.search.return_value = [hit]
+        evidence = [dict(criterion=label, quote=quote, coverage="full", passage_id="overfit")
+                    for points, label in CRITERIA[22].values()]
+        options = dict(mark=2, passage_id="overfit", quote=quote, deductions=[],
+                       criterion_evidence=evidence, feedback="Identifies overfitting and the generalization gap.")
+        def run(**changes):
+            agent = Fake(**(options | changes))
+            return get(result(a(22,"Overfits the training data and fails on unseen data."),
+                              index=index, agent=agent, allow_remote=True),22)
+        self.assertEqual(run()["mark"],2)
+        self.assertIsNone(run(criterion_evidence=evidence[:1])["mark"])
+        duplicate = evidence + [evidence[0] | {"criterion":"diagnosis"}]
+        self.assertIsNone(run(criterion_evidence=duplicate)["mark"])
+        self.assertIsNone(run(criterion_evidence=[evidence[0], evidence[1] | {"coverage":"partial"}])["mark"])
+        self.assertIsNone(run(criterion_evidence=[evidence[0], evidence[1] | {"quote":"A different source."}])["mark"])
+        deduction = dict(criterion="diagnosis", points=1, reason="The diagnosis is missing.")
+        partial = run(mark=1, deductions=[deduction])
+        self.assertEqual((partial["reason"],partial["mark"]),("diagnosis_partial_review",None))
+        self.assertNotIn("candidate_mark",partial)
+        self.assertEqual(partial["deductions"],[])
+        self.assertEqual(get(result(a(34,"Classifiers differ.")),34)["reason"],"context_check")
+
     def test_q32_marks_count_distinct_examples_and_explain_every_deduction(self):
         cases = [
             ("Random Forest", 0, 0),
