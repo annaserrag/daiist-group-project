@@ -75,6 +75,13 @@ class WrittenTransfer(unittest.TestCase):
             self.assertEqual(set(row["criterion_evidence"]), {"change","reason"})
         self.assertEqual(grade(1.5)["mark"], 2)
         self.assertIsNone(grade(2, entries[:1])["mark"])
+        response["quote"] = "Two fragments ... joined by the assessor."
+        self.assertEqual(grade(2)["citation"]["quote"], quote)
+        self.assertEqual(grade(2)["mark"], 2)
+        self.assertIsNone(grade(2, entries[:1])["mark"])
+        response["passage_id"] = "invented"
+        self.assertIsNone(grade(2)["mark"])
+
 
     def test_missing_source_example_cannot_justify_a_deduction(self):
         from exam_grader.grading import checked

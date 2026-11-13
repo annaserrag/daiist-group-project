@@ -143,6 +143,13 @@ def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
             # The proposed credit must also agree with the actual interval assignments.
             citations.pop("example", None)
     missing = [c for c in guide if citations.get(c, {}).get("coverage") != "full"]
+    if (not missing and custom_guide is not None and decision["reason"] == "unverified_citation"
+            and response.get("needs_review") is False):
+        # A malformed summary quote can be replaced only by independently verified body
+        # evidence from that SAME source, with full coverage of every teacher criterion.
+        replacement = next((cite for cite in citations.values() if cite["id"] == response.get("passage_id")), None)
+        if replacement:
+            decision = checked_mark(q, response | {"quote":replacement["quote"]}, hits, searches, guide=guide)
     if missing:
         details = " ".join(f"{c}: {guide[c][1]}" for c in missing)
         decision = row(q, "insufficient_evidence", score=hits[0]["score"], searches=searches,
