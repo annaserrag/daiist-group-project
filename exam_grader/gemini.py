@@ -24,7 +24,10 @@ CUSTOM_GUIDANCE = (
     "For an application or calculation, locate a passage teaching the relevant rule. Apply it "
     "to the values in the question or the student's example, and verify units and arithmetic. "
     "The source can use different numbers. Cite the rule verbatim. A topic heading alone "
-    "or a formula unrelated to the calculation is insufficient."
+    "or a formula unrelated to the calculation is insufficient. For EACH rubric ID, locate the "
+    "course standard independently of whether the student stated it. If the answer omits a result "
+    "or a reason, quote the passage teaching how to obtain that result or reason. The missing "
+    "student statement affects credit, while missing course text affects evidence coverage."
 )
 
 GUIDES = {QUESTIONS[q]: guide for q, guide in CRITERIA.items()}
