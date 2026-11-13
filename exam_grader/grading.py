@@ -66,16 +66,24 @@ def checked_mark(q, response, hits, searches, *, guide=None):
     seen = set()
     lost = 0
     explanations = []
+    positive_deductions = []
     for item in deductions:
         if not isinstance(item, dict):
             return row(q, "unexplained_deduction", **fields)
         criterion, points, reason = (item.get(k) for k in ("criterion", "points", "reason"))
         if (not isinstance(criterion, str) or criterion not in guide or criterion in seen
-                or type(points) not in (int, float) or points not in (.5, 1, 1.5, 2)
+                or type(points) not in (int, float) or points not in (0, .5, 1, 1.5, 2)
                 or points > guide[criterion][0] or not isinstance(reason, str)
                 or not 5 <= len(reason.strip()) <= 500):
             return row(q, "unexplained_deduction", **fields)
         seen.add(criterion)
+        if points == 0:
+            # A zero-loss annotation cannot resolve disagreement between the two assessments.
+            second = response.get("independent_mark")
+            if type(second) not in (int, float) or second != m:
+                return row(q, "mark_disagreement", **fields)
+            continue
+        positive_deductions.append(item)
         lost += points
         explanations.append(f"−{points:g}: {' '.join(reason.split())}")
     if lost != 2 - m:
@@ -88,7 +96,7 @@ def checked_mark(q, response, hits, searches, *, guide=None):
     if "page" in hit:
         cite["page"] = hit["page"]
     feedback = " ".join([" ".join(f.split()), *explanations])
-    return row(q,"grounded_proposal",m,feedback=feedback,citation=cite,**fields) | {"deductions": deductions}
+    return row(q,"grounded_proposal",m,feedback=feedback,citation=cite,**fields) | {"deductions": positive_deductions}
 
 
 def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
@@ -207,6 +215,8 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
     issue = status if status != "in_scope" else ("unassigned_answer" if unassigned else None)
     session = agent.open_session() if agent is not None and allow_remote and not issue else None
 
+    review_passages = {}
+
     def decide(q):
         if issue:
             return row(q,issue)
@@ -260,6 +270,15 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
             return row(q,"low_read_confidence",**fields)
         if score is None or score < p.min_similarity:
             return row(q,"weak_retrieval",**fields)
+        # Keep passages that cleared retrieval available for the teacher even if generation fails.
+        review_passages[q] = hits
+        if custom and (proof := custom[q].match_full_credit(txt, hits)):
+            decision = row(q, "teacher_approved_answer", 2, citation=next(iter(proof.values())),
+                           feedback="Matches a complete answer approved for this rubric.", **fields)
+            decision.update(criterion_evidence=proof, criteria_needing_evidence=[], deductions=[])
+            if p.written_review_at_or_below == 2:
+                decision.update(mark=None, status="review", reason="written_mark_review", candidate_mark=2)
+            return decision
         if session is None:
             return row(q,"provider_disabled",**fields)
         try:
@@ -297,6 +316,11 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
     for item in out:
         q = item["question_id"]
         item["question"] = questions[q]
+        if item["mark"] is None and q in review_passages:
+            item["review_passages"] = [
+                {k: hit[k] for k in ("id", "title", "heading", "url", "page") if k in hit}
+                | {"excerpt": hit["text"][:1200]} for hit in review_passages[q]
+            ]
         if custom:
             item["max_mark"] = 2
         item["readings"] = [a["text"][:4000] for a in buckets.get(q, []) if isinstance(a.get("text"), str)]
@@ -333,7 +357,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                         "latency_s":elapsed}},
               "versions":{"component_a":"UNSET-by-vision-owner","component_b":getattr(agent,"version","no-provider"),
                           "retrieval":getattr(index,"version","no-index"),"contract":"vision.exam.v1","q32_rule":hyperparameters.VERSION,
-                          "evidence_rule":"per-criterion-v4-independent-mark",
+                          "evidence_rule":"per-criterion-v5-zero-loss",
                           "policy":sha256(json.dumps(asdict(p),sort_keys=True).encode()).hexdigest()[:12]},
               "review":bool(reviewed or near_pass),"tokens":usage["tokens"],"cost_eur":usage["cost_eur"]}
     return {"teacher":teacher,"record":record}

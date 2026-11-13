@@ -40,6 +40,16 @@ class Fake:
         return dict(tokens=self.calls*10,cost_eur=self.calls*.001,calls=self.calls,usage_complete=True)
 
 class Contract(unittest.TestCase):
+    def test_review_passages_remain_teacher_only_and_do_not_imply_grade_support(self):
+        exam = result(a(21, "Answer for review"), index=Search())
+        item = get(exam, 21)
+        self.assertEqual(item["reason"], "provider_disabled")
+        self.assertIsNone(item["mark"])
+        self.assertIsNone(item["citation"])
+        self.assertIn("Examples carry known target labels", item["review_passages"][0]["excerpt"])
+        self.assertNotIn("known target labels", json.dumps(exam["record"]))
+        self.assertNotIn("review_passages", get(result(a(21, "uncertain", confidence=.2), index=Search()), 21))
+
     def test_q22_uses_its_stated_context_and_reviews_contested_deductions(self):
         from exam_grader.rubric import CRITERIA
         quote = "Overfitting occurs when a model performs well on training data but poorly on unseen data."

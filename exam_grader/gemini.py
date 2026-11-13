@@ -35,7 +35,10 @@ GUIDANCE_BY_QUESTION = {QUESTIONS[q]: note for q, note in EVIDENCE_GUIDANCE.item
 
 class Deduction(BaseModel):
     criterion: str = Field(description="Exact criterion ID from the marking guide.")
-    points: float = Field(ge=0.5, le=2, description="Points lost on this criterion, in half-point steps.")
+    # Continue requesting positive deductions on the wire. Occasionally the provider
+    # includes a zero-loss row for a satisfied criterion. The grader validates it.
+    points: float = Field(ge=0, le=2, json_schema_extra={"minimum": 0.5},
+                          description="Points lost on this criterion, in half-point steps.")
     # Request concise reasons on the wire, but retain a longer usable explanation in full.
     reason: str = Field(min_length=5, max_length=500, json_schema_extra={"maxLength": 160},
                         description="Specific missing or incorrect idea and what was needed.")
@@ -189,12 +192,19 @@ class Gemini:
         provider.cache = cache
         return provider
 
+class DailyQuotaReached(Exception):
+    """This grading session already received a daily quota rejection."""
+
+
 class Session:
     def __init__(self, owner):
         self.owner, self.meter = owner, Meter()
         self.cached_inputs = self.cached_outputs = self.cache_hits = 0
+        self.daily_quota_reached = False
     @staticmethod
     def failure_reason(error):
+        if isinstance(error, DailyQuotaReached):
+            return "provider_daily_quota"
         if isinstance(error, ToolCallLimitExceededError):
             return "lookup_limit"
         if isinstance(error, ModelCallLimitExceededError):
@@ -236,6 +246,8 @@ class Session:
             data["marking_guide"] = [{"id":c,"maximum":points,"standard":standard}
                                      for c,(points,standard) in guide.items()]
         def generate():
+            if self.daily_quota_reached:
+                raise DailyQuotaReached()
             call = Meter()
             full={h["id"]:h["text"] for h in hits}
             preview=data | {"evidence":[h | {"text":h["text"][:PREVIEW],"truncated":len(h["text"])>PREVIEW} for h in data["evidence"]]}
@@ -269,6 +281,10 @@ class Session:
                 if binning:
                     answer["binning_application"] = report.application.model_dump()
                 return {"proposal":answer,"opened":opened}, (call.inputs,call.outputs) if call.complete else None
+            except Exception as error:
+                if self.failure_reason(error) == "provider_daily_quota":
+                    self.daily_quota_reached = True
+                raise
             finally:
                 self.meter.calls += call.calls
                 self.meter.inputs += call.inputs

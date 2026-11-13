@@ -40,6 +40,11 @@ def load_rows(folder):
     for label, cohort in (("UNT development", "schema_replay"), ("UNT fresh answers", "fresh"),
                           ("UNT new questions", "unseen_questions")):
         yield summarize(label, unt[cohort]["pairs"])
+    followup = report("review_and_exact_transfer.json")
+    for arm in ("baseline", "exact"):
+        yield summarize("Offline custom exams " + arm, [
+            dict(mark=r[arm]["mark"], teacher=r["teacher"]) for r in followup["transfer"]["pairs"]])
+    yield summarize("Offline C++ new questions", followup["new_questions"]["pairs"])
 
 
 if __name__ == "__main__":

@@ -41,6 +41,22 @@ class AppFlow(unittest.TestCase):
             self.assertEqual(logbook.load().iloc[0]["feedback"],1)
             self.assertNotIn("known target labels",next(Path(directory).glob("requests-*")).read_text())
             self.assertEqual(app.monitoring()[2].iloc[0]["requests"],1)
+    def test_focus_review_preserves_the_sheet_and_uses_the_question_scale(self):
+        context = {"limits": [(2, 1), (21, 2), (22, 2)],
+                   "referrals": {2: {"reading": ""}, 21: {"reading": "student"},
+                                 22: {"reading": "student"}}}
+        sheet = [[2, None], [21, None], [22, None]]
+        updated, next_question, _, _ = app.apply_review_mark(context, 22, 0, sheet)
+        self.assertEqual(updated, [[2, None], [21, None], [22, 0]])
+        self.assertEqual(next_question, 21)
+        updated, next_question, _, _ = app.apply_review_mark(context, 21, 1.5, updated)
+        self.assertEqual(next_question, 2)
+        with self.assertRaises(gr.Error):
+            app.apply_review_mark(context, 2, .5, updated)
+        self.assertIsNone(app.apply_review_mark(context, 2, 1, updated)[1])
+        with self.assertRaises(gr.Error):
+            app.apply_review_mark(context, 21, 2, updated[::-1])
+
     def test_wrong_subject_cannot_be_signed(self):
         with self.assertRaises(gr.Error):
             app.sign_off({"id":"test","in_scope":False},[[q,0] for q in range(1,36)])

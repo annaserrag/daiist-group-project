@@ -9,7 +9,8 @@ import pandas as pd
 import logbook
 import monitor
 import pipeline
-from exam_grader.catalog import QUESTIONS
+from exam_grader.catalog import KEY, QUESTIONS
+from exam_grader.rubric import CRITERIA
 from exam_grader.build import vector
 from exam_grader.written_exam import WrittenExam
 from exam_grader.materials import BUILTIN, add_pdf
@@ -104,6 +105,8 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         raise gr.Error("Choose an OCR export or a PDF first.")
     teacher, record = process_once(raw_input, selected_index(library, course), exam_state)
     evidence, marks = [], []
+    referrals = {}
+    custom = {q.question_id: q for q in exam_state[0].questions} if exam_state else {}
     for item in teacher["answers"]:
         source = item["citation"] or {}
         feedback = item["feedback"] or REVIEW_ACTIONS.get(item.get("execution_issue",item["reason"]), "")
@@ -115,7 +118,30 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
                                    + (f", p. {c['page']}" if "page" in c else "")
                                    + f" · {c['quote']}" + (f" · Example check: {c['basis']}" if "basis" in c else "")
                                    for criterion,c in item.get("criterion_evidence",{}).items())])
-        marks.append([item["question_id"], item["mark"]])
+        q = item["question_id"]
+        if teacher["exam_status"] == "in_scope" and item["mark"] is None:
+            guide = custom[q].guide() if custom else CRITERIA.get(q, {})
+            key = custom[q].reference_answer if custom else KEY[q]
+            rubric = [f"{name} ({points:g} points) · {standard}" for name, (points, standard) in guide.items()]
+            proofs = item.get("criterion_evidence", {})
+            sources = []
+            for name, cite in proofs.items():
+                location = cite["title"] + (f", p. {cite['page']}" if "page" in cite else "")
+                sources.append(f"{name} ({cite['coverage']}) · {location} · {cite['quote']}")
+            passages = []
+            for hit in item.get("review_passages", []):
+                location = hit["title"] + (f", p. {hit['page']}" if "page" in hit else "")
+                if hit.get("url"):
+                    location += f" · {hit['url']}"
+                passages.append(f"{location}\n{hit['excerpt']}")
+            # The teacher can assess a large deduction independently. The original
+            # model suggestion stays available in the full evidence table.
+            action = ("Assess each rubric point before entering a mark."
+                      if item["reason"] == "written_mark_review" else feedback)
+            referrals[q] = dict(question=item["question"], reading=" | ".join(item["readings"]),
+                                key=key, rubric=rubric, sources=sources, passages=passages, action=action,
+                                reason=item["reason"].replace("_", " "))
+        marks.append([q, item["mark"]])
     count = teacher["review_count"]
     if teacher["input_type"] == "pdf_awaiting_reader":
         status = "PDF received. Connect the team's vision reader to extract these answers."
@@ -129,8 +155,45 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
             status += " Check the total against the configured pass boundary."
     context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
                "limits":[(r["question_id"],r["max_mark"]) for r in teacher["answers"]],
-               "review_started":perf_counter(), "proposals":[point for _,point in marks]}
+               "referrals":referrals, "review_started":perf_counter(), "proposals":[point for _,point in marks]}
     return status, evidence, marks, context, None
+
+def referral_options(context):
+    referrals = (context or {}).get("referrals", {})
+    ordered = sorted(referrals, key=lambda q: (not referrals[q]["reading"].strip(), q))
+    first = ordered[0] if ordered else None
+    choice = gr.Dropdown(choices=[(f"Q{q} · {referrals[q]['reason']}", q) for q in ordered], value=first)
+    return choice, *referral_details(context, first), None
+
+
+def referral_details(context, question):
+    item = (context or {}).get("referrals", {}).get(question)
+    if not item:
+        return "", "", ""
+    reading = item["reading"] or "No transcription available. Check the original paper."
+    guide = "\n".join([item["key"], *item["rubric"]])
+    evidence = "\n".join(item["sources"]) or "No verified teaching passage available."
+    support = f"{item['action']}\n\n{evidence}"
+    if item.get("passages"):
+        support += "\n\nRetrieved passages for teacher inspection (unverified)\n" + "\n\n".join(item["passages"])
+    return f"{item['question']}\n\n{reading}", guide, support
+
+
+def apply_review_mark(context, question, point, marks):
+    referrals = (context or {}).get("referrals", {})
+    if question not in referrals:
+        raise gr.Error("Choose a referred question.")
+    limits = dict(context["limits"])
+    if (type(point) not in (int, float) or not math.isfinite(point) or not 0 <= point <= limits[question]
+            or (point if limits[question] == 1 else point * 2) % 1):
+        raise gr.Error(f"Enter a valid mark between 0 and {limits[question]} for Q{question}.")
+    if [row[0] for row in marks] != list(limits):
+        raise gr.Error("Restore the question numbers on the teacher sheet before recording this mark.")
+    updated = [[q, point if q == question else old] for q, old in marks]
+    remaining = [q for q, value in updated if q in referrals and value in (None, "")]
+    remaining.sort(key=lambda q: (not referrals[q]["reading"].strip(), q))
+    return updated, remaining[0] if remaining else None, None, None
+
 
 def sign_off(context, marks):
     if not context or not context["in_scope"]:
@@ -205,11 +268,24 @@ def build_app():
             teacher_marks = gr.Dataframe(headers=["Q","Teacher mark"], type="array", datatype=["number","number"],
                                          interactive=True, label="Teacher marks · complete empty cells before sign-off")
             ctx = gr.State(None)
+            with gr.Accordion("Review one question", open=False):
+                review_q = gr.Dropdown(label="Referred question", choices=[], type="value")
+                reading = gr.Textbox(label="Question and student reading", interactive=False)
+                standard = gr.Textbox(label="Reference answer and marking guide", interactive=False)
+                support = gr.Textbox(label="Review reason and sources", interactive=False)
+                review_point = gr.Number(label="Teacher mark for this question", value=None)
+                record_point = gr.Button("Record mark and show next referral")
             approve = gr.Button("Sign off all marks")
             signed = gr.JSON(label="Final teacher-approved sheet")
             outputs = [status,evidence,teacher_marks,ctx,signed]
             go.click(display,[upload,library,course,exam_state],outputs,api_name="run")
             example.click(lambda lib, active, state: display(pipeline.EXAMPLE, lib, active, state),[library,course,exam_state],outputs,api_name="grade_example")
+            ctx.change(referral_options, ctx, [review_q,reading,standard,support,review_point], api_name=False)
+            review_q.input(referral_details, [ctx,review_q], [reading,standard,support], api_name=False)
+            review_q.input(lambda: None, None, review_point, api_name=False)
+            record_point.click(apply_review_mark, [ctx,review_q,review_point,teacher_marks],
+                               [teacher_marks,review_q,review_point,signed], api_name=False).success(
+                                   referral_details, [ctx,review_q], [reading,standard,support], api_name=False)
             approve.click(sign_off,[ctx,teacher_marks],signed,api_name=False)
             with gr.Row():
                 up = gr.Button("Helpful")

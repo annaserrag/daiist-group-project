@@ -37,7 +37,14 @@ class WrittenTransfer(unittest.TestCase):
                 status, _, marks, ctx, _ = app.display(p, library, course, state)
                 self.assertIn("1 of 2", status)
                 self.assertEqual(marks, [[1,0],[32,None]])
-                result = app.sign_off(ctx, [[1, .5],[32, 1.5]])
+                _, reading, guide, _, _ = app.referral_options(ctx)
+                self.assertIn("SVM", reading)
+                self.assertIn(exam.questions[1].reference_answer, guide)
+                self.assertNotIn("hyperparameters", guide.lower())
+                updated, next_question, _, _ = app.apply_review_mark(ctx, 32, 1.5, marks)
+                self.assertIsNone(next_question)
+                updated[0][1] = .5
+                result = app.sign_off(ctx, updated)
                 self.assertEqual((result["maximum"],result["total"]), (4,2))
                 for ident in (None, "another-exam"):
                     p.write_text(json.dumps(payload | {"exam_id":ident}))
@@ -46,6 +53,42 @@ class WrittenTransfer(unittest.TestCase):
                     self.assertTrue(all(r["mark"] is None for r in view["teacher"]["answers"]))
                 p.write_text(json.dumps(payload))
                 self.assertEqual(pipeline.run_views(p)["teacher"]["exam_status"], "out_of_scope")
+
+    def test_approved_answer_requires_exact_wording_full_quotes_and_correct_fingerprint(self):
+        from exam_grader.grading import grade_exam
+        from unittest.mock import Mock
+        original = WrittenExam.load(DATA / "waves-exam.json")
+        self.assertEqual(original.exam_id, json.loads((DATA / "generalization_waves.json").read_bytes())["exam_id"])
+        config = original.model_dump()
+        quotes = {"change": "Double the frequency and the period halves.",
+                  "reason": "The period equals the reciprocal of the frequency."}
+        config["questions"][1]["full_credit_match"] = {"answers":["It halves because T = 1/f."], "quotes":quotes}
+        exam = WrittenExam.model_validate(config)
+        self.assertNotEqual(exam.exam_id, original.exam_id)
+        hit = dict(id="page", title="Course", heading="Waves", page=2, url="", score=.8,
+                   text=" ".join(quotes.values()))
+        index = Mock()
+        index.search.return_value = [hit]
+        base = dict(question_id=32, text="It halves because T = 1/f.", confidence=1, id_confidence=1, state="read")
+
+        def graded(*, exam_id=exam.exam_id, policy=None, **changes):
+            payload = dict(schema_version="vision.exam.v1", exam_id=exam_id, exam_status="in_scope",
+                           answers=[base | changes])
+            return grade_exam(payload, written_exam=exam, index=index, policy=policy)["teacher"]["answers"][1]
+
+        accepted = graded()
+        self.assertEqual((accepted["mark"], accepted["citation"]["page"]), (2, 2))
+        self.assertEqual(set(accepted["criterion_evidence"]), set(quotes))
+        for options in ({"text":base["text"] + " Or it doubles."}, {"text":base["text"].lower()},
+                        {"confidence":.1}, {"id_confidence":.1}, {"exam_id":original.exam_id},
+                        {"policy":Policy(written_review_at_or_below=2)}):
+            self.assertIsNone(graded(**options)["mark"])
+        for overrides in ({"text":quotes["change"]}, {"labels":[quotes["reason"]]}, {"score":.1}):
+            index.search.return_value = [hit | overrides]
+            self.assertIsNone(graded()["mark"])
+        config["questions"][1]["full_credit_match"]["quotes"] = {"change": quotes["change"]}
+        with self.assertRaises(ValueError):
+            WrittenExam.model_validate(config)
 
     def test_default_review_threshold_is_scoped_to_the_builtin_exam(self):
         exam = WrittenExam.load(DATA / "waves-exam.json")

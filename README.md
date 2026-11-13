@@ -15,19 +15,36 @@ uv run --locked --no-dev python -m unittest discover -s tests -v
 uv run --locked --no-dev python -m exam_grader
 ~~~
 
+## Work through referred answers
+
+After grading, open **Review one question**. The list puts referrals with a transcription first. Each question shows the student’s reading, the selected exam’s reference answer and rubric, and any verified passages. If the grading service is unavailable, it also shows retrieved excerpts separately for the teacher to verify. Enter a teacher mark and choose **Record mark and show next referral**. Your entry goes into the existing teacher sheet. You can revisit a question or edit the sheet before signing off. Cases with a missing scan reading remain available for inspection.
+
 ## Try a course PDF
 
 Open **Materials**, enter a course name, upload a searchable PDF and click **Index PDF and select course**. The active course applies to both the passage preview and subsequent grading runs. Add more PDFs under the same name to search them together. The built-in references and each named course have their own index. Courses are scoped to the current browser session.
 
 To reproduce the page check, upload [the three-page ML handout](eval/ml-course-notes.pdf), choose Q21 and click **Find supporting passages**. The definition of supervised learning appears on PDF page 3. In **App**, click **Try synthetic OCR example** and inspect the Q21 row for its mark, source filename, PDF page and supporting quote. The live test returned 2/2 and cited the first sentence of the definition on page 3. Page numbers count from the first physical page, including covers and pages without text.
 
-With the configured Gemini key and semantic index, the app embeds uploaded course passages once per session and reuses the bundled exam question vectors. Without a key, you can still index PDFs and preview lexical retrieval. Live written grading requires the configured key and an approved exam input. Image-only course PDFs need OCR before uploading.
+With the configured Gemini key and semantic index, the app embeds uploaded course passages once per session and reuses the bundled exam question vectors. Without a key, you can still index PDFs and preview lexical retrieval. Model-based written grading requires the configured key and an approved exam input. The optional exact full-credit rule on custom questions runs locally. Image-only course PDFs need OCR before uploading.
 
 For the bundled ML exam, live grading defaults to `gemini-3.1-flash-lite` and sends model-proposed written marks of 1/2 or below to teacher review. Confirmed blanks and the separately evaluated Q32 rule keep their own routing. A teacher-supplied written exam uses its own marking guide. A deployment can set an explicit `GRADE_POLICY_FILE` and `GRADE_MODEL`. Enter pricing for the actual configured model if reporting cost.
 
 ## Use a different written exam
 
 In **Materials**, upload a teacher-authored JSON definition and choose **Apply exam definition**. It accepts 1–15 written questions worth two points each. Use unique question numbers from 1–35 and rubric weights in half-point steps. Set `requires_figure` for questions that need a diagram. Choose or upload the corresponding course material. The app searches using the new question text and applies the supplied rubric to each answer.
+
+For closed-form written questions you can add an optional `full_credit_match` to the question in the definition. List complete answers you accept for full credit and copy one supporting body quote from the course material for each criterion ID. For example, a question with a single criterion named `layout` can include the following field.
+
+```json
+"full_credit_match": {
+  "answers": ["By rows.", "row-major order"],
+  "quotes": {
+    "layout": "A built-in two-dimensional C++ array is stored by rows in row-major order."
+  }
+}
+```
+
+The grader compares the entire trimmed reading, including case, punctuation and internal spacing. It proposes 2/2 locally only if the usual reading, identity, context and retrieval checks pass and the retrieved body contains every configured quote. Otherwise the normal written workflow handles the answer. Add only equivalent complete answers, especially for formulas, units and case-sensitive identifiers. The rubric fingerprint changes when you edit the list.
 
 The **Active exam** field displays a content-based `exam_id`. The reader must put that value in the top level of its `vision.exam.v1` export. Reapplying after a question, reference answer or rubric edit gives a new ID. A missing or different ID on a custom paper routes the whole exam to review. To restore the built-in ML paper, clear the definition file and click **Apply exam definition** again. Legacy exports for the built-in paper remain compatible.
 

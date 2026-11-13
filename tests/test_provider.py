@@ -70,6 +70,27 @@ class ProviderContract(unittest.TestCase):
             self.assertEqual(result["independent_mark"], 1)
             self.assertEqual([e["criterion"] for e in result["criterion_evidence"]], ["change","reason"])
 
+    def test_zero_loss_annotation_keeps_evidence_and_independent_score_checks(self):
+        from exam_grader.gemini import Proposal
+        from exam_grader.grading import checked
+        quote = "Structured records use a fixed schema. Semi-structured records can use tags."
+        hit = dict(id="p", title="Record formats", heading="", text=quote, url="", score=.8)
+        deductions = [dict(criterion="structured", points=1, reason="Confuses a table with video."),
+                      dict(criterion="semi_structured", points=0, reason="Correctly identifies XML.")]
+        msg = Proposal(feedback="Identifies XML.", passage_id="p", quote=quote,
+                       needs_review=False, mark=1, deductions=deductions).model_dump()
+        entries = [dict(criterion=c, coverage="full", passage_id="p", quote=quote)
+                   for c in ("structured", "semi_structured")]
+        response = dict(msg, independent_mark=1, criterion_evidence=entries)
+        result = checked(26, response, [hit], 1)
+        self.assertEqual(result["mark"], 1)
+        self.assertEqual(result["deductions"], deductions[:1])
+        self.assertNotIn("−0", result["feedback"])
+        for changes in ({"independent_mark": 1.5}, {"independent_mark": None}, {"mark": 2},
+                        {"criterion_evidence": entries[:1]}, {"deductions": deductions + deductions[1:]},
+                        {"deductions": [deductions[0], deductions[1] | {"criterion":"unknown"}]}):
+            self.assertIsNone(checked(26, response | changes, [hit], 1)["mark"])
+
     def test_daily_quota_is_distinct_from_a_short_rate_limit(self):
         from google.genai.errors import ClientError
         from exam_grader.gemini import Session
@@ -78,6 +99,24 @@ class ProviderContract(unittest.TestCase):
             error = ClientError(429, {"error":{"message":"private service message",
                                 "details":[{"violations":[{"quotaId":ident}]}]}})
             self.assertEqual(Session.failure_reason(error), expected)
+
+    def test_daily_quota_blocks_further_uncached_calls_in_the_same_exam(self):
+        from google.genai.errors import ClientError
+        from exam_grader.gemini import DailyQuotaReached
+        error = ClientError(429, {"error": {"message": "daily limit", "details": [{"violations": [
+            {"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}})
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "offline-test-only"}), patch.object(
+                ChatGoogleGenerativeAI, "_generate", side_effect=error) as transport:
+            agent = Gemini()
+            session = agent.open_session()
+            with self.assertRaises(Exception) as first:
+                session.grade("Q1", "key", "answer", [])
+            self.assertEqual(session.failure_reason(first.exception), "provider_daily_quota")
+            with self.assertRaises(DailyQuotaReached):
+                session.grade("Q2", "key", "answer", [])
+            self.assertEqual(transport.call_count, 1)
+            self.assertEqual(session.usage()["calls"], 1)
+            self.assertFalse(agent.open_session().daily_quota_reached)
 
     def test_schema_roundtrip_and_meter(self):
         data=dict(feedback="Identifies the target.",passage_id="test",

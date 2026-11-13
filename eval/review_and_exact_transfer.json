@@ -1,0 +1,1998 @@
+{
+  "ml_plan": {
+    "papers": [
+      30,
+      44,
+      29
+    ],
+    "seed": 17751,
+    "eligible": [
+      6,
+      9,
+      11,
+      12,
+      14,
+      19,
+      21,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      32,
+      34,
+      37,
+      39,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50
+    ],
+    "questions": [
+      24,
+      25,
+      26,
+      27,
+      30
+    ],
+    "baseline": "bf89c85",
+    "decision": "Same rubric, threshold, model and passages. Compare named criterion fields and grounding instructions on new papers. Deploy only if proposals increase with no more errors >=1 and no loss of exact agreement count. Otherwise keep the baseline. Only readable responses enter grading rates.",
+    "primary_model": "gemini-3.1-flash-lite",
+    "secondary_model": "gemini-3.5-flash-lite",
+    "secondary_plan": "Production model daily quota interrupted the primary trial. Compare both frozen implementations on an independently available model on identical inputs. This secondary comparison cannot establish performance on the default model. Do not deploy the named-field proposal from secondary evidence alone. The listed 2.5 lite model was unavailable to this project (HTTP 404). A generation probe verified model 3.5 lite before either comparison arm was scored."
+  },
+  "scan_hashes": {
+    "30": "e3dfee5b42ba3b96d4deb28a4811d6e51465332aca45b2af62e0e19a23f57f77",
+    "44": "cd5ec359b2254fe4da07acf0f753a5b8cb9ad4f69f1b649cf73d59032dad6b95",
+    "29": "51b1ebbca6d28e50831ced2d96950aa3105e7dea621a194afb7fa9457ced67b9"
+  },
+  "export_hashes": {
+    "30": "cbcc3136ce6339535514b87c2fc2d99359cc8e2563f654e5a34b0cc8fb48192b",
+    "44": "cb38b90fc66e5cf2f187680c81884186b50af5629afc52b94bc901b4e44b2c71",
+    "29": "e18b79101f8f1f99da7a9e1862b953ab5f044e4db35b69af12c91ca99bab9d50"
+  },
+  "teacher_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "review_passage_replay": [
+    {
+      "paper": 30,
+      "question": 24,
+      "source_ids": [
+        "quality-12aa1645af38",
+        "quality-790d57682cc4",
+        "supervised-3cf537b4ea95"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 30,
+      "question": 25,
+      "source_ids": [
+        "industry-applications-85b4a9b6041a",
+        "applications-85ee7c296204",
+        "semi-629606030c4a"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 30,
+      "question": 26,
+      "source_ids": [
+        "structured-records-55d6702ce00d",
+        "semi-20ab612a9995",
+        "semi-629606030c4a"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 30,
+      "question": 27,
+      "source_ids": [
+        "statistics-fd7cc124cdcf",
+        "statistics-313806e76776",
+        "statistics-05dba23f2c19"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 30,
+      "question": 30,
+      "source_ids": [
+        "binning-afab4428a516",
+        "binning-28fed3232063",
+        "binning-cd62f9ad3af1"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 44,
+      "question": 24,
+      "source_ids": [
+        "quality-12aa1645af38",
+        "supervised-3cf537b4ea95",
+        "quality-790d57682cc4"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 44,
+      "question": 25,
+      "source_ids": [
+        "industry-applications-85b4a9b6041a",
+        "applications-85ee7c296204",
+        "semi-629606030c4a"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 44,
+      "question": 26,
+      "source_ids": [
+        "semi-20ab612a9995",
+        "structured-records-55d6702ce00d",
+        "semi-629606030c4a"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 44,
+      "question": 27,
+      "source_ids": [
+        "statistics-313806e76776",
+        "outlier-handling-b04f0fc134a5",
+        "statistics-05dba23f2c19"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 44,
+      "question": 30,
+      "source_ids": [
+        "binning-afab4428a516",
+        "binning-cd62f9ad3af1",
+        "binning-28fed3232063"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 29,
+      "question": 24,
+      "source_ids": [
+        "quality-12aa1645af38",
+        "supervised-3cf537b4ea95",
+        "quality-790d57682cc4"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 29,
+      "question": 25,
+      "source_ids": [
+        "industry-applications-85b4a9b6041a",
+        "applications-85ee7c296204",
+        "semi-629606030c4a"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 29,
+      "question": 26,
+      "source_ids": [
+        "semi-20ab612a9995",
+        "structured-records-55d6702ce00d",
+        "semi-984b4ecb6aac"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 29,
+      "question": 27,
+      "source_ids": [
+        "statistics-313806e76776",
+        "outlier-handling-b04f0fc134a5",
+        "statistics-05dba23f2c19"
+      ],
+      "hits_approved_page": true
+    },
+    {
+      "paper": 29,
+      "question": 30,
+      "source_ids": [
+        "binning-afab4428a516",
+        "binning-cd62f9ad3af1",
+        "binning-28fed3232063"
+      ],
+      "hits_approved_page": true
+    }
+  ],
+  "live_partial": {
+    "baseline": [
+      {
+        "paper": 30,
+        "question": 24,
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 25,
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "teacher": 0.0
+      },
+      {
+        "paper": 30,
+        "question": 26,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 27,
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 30,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 1.0
+      },
+      {
+        "paper": 44,
+        "question": 24,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 44,
+        "question": 25,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "teacher": 2.0
+      },
+      {
+        "paper": 44,
+        "question": 26,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "teacher": 2.0
+      },
+      {
+        "paper": 44,
+        "question": 27,
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "teacher": 2.0
+      },
+      {
+        "paper": 44,
+        "question": 30,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 1.0
+      },
+      {
+        "paper": 29,
+        "question": 24,
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "teacher": 2.0
+      },
+      {
+        "paper": 29,
+        "question": 25,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 29,
+        "question": 26,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 29,
+        "question": 27,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 29,
+        "question": 30,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 1.0
+      }
+    ],
+    "named": [
+      {
+        "paper": 30,
+        "question": 24,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 25,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 0.0
+      },
+      {
+        "paper": 30,
+        "question": 26,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 27,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 30,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 1.0
+      }
+    ],
+    "secondary-base": [
+      {
+        "paper": 30,
+        "question": 24,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 25,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 0.0
+      },
+      {
+        "paper": 30,
+        "question": 26,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 27,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 2.0
+      },
+      {
+        "paper": 30,
+        "question": 30,
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota",
+        "teacher": 1.0
+      }
+    ]
+  },
+  "transfer": {
+    "dataset": "https://web.eecs.umich.edu/~mihalcea/downloads.html",
+    "archive_sha256": "5abee7ee804a2c5ae802b226230fb14c5bdb894f0f33bab6e20b4e7f1ed89247",
+    "selection": "All remaining rows on recursion, queues and stack operations after excluding 24 development and 12 earlier validation responses across the four original prompts. The three selected prompts have 9 excluded rows each. These are new records and common short answers can repeat. No teacher scores consulted to define the accepted strings.",
+    "exam_id": "written-2cc61809696d66e111eea29d146a0edc1c679da742dd4c6f3fc34f28f5c77822",
+    "configured_rules": {
+      "11.5": {
+        "answers": [
+          "A function that calls itself.",
+          "A function that calls itself",
+          "A function which calls itself.",
+          "A function which calls itself",
+          "a function that calls itself.",
+          "a function that calls itself"
+        ],
+        "quotes": {
+          "definition": "A recursive function invokes itself while solving a task."
+        }
+      },
+      "12.6": {
+        "answers": [
+          "FIFO",
+          "First in first out",
+          "First in first out.",
+          "first in first out",
+          "first in first out.",
+          "First-in, first-out"
+        ],
+        "quotes": {
+          "order": "A queue serves items in first-in, first-out (FIFO) order."
+        }
+      },
+      "12.7": {
+        "answers": [
+          "push and pop",
+          "Push and pop",
+          "push and pop.",
+          "Push and pop.",
+          "push, pop",
+          "push, pop.",
+          "Push, Pop",
+          "Push, pop",
+          "pop and push",
+          "Pop and push",
+          "push() and pop()"
+        ],
+        "quotes": {
+          "push": "Push adds an item to the top of the stack.",
+          "pop": "Pop removes the most recently pushed item from the top."
+        }
+      }
+    },
+    "blind_sha256": "9c797d6b40c7379aa263b088f0447c1b78a738517ad2a2ab9bbac1f21789caff",
+    "summary": {
+      "baseline": {
+        "sample": "baseline",
+        "answers": 59,
+        "proposed": 0,
+        "review": 59,
+        "paired": 0,
+        "exact": 0,
+        "within_half": 0,
+        "differ_by_one_or_more": 0,
+        "mean_absolute_error": null,
+        "always_full_mae_on_same_proposals": null
+      },
+      "exact": {
+        "sample": "exact",
+        "answers": 59,
+        "proposed": 7,
+        "review": 52,
+        "paired": 7,
+        "exact": 7,
+        "within_half": 7,
+        "differ_by_one_or_more": 0,
+        "mean_absolute_error": 0.0,
+        "always_full_mae_on_same_proposals": 0.0
+      }
+    },
+    "pairs": [
+      {
+        "question": "11.5",
+        "index": 0,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 1,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 2,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 0.0
+      },
+      {
+        "question": "11.5",
+        "index": 4,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 9,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 10,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 11,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 12,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 13,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 17,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 18,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 19,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 20,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 21,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 22,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 23,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 25,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 26,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 27,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 28,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "11.5",
+        "index": 29,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 0,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 1,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 3,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 4,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 6,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 7,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 8,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 1.4000000000000001
+      },
+      {
+        "question": "12.6",
+        "index": 13,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 14,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 15,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 16,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 17,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 18,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 19,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 20,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 21,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 22,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 23,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.6",
+        "index": 25,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 0,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 1,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 3,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 4,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 5,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 6,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 7,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 8,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 9,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 10,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 13,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 15,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 16,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 18,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 19,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 22,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 23,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 25,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": 2,
+          "reason": "teacher_approved_answer"
+        },
+        "teacher": 2.0
+      },
+      {
+        "question": "12.7",
+        "index": 26,
+        "baseline": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "exact": {
+          "mark": null,
+          "reason": "provider_disabled"
+        },
+        "teacher": 2.0
+      }
+    ],
+    "rule_iteration": "The first offline implementation normalized internal whitespace and accepted eight records. Literal internal whitespace was retained for safety with code and units, which removed one match. The additional two C++ prompts were tested only after this decision."
+  },
+  "new_questions": {
+    "selection": "All records from two previously unused prompts, selected for a single, closed-form full-credit answer. Exact variants and supporting teaching notes fixed from the instructor keys before reading student responses or scores. Lexical course index, no model available. Includes only these two questions; neither open-ended partial credit nor OCR is evaluated.",
+    "exam": {
+      "title": "C++ entry point and array layout",
+      "questions": [
+        {
+          "question_id": 1,
+          "question": "Where do C++ programs begin to execute?",
+          "reference_answer": "At the main function.",
+          "criteria": [
+            {
+              "id": "entry",
+              "points": 2.0,
+              "description": "At the main function."
+            }
+          ],
+          "requires_figure": false,
+          "full_credit_match": {
+            "answers": [
+              "main",
+              "main.",
+              "main()",
+              "main().",
+              "main function",
+              "main function.",
+              "the main function",
+              "the main function.",
+              "at the main function",
+              "at the main function.",
+              "At the main function",
+              "At the main function.",
+              "In the main function",
+              "In the main function.",
+              "in the main function",
+              "in the main function.",
+              "At main()",
+              "At main().",
+              "at main()",
+              "at main().",
+              "in main()",
+              "in main().",
+              "In main()",
+              "In main()."
+            ],
+            "quotes": {
+              "entry": "A hosted C++ program invokes the main function at program entry."
+            }
+          }
+        },
+        {
+          "question_id": 2,
+          "question": "How are bi-dimensional arrays stored in memory, by rows or by columns?",
+          "reference_answer": "By rows.",
+          "criteria": [
+            {
+              "id": "layout",
+              "points": 2.0,
+              "description": "By rows."
+            }
+          ],
+          "requires_figure": false,
+          "full_credit_match": {
+            "answers": [
+              "rows",
+              "rows.",
+              "Rows",
+              "Rows.",
+              "by rows",
+              "by rows.",
+              "By rows",
+              "By rows.",
+              "row-major",
+              "row-major.",
+              "row-major order",
+              "row-major order.",
+              "Row-major order",
+              "Row-major order.",
+              "row major order",
+              "row major order.",
+              "by row",
+              "by row.",
+              "By row",
+              "By row.",
+              "in rows",
+              "in rows.",
+              "In rows",
+              "In rows."
+            ],
+            "quotes": {
+              "layout": "A built-in two-dimensional C++ array is stored by rows in row-major order."
+            }
+          }
+        }
+      ]
+    },
+    "notes": [
+      {
+        "id": "cpp-1",
+        "source": "cpp-1",
+        "title": "C++ program execution",
+        "heading": "Program entry",
+        "text": "A hosted C++ program invokes the main function at program entry.",
+        "url": "https://eel.is/c++draft/basic.start.main"
+      },
+      {
+        "id": "cpp-2",
+        "source": "cpp-2",
+        "title": "C++ array memory layout",
+        "heading": "Bi-dimensional arrays",
+        "text": "A built-in two-dimensional C++ array is stored by rows in row-major order.",
+        "url": "https://learn.microsoft.com/en-us/cpp/cpp/arrays-cpp?view=msvc-170"
+      }
+    ],
+    "blind_sha256": "7e44c206ef3fbfad29abdaa24c46c30ac7355fe051325f3fd8ecd500d77173ee",
+    "summary": {
+      "sample": "two new prompts",
+      "answers": 59,
+      "proposed": 15,
+      "review": 44,
+      "paired": 15,
+      "exact": 15,
+      "within_half": 15,
+      "differ_by_one_or_more": 0,
+      "mean_absolute_error": 0.0,
+      "always_full_mae_on_same_proposals": 0.0
+    },
+    "per_question": {
+      "1.4": {
+        "sample": "1.4",
+        "answers": 29,
+        "proposed": 1,
+        "review": 28,
+        "paired": 1,
+        "exact": 1,
+        "within_half": 1,
+        "differ_by_one_or_more": 0,
+        "mean_absolute_error": 0.0,
+        "always_full_mae_on_same_proposals": 0.0
+      },
+      "4.7": {
+        "sample": "4.7",
+        "answers": 30,
+        "proposed": 14,
+        "review": 16,
+        "paired": 14,
+        "exact": 14,
+        "within_half": 14,
+        "differ_by_one_or_more": 0,
+        "mean_absolute_error": 0.0,
+        "always_full_mae_on_same_proposals": 0.0
+      }
+    },
+    "pairs": [
+      {
+        "question": "1.4",
+        "index": 0,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 1,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 2,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 3,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 4,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 5,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 6,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 7,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 0.0
+      },
+      {
+        "question": "1.4",
+        "index": 8,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 9,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 10,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 11,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 12,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 1.0
+      },
+      {
+        "question": "1.4",
+        "index": 13,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 14,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 15,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 16,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 17,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 18,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 19,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 20,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 21,
+        "mark": null,
+        "reason": "weak_retrieval",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 22,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 23,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 24,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 25,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 26,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 27,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "1.4",
+        "index": 28,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 0,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 1.0
+      },
+      {
+        "question": "4.7",
+        "index": 1,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 2,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 3,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 1.8
+      },
+      {
+        "question": "4.7",
+        "index": 4,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 5,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 6,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 7,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 8,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 1.6
+      },
+      {
+        "question": "4.7",
+        "index": 9,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 10,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 11,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 0.4
+      },
+      {
+        "question": "4.7",
+        "index": 12,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 0.4
+      },
+      {
+        "question": "4.7",
+        "index": 13,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 14,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 15,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 16,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 1.0
+      },
+      {
+        "question": "4.7",
+        "index": 17,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 1.8
+      },
+      {
+        "question": "4.7",
+        "index": 18,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 19,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 20,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 21,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 22,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 23,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 24,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 25,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 26,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 27,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 1.0
+      },
+      {
+        "question": "4.7",
+        "index": 28,
+        "mark": 2,
+        "reason": "teacher_approved_answer",
+        "teacher": 2.0
+      },
+      {
+        "question": "4.7",
+        "index": 29,
+        "mark": null,
+        "reason": "provider_disabled",
+        "teacher": 0.4
+      }
+    ]
+  },
+  "live_partial_first_attempt": {
+    "baseline": [
+      {
+        "paper": 30,
+        "question": 24,
+        "reason": "insufficient_evidence",
+        "execution_issue": null
+      },
+      {
+        "paper": 30,
+        "question": 25,
+        "reason": "written_mark_review",
+        "execution_issue": null
+      },
+      {
+        "paper": 30,
+        "question": 26,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid"
+      },
+      {
+        "paper": 30,
+        "question": 27,
+        "reason": "insufficient_evidence",
+        "execution_issue": null
+      },
+      {
+        "paper": 30,
+        "question": 30,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid"
+      },
+      {
+        "paper": 44,
+        "question": 24,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid"
+      },
+      {
+        "paper": 44,
+        "question": 25,
+        "reason": "grounded_proposal",
+        "execution_issue": null
+      },
+      {
+        "paper": 44,
+        "question": 26,
+        "reason": "grounded_proposal",
+        "execution_issue": null
+      },
+      {
+        "paper": 44,
+        "question": 27,
+        "reason": "written_mark_review",
+        "execution_issue": null
+      },
+      {
+        "paper": 44,
+        "question": 30,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 29,
+        "question": 24,
+        "reason": "insufficient_evidence",
+        "execution_issue": null
+      },
+      {
+        "paper": 29,
+        "question": 25,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 29,
+        "question": 26,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 29,
+        "question": 27,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 29,
+        "question": 30,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      }
+    ],
+    "named": [
+      {
+        "paper": 30,
+        "question": 24,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 25,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 26,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 27,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 30,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      }
+    ],
+    "secondary-base": [
+      {
+        "paper": 30,
+        "question": 24,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 25,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 26,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 27,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      },
+      {
+        "paper": 30,
+        "question": 30,
+        "reason": "provider_failure",
+        "execution_issue": "provider_daily_quota"
+      }
+    ]
+  },
+  "live_comparison_status": "Incomplete. Default Gemini 3.1 flash lite and secondary Gemini 3.5 flash lite reached daily limits. No paired accuracy estimate or deployment decision is supported for the experimental named-field prompt."
+}

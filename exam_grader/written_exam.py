@@ -17,6 +17,13 @@ class Criterion(BaseModel):
     description: Text
 
 
+class FullCreditMatch(BaseModel):
+    """Teacher-approved complete answers and the body quote supporting each criterion."""
+    model_config = ConfigDict(extra="forbid", strict=True)
+    answers: Annotated[list[Text], Field(min_length=1, max_length=32)]
+    quotes: dict[Identifier, Annotated[str, StringConstraints(strip_whitespace=True, min_length=12, max_length=600)]]
+
+
 class WrittenQuestion(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     question_id: Annotated[int, Field(ge=1, le=35)]
@@ -24,6 +31,7 @@ class WrittenQuestion(BaseModel):
     reference_answer: Text
     criteria: Annotated[list[Criterion], Field(min_length=1, max_length=4)]
     requires_figure: bool = False
+    full_credit_match: FullCreditMatch | None = None
 
     @model_validator(mode="after")
     def validate_criteria(self):
@@ -31,7 +39,25 @@ class WrittenQuestion(BaseModel):
             raise ValueError("Use a unique ID for each criterion within a question.")
         if any(c.points not in (.5, 1, 1.5, 2) for c in self.criteria) or sum(c.points for c in self.criteria) != 2:
             raise ValueError("Criterion weights must total two points in half-point increments.")
+        if self.full_credit_match and set(self.full_credit_match.quotes) != {c.id for c in self.criteria}:
+            raise ValueError("Each criterion needs its own source quote for an exact full-credit match.")
         return self
+
+    def match_full_credit(self, text, hits):
+        rule = self.full_credit_match
+        if rule is None or text not in rule.answers:
+            return None
+        evidence = {}
+        for criterion, quote in rule.quotes.items():
+            for hit in hits:
+                labels = [hit["title"], hit["heading"], *hit.get("labels", [])]
+                if quote in hit["text"] and not any(quote.casefold() in label.casefold() for label in labels):
+                    evidence[criterion] = {k: hit[k] for k in ("id", "title", "heading", "url", "page") if k in hit}
+                    evidence[criterion].update(quote=quote, coverage="full")
+                    break
+            else:
+                return None
+        return evidence
 
     def guide(self):
         return {c.id: (c.points, c.description) for c in self.criteria}
@@ -50,7 +76,7 @@ class WrittenExam(BaseModel):
 
     @property
     def exam_id(self):
-        content = json.dumps(self.model_dump(), sort_keys=True, separators=(",", ":")).encode()
+        content = json.dumps(self.model_dump(exclude_none=True), sort_keys=True, separators=(",", ":")).encode()
         return "written-" + hashlib.sha256(content).hexdigest()
 
     @classmethod
