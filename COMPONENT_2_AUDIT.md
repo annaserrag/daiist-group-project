@@ -2,7 +2,7 @@
 
 ## Current handoff
 
-Teachers can upload an exam definition and course PDF, preview retrieved pages, inspect evidence for each criterion and sign off the chosen exam. The stock paper retains its own key and grading rules. The reader checker verifies the selected question set and rubric fingerprint. The Windows suite passed all 62 tests. [Interface and integration instructions](HANDOFF.md)
+Teachers can upload an exam definition and course PDF, preview retrieved pages, inspect evidence for each criterion and sign off the chosen exam. The stock paper retains its own key and grading rules. The reader checker verifies the selected question set and rubric fingerprint. The Windows suite passed all 62 tests. A final replay with the API key removed reproduced all 43 completed decisions across the two confirmation papers, fresh UNT responses and new sorting questions. The three original service or response-format failures correctly appeared as missing cached responses. [Interface and integration instructions](HANDOFF.md)
 
 On four randomly selected ML papers, the new default proposed nine of 39 readable marks, matched five and differed by a point or more on two. On two further papers reserved for confirmation, it proposed one of 20 readable marks. That proposal was half a point above the teacher. Nine low-mark referrals included five tentative scores at least a point from the reference. High review workload and partial-credit calibration remain the main weaknesses on the stock exam. [Study and comparison](REPORT.md#generalization-to-new-students-and-different-questions)
 
