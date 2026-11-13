@@ -47,6 +47,26 @@ class WrittenTransfer(unittest.TestCase):
                 p.write_text(json.dumps(payload))
                 self.assertEqual(pipeline.run_views(p)["teacher"]["exam_status"], "out_of_scope")
 
+    def test_default_review_threshold_is_scoped_to_the_builtin_exam(self):
+        exam = WrittenExam.load(DATA / "waves-exam.json")
+        base = Index()
+        with tempfile.TemporaryDirectory() as folder, patch.dict(os.environ, {"GRADE_POLICY_FILE": ""}), patch.object(
+                pipeline, "resources", return_value=(base, None, set())), patch.object(
+                pipeline, "connect", wraps=pipeline.connect) as connect:
+            def threshold(**options):
+                pipeline.run_views(pipeline.EXAMPLE, **options)
+                policy = connect.call_args.kwargs["policy"]
+                return policy.written_review_at_or_below if policy else None
+
+            self.assertEqual(threshold(), 1)
+            self.assertIsNone(threshold(written_exam=exam))
+            path = Path(folder) / "policy.json"
+            path.write_text(json.dumps({"written_review_at_or_below": 0}))
+            os.environ["GRADE_POLICY_FILE"] = str(path)
+            self.assertEqual(threshold(), 0)
+            self.assertEqual(threshold(written_exam=exam), 0)
+            self.assertIsNone(threshold(policy=Policy()))
+
     def test_validation_and_binding_to_rubric_revision(self):
         exam = WrittenExam.load(DATA / "waves-exam.json")
         data = exam.model_dump()

@@ -15,6 +15,7 @@ from exam_grader.retrieval import Index
 
 env.load_env()
 EXAMPLE = DATA / "vision-example.json"
+DEFAULT_MODEL = "gemini-3.1-flash-lite"
 
 def final_after_lookup():
     strategy = os.getenv("GRADE_PASSAGE_STRATEGY", "finalize")
@@ -38,7 +39,7 @@ def resources():
     if os.getenv("GEMINI_API_KEY"):
         from exam_grader.gemini import Gemini
         rates = [os.getenv(name) for name in ("GRADE_INPUT_EUR_PER_M", "GRADE_OUTPUT_EUR_PER_M")]
-        agent = Gemini(model=os.getenv("GRADE_MODEL", "gemini-3.5-flash-lite"), input_eur_per_million=rates[0], output_eur_per_million=rates[1], finalize_lookup=final_after_lookup())
+        agent = Gemini(model=os.getenv("GRADE_MODEL", DEFAULT_MODEL), input_eur_per_million=rates[0], output_eur_per_million=rates[1], finalize_lookup=final_after_lookup())
     approved = {file_sha256(EXAMPLE)}
     approved.update(os.getenv("GRADE_APPROVED_HASHES", "").lower().split())
     return index, agent, frozenset(approved)
@@ -61,7 +62,7 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
         agent = agent.for_evaluation(evaluation_cache)
     elif evaluation_cache is not None and evaluation_cache.read_only:
         from exam_grader.gemini import Gemini
-        agent = Gemini(model=os.getenv("GRADE_MODEL", "gemini-3.5-flash-lite"), frozen_cache=evaluation_cache, finalize_lookup=final_after_lookup())
+        agent = Gemini(model=os.getenv("GRADE_MODEL", DEFAULT_MODEL), frozen_cache=evaluation_cache, finalize_lookup=final_after_lookup())
     if path.suffix.lower() == ".json":
         reader, version, input_type = read_export, "ocr-json-replay-v1", "ocr_export"
     elif path.suffix.lower() == ".pdf":
@@ -77,6 +78,8 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
     started = perf_counter()
     if policy is None and os.getenv("GRADE_POLICY_FILE"):
         policy = Policy(**json.loads(Path(os.environ["GRADE_POLICY_FILE"]).read_text(encoding="utf-8-sig")))
+    if policy is None and written_exam is None:
+        policy = Policy(written_review_at_or_below=1)
     result = connect(path, read_exam=reader, vision_version=version, index=index,
                      agent=agent, approved_hashes=approved, policy=policy, reader_charges_possible=input_type == "pdf",
                      written_exam=written_exam)

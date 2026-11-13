@@ -23,6 +23,8 @@ To reproduce the page check, upload [the three-page ML handout](eval/ml-course-n
 
 With the configured Gemini key and semantic index, the app embeds uploaded course passages once per session and reuses the bundled exam question vectors. Without a key, you can still index PDFs and preview lexical retrieval. Live written grading requires the configured key and an approved exam input. Image-only course PDFs need OCR before uploading.
 
+For the bundled ML exam, live grading defaults to `gemini-3.1-flash-lite` and sends model-proposed written marks of 1/2 or below to teacher review. Confirmed blanks and the separately evaluated Q32 rule keep their own routing. A teacher-supplied written exam uses its own marking guide. A deployment can set an explicit `GRADE_POLICY_FILE` and `GRADE_MODEL`. Enter pricing for the actual configured model if reporting cost.
+
 ## Use a different written exam
 
 In **Materials**, upload a teacher-authored JSON definition and choose **Apply exam definition**. It accepts 1–15 written questions worth two points each. Use unique question numbers from 1–35 and rubric weights in half-point steps. Set `requires_figure` for questions that need a diagram. Choose or upload the corresponding course material. The app searches using the new question text and applies the supplied rubric to each answer.
