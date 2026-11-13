@@ -1,0 +1,875 @@
+{
+  "freeze": {
+    "commit": "4ecd0a7c63b662d3455a2a4ef2d160b1c3c67013",
+    "excluded_papers": [
+      1,
+      2,
+      3,
+      7,
+      8,
+      13,
+      17,
+      18,
+      22,
+      35,
+      36,
+      41,
+      42
+    ],
+    "seed": 20261113,
+    "papers": [
+      4,
+      5,
+      15,
+      20,
+      33
+    ],
+    "questions": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      29,
+      30,
+      31,
+      33,
+      34,
+      35
+    ],
+    "policy": "production defaults, section semantic multipart, 0.40; full exam sessions on redacted answer-only exports; missing stays missing; no teacher outcomes until decisions saved"
+  },
+  "dataset": "https://doi.org/10.17632/sf3kvjwknt.1",
+  "teacher_file_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "scan_hashes": [
+    [
+      4,
+      "5c673b9847d2427a51ece2cee62d9b939c3007bd34af740c77d9b2aec3629e68",
+      4
+    ],
+    [
+      5,
+      "3bea8ea127a6184f49e6096f0344a6045d428afb4a8449c92ffc9093f9e0205f",
+      4
+    ],
+    [
+      15,
+      "e901ade9ecd8eb6ab6e13528eb474a5e7bf2bc80edf30c508e676e37c9de996b",
+      6
+    ],
+    [
+      20,
+      "ccde2fdeec4170ce6fb8172b6014cfaafce968355b9ebdd6f63934ef941ada42",
+      2
+    ],
+    [
+      33,
+      "941f0abf70624cb34ae14121920f958b81e7bc2d02adaf6b19be4751239b2581",
+      4
+    ]
+  ],
+  "input_hashes": {
+    "4": "1e7e6d03a160d8f248e40bc86831965ff13b33cf48f0f089fb84d8dbe02419c7",
+    "5": "f889050a2aff4df0366070f0cfda72d6fc42c99f15c4f90cbd7c8cd1cc85897f",
+    "15": "605fc36a992c8d9b440b318d8e90467251f1f4db3118f7951628af9628753aa9",
+    "20": "27f941a4293f3f991133344983c1be5a824f7f1a1e149b6aaf65f8d2a0fab2fb",
+    "33": "6dee46e906de2221d156c9283cea926a955c917a6003d76bc8b460f3bf957118"
+  },
+  "blind_result_hashes": {
+    "4": "bdddec2fae5dba1dc2c52e4593f83723d253b775d4346991ee6f1605effaf5ec",
+    "5": "6ae5f2d099b849a34fccc1a0ae26915101a9bfe517c32fdf5cc17875dcfe7e58",
+    "15": "ab348ce6979bfa89947b42d8f405a82c5eab2fb08d0763c4ec5d35beaf2ba9b2",
+    "20": "fdcf4991fa4ace12a570a9c0593803baaaa1d024ebdfca59468db06134510819",
+    "33": "f0b26dbfee49567caa45df828633ced23946be96f99d24efe2b9cb0f5f6735b0"
+  },
+  "versions": {
+    "component_a": "ocr-json-replay-v1",
+    "component_b": "gemini-3.5-flash-lite:prompt-699fe758c73c:rubric-683efac0520a:final-after-lookup-v1:evidence-3b693d9c2bf6",
+    "retrieval": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1",
+    "contract": "vision.exam.v1",
+    "q32_rule": "distinct-count-v5",
+    "evidence_rule": "per-criterion-v3-exact-labels",
+    "policy": "8c841acab897",
+    "rubric": "mendeley-sf3kvjwknt-v1"
+  },
+  "method": "Random.sample of five of 37 eligible paper IDs with fixed Python seed. Full set of Q21-Q35 excluding Q28 and Q32. Fixed manual transcription from published uncorrected scans; only de-identified typed answers sent to grader. A numbered blank counts as confirmed only if inspected and not answered elsewhere. Unlocated answers remain missing. A clipped line on paper 33 Q34 was marked in its transcription; Q34 needs its original diagram. Retrieved teacher numeric marks only after saving all predictions. Real-paper evaluation of the written grader with correct assignment assumed. Provider failures retried using a new private success cache; a successful educational review was not retried. Clustered sample of five papers from a single exam.",
+  "answer_state_counts": {
+    "read": 50,
+    "confirmed_blank": 3,
+    "missing": 12
+  },
+  "all_slots": {
+    "slots": 65,
+    "proposed": 17,
+    "reviews": 48,
+    "numeric_teacher_marks": 50,
+    "paired": 14,
+    "exact": 8,
+    "half_point_errors": 1,
+    "at_least_one": 5,
+    "under_by_at_least_one": 3,
+    "over_by_at_least_one": 2,
+    "mean_absolute_error": 0.39285714285714285
+  },
+  "written_responses": {
+    "slots": 50,
+    "proposed": 14,
+    "reviews": 36,
+    "numeric_teacher_marks": 50,
+    "paired": 14,
+    "exact": 8,
+    "half_point_errors": 1,
+    "at_least_one": 5,
+    "under_by_at_least_one": 3,
+    "over_by_at_least_one": 2,
+    "mean_absolute_error": 0.39285714285714285
+  },
+  "per_paper_written": {
+    "4": {
+      "slots": 10,
+      "proposed": 4,
+      "reviews": 6,
+      "numeric_teacher_marks": 10,
+      "paired": 4,
+      "exact": 3,
+      "half_point_errors": 0,
+      "at_least_one": 1,
+      "under_by_at_least_one": 1,
+      "over_by_at_least_one": 0,
+      "mean_absolute_error": 0.25
+    },
+    "5": {
+      "slots": 10,
+      "proposed": 2,
+      "reviews": 8,
+      "numeric_teacher_marks": 10,
+      "paired": 2,
+      "exact": 0,
+      "half_point_errors": 0,
+      "at_least_one": 2,
+      "under_by_at_least_one": 1,
+      "over_by_at_least_one": 1,
+      "mean_absolute_error": 1.0
+    },
+    "15": {
+      "slots": 13,
+      "proposed": 3,
+      "reviews": 10,
+      "numeric_teacher_marks": 13,
+      "paired": 3,
+      "exact": 2,
+      "half_point_errors": 0,
+      "at_least_one": 1,
+      "under_by_at_least_one": 1,
+      "over_by_at_least_one": 0,
+      "mean_absolute_error": 0.3333333333333333
+    },
+    "20": {
+      "slots": 9,
+      "proposed": 2,
+      "reviews": 7,
+      "numeric_teacher_marks": 9,
+      "paired": 2,
+      "exact": 1,
+      "half_point_errors": 0,
+      "at_least_one": 1,
+      "under_by_at_least_one": 0,
+      "over_by_at_least_one": 1,
+      "mean_absolute_error": 0.5
+    },
+    "33": {
+      "slots": 8,
+      "proposed": 3,
+      "reviews": 5,
+      "numeric_teacher_marks": 8,
+      "paired": 3,
+      "exact": 2,
+      "half_point_errors": 1,
+      "at_least_one": 0,
+      "under_by_at_least_one": 0,
+      "over_by_at_least_one": 0,
+      "mean_absolute_error": 0.16666666666666666
+    }
+  },
+  "review_reasons": {
+    "insufficient_evidence": 29,
+    "context_check": 4,
+    "diagnosis_partial_review": 2,
+    "unverified_citation": 1
+  },
+  "first_attempt_proposals_written": 8,
+  "first_attempt_failures": {
+    "provider_unavailable": 1,
+    "provider_rate_limit": 19
+  },
+  "unresolved_operational_failures": [],
+  "pairs": [
+    {
+      "paper": 4,
+      "question": 21,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 2.0,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 22,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 2.0,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 23,
+      "input_state": "read",
+      "proposed": 0.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 0.0,
+      "teacher": 1.0
+    },
+    {
+      "paper": 4,
+      "question": 24,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 25,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 26,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 27,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 29,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 30,
+      "input_state": "confirmed_blank",
+      "proposed": 0,
+      "reason": "confirmed_blank",
+      "first_attempt_reason": "confirmed_blank",
+      "first_attempt_mark": 0,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 4,
+      "question": 31,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 33,
+      "input_state": "confirmed_blank",
+      "proposed": 0,
+      "reason": "confirmed_blank",
+      "first_attempt_reason": "confirmed_blank",
+      "first_attempt_mark": 0,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 4,
+      "question": 34,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "context_check",
+      "first_attempt_reason": "context_check",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 4,
+      "question": 35,
+      "input_state": "confirmed_blank",
+      "proposed": 0,
+      "reason": "confirmed_blank",
+      "first_attempt_reason": "confirmed_blank",
+      "first_attempt_mark": 0,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 5,
+      "question": 21,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 5,
+      "question": 22,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "diagnosis_partial_review",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 5,
+      "question": 23,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 5,
+      "question": 24,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 5,
+      "question": 25,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 5,
+      "question": 26,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 5,
+      "question": 27,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 5,
+      "question": 29,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 5,
+      "question": 30,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 5,
+      "question": 31,
+      "input_state": "read",
+      "proposed": 0.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 5,
+      "question": 33,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 5,
+      "question": 34,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 5,
+      "question": 35,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 15,
+      "question": 21,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 2.0,
+      "teacher": 2.0
+    },
+    {
+      "paper": 15,
+      "question": 22,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "diagnosis_partial_review",
+      "first_attempt_reason": "diagnosis_partial_review",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 15,
+      "question": 23,
+      "input_state": "read",
+      "proposed": 0.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 0.0,
+      "teacher": 1.0
+    },
+    {
+      "paper": 15,
+      "question": 24,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 15,
+      "question": 25,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 15,
+      "question": 26,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 15,
+      "question": 27,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 15,
+      "question": 29,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 15,
+      "question": 30,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 15,
+      "question": 31,
+      "input_state": "read",
+      "proposed": 0.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 0.0,
+      "teacher": 0.0
+    },
+    {
+      "paper": 15,
+      "question": 33,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 15,
+      "question": 34,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "context_check",
+      "first_attempt_reason": "context_check",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 15,
+      "question": 35,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 20,
+      "question": 21,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 2.0,
+      "teacher": 2.0
+    },
+    {
+      "paper": 20,
+      "question": 22,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 20,
+      "question": 23,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "grounded_proposal",
+      "first_attempt_mark": 2.0,
+      "teacher": 1.0
+    },
+    {
+      "paper": 20,
+      "question": 24,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 20,
+      "question": 25,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 20,
+      "question": 26,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 0.0
+    },
+    {
+      "paper": 20,
+      "question": 27,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 20,
+      "question": 29,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "insufficient_evidence",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 20,
+      "question": 30,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 20,
+      "question": 31,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "unverified_citation",
+      "first_attempt_reason": "unverified_citation",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 20,
+      "question": 33,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 20,
+      "question": 34,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "context_check",
+      "first_attempt_reason": "context_check",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 20,
+      "question": 35,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 33,
+      "question": 21,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 33,
+      "question": 22,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 33,
+      "question": 23,
+      "input_state": "read",
+      "proposed": 1.5,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 33,
+      "question": 24,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 33,
+      "question": 25,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 33,
+      "question": 26,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 33,
+      "question": 27,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 33,
+      "question": 29,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 1.0
+    },
+    {
+      "paper": 33,
+      "question": 30,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 0.5
+    },
+    {
+      "paper": 33,
+      "question": 31,
+      "input_state": "read",
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "first_attempt_reason": "provider_failure",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 33,
+      "question": 33,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    },
+    {
+      "paper": 33,
+      "question": 34,
+      "input_state": "read",
+      "proposed": null,
+      "reason": "context_check",
+      "first_attempt_reason": "context_check",
+      "first_attempt_mark": null,
+      "teacher": 2.0
+    },
+    {
+      "paper": 33,
+      "question": 35,
+      "input_state": "missing",
+      "proposed": null,
+      "reason": "missing_detection",
+      "first_attempt_reason": "missing_detection",
+      "first_attempt_mark": null,
+      "teacher": null,
+      "missing_reference_code": ""
+    }
+  ]
+}
