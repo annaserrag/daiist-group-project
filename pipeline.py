@@ -49,11 +49,14 @@ def read_export(path):
     with path.open(encoding="utf-8-sig") as stream:
         return json.load(stream)
 
-def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=None):
+def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=None, written_exam=None, query_vectors=None):
     path = Path(raw_input)
     index, agent, approved = resources()
     if course_index is not None:
         index = course_index
+    if written_exam is not None:
+        questions = {item.question_id: item.question for item in written_exam.questions}
+        index = index.for_questions(questions, query_vectors, written_exam.exam_id)
     if agent is not None and evaluation_cache is not None:
         agent = agent.for_evaluation(evaluation_cache)
     elif evaluation_cache is not None and evaluation_cache.read_only:
@@ -75,10 +78,11 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
     if policy is None and os.getenv("GRADE_POLICY_FILE"):
         policy = Policy(**json.loads(Path(os.environ["GRADE_POLICY_FILE"]).read_text(encoding="utf-8-sig")))
     result = connect(path, read_exam=reader, vision_version=version, index=index,
-                     agent=agent, approved_hashes=approved, policy=policy, reader_charges_possible=input_type == "pdf")
+                     agent=agent, approved_hashes=approved, policy=policy, reader_charges_possible=input_type == "pdf",
+                     written_exam=written_exam)
     duration = perf_counter() - started
     result["record"]["outputs"]["component_b"]["input_type"] = input_type
-    result["record"]["versions"]["rubric"] = "mendeley-sf3kvjwknt-v1"
+    result["record"]["versions"]["rubric"] = written_exam.exam_id if written_exam else "mendeley-sf3kvjwknt-v1"
     result["teacher"]["input_type"] = input_type
     result["record"]["latency_s"] = round(duration, 4)
     return result

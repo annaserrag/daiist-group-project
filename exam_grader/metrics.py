@@ -12,7 +12,7 @@ def load(path):
     with open(path,encoding="utf-8-sig",newline="") as f:
         return list(csv.DictReader(f))
 
-def retrieval(rows, semantic, partial=False, *, written_only=False, multipart=True):
+def retrieval(rows, semantic, partial=False, *, written_only=False, multipart=True, teaching_notes=False):
     labels = validate(rows)
     if written_only:
         labels = {q: value for q, value in labels.items() if q > 20}
@@ -27,7 +27,7 @@ def retrieval(rows, semantic, partial=False, *, written_only=False, multipart=Tr
            "reviewed":len(labels)-len(pending),"supported":len(mapped),"open_questions":pending,"corpus_gaps":gaps,
            "missing_exam_context_excluded":missing_context}
     for design in ("paragraph","section"):
-        idx = Index(design,semantic,multipart=multipart)
+        idx = Index(design,semantic,multipart=multipart,teaching_notes=teaching_notes)
         ranking = {}
         for q,good in mapped.items():
             rank = [h["source"] for h in idx.search(q,k=5)]
@@ -100,6 +100,7 @@ if __name__ == "__main__":
     p.add_argument("csv")
     p.add_argument("--judge-results",help="Join frozen judge predictions to a completed human-label CSV by ID, offline.")
     p.add_argument("--semantic",action="store_true")
+    p.add_argument("--teaching-notes", action="store_true", help="Evaluate the production built-in study notes with the original labels.")
     p.add_argument("--legacy-ranking",action="store_true",help="Reproduce rankings before multipart evidence selection.")
     p.add_argument("--partial",action="store_true",help="Diagnostic for reviewed questions only; no full-set conclusion.")
     p.add_argument("--written-only",action="store_true",help="Score retrieval on Q21 through Q35.")
@@ -110,7 +111,7 @@ if __name__ == "__main__":
     if a.judge_results and a.mode != "agreement":
         p.error("--judge-results applies to agreement")
     if a.mode == "retrieval":
-        result = retrieval(rows,a.semantic,a.partial,written_only=a.written_only,multipart=not a.legacy_ranking)
+        result = retrieval(rows,a.semantic,a.partial,written_only=a.written_only,multipart=not a.legacy_ranking, teaching_notes=a.teaching_notes)
     elif a.mode == "grading":
         result = grading(rows)
     else:

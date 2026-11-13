@@ -43,6 +43,7 @@ class VisionUsage(BaseModel):
 class VisionExam(BaseModel):
     model_config = ConfigDict(strict=True)
     schema_version: Literal["vision.exam.v1"]
+    exam_id: Annotated[str, Field(min_length=1, max_length=100)] | None = None
     exam_status: Literal["in_scope", "unreadable", "out_of_scope"]
     answers: Annotated[list[VisionAnswer], Field(max_length=100)]
     features: VisionFeatures = Field(default_factory=VisionFeatures)

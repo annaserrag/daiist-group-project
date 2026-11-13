@@ -1,5 +1,6 @@
 """Local Component 2 workbench and course-compatible Gradio app."""
 import math
+import os
 from time import perf_counter
 
 import gradio as gr
@@ -9,6 +10,8 @@ import logbook
 import monitor
 import pipeline
 from exam_grader.catalog import QUESTIONS
+from exam_grader.build import vector
+from exam_grader.written_exam import WrittenExam
 from exam_grader.materials import BUILTIN, add_pdf
 
 REVIEW_ACTIONS = {
@@ -41,9 +44,10 @@ REVIEW_ACTIONS = {
     "invalid_contract": "Validate the vision export before grading this exam.",
 }
 
-def process_once(raw_input, course_index=None):
+def process_once(raw_input, course_index=None, exam_state=None):
     started = perf_counter()
-    views = pipeline.run_views(raw_input, course_index=course_index)
+    exam, queries = exam_state or (None, None)
+    views = pipeline.run_views(raw_input, course_index=course_index, written_exam=exam, query_vectors=queries)
     record = views["record"]
     record["latency_s"] = round(perf_counter() - started, 4)
     return views["teacher"], logbook.log_request(record)
@@ -67,16 +71,37 @@ def index_material(file, course, library):
     return updated, gr.Dropdown(choices=[BUILTIN, *updated], value=active), message, []
 
 
-def preview_material(question, library, course=BUILTIN):
+def select_exam(file):
+    if not file:
+        return None, "Built-in ML exam selected.", gr.Dropdown(choices=[(QUESTIONS[q], q) for q in range(21,36)], value=21)
+    try:
+        exam = WrittenExam.load(file)
+        queries = None
+        key = os.getenv("GEMINI_API_KEY")
+        if key and pipeline.resources()[0].vectors:
+            queries = {str(q.question_id): vector("task: question answering | query: " + q.question, key)
+                       for q in exam.questions}
+    except ValueError as exc:
+        raise gr.Error("Invalid exam definition. Check the question IDs, required fields and rubric weights.") from exc
+    except OSError as exc:
+        raise gr.Error("Could not read the exam or embed its questions. Try again.") from exc
+    choices = [(f"Q{q.question_id}. {q.question}", q.question_id) for q in exam.questions]
+    return (exam, queries), f"{exam.title} · Reader exam_id: {exam.exam_id}", gr.Dropdown(choices=choices, value=choices[0][1])
+
+
+def preview_material(question, library, course=BUILTIN, exam_state=None):
     index = selected_index(library, course) or pipeline.resources()[0]
+    if exam_state:
+        exam, queries = exam_state
+        index = index.for_questions({q.question_id:q.question for q in exam.questions}, queries, exam.exam_id)
     return [[hit["title"], hit.get("page"), hit["text"], round(hit["score"], 3)]
             for hit in index.search(int(question))]
 
 
-def display(raw_input, library=None, course=BUILTIN):
+def display(raw_input, library=None, course=BUILTIN, exam_state=None):
     if not raw_input:
         raise gr.Error("Choose an OCR export or a PDF first.")
-    teacher, record = process_once(raw_input, selected_index(library, course))
+    teacher, record = process_once(raw_input, selected_index(library, course), exam_state)
     evidence, marks = [], []
     for item in teacher["answers"]:
         source = item["citation"] or {}
@@ -98,21 +123,22 @@ def display(raw_input, library=None, course=BUILTIN):
     elif teacher["exam_status"] != "in_scope":
         status = f"Exam status: {teacher['exam_status'].replace('_',' ')}. No exam total available."
     else:
-        status = f"{35-count} of 35 questions have a proposed mark. {count} require review."
+        status = f"{len(marks)-count} of {len(marks)} questions have a proposed mark. {count} require review."
         if teacher["near_pass_boundary"]:
             status += " Check the total against the configured pass boundary."
     context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
+               "limits":[(r["question_id"],r["max_mark"]) for r in teacher["answers"]],
                "review_started":perf_counter(), "proposals":[point for _,point in marks]}
     return status, evidence, marks, context, None
 
 def sign_off(context, marks):
     if not context or not context["in_scope"]:
         raise gr.Error("Run an in-scope exam before signing off.")
-    if len(marks) != 35:
-        raise gr.Error("The final sheet needs all 35 question rows.")
+    limits = context["limits"]
+    if len(marks) != len(limits):
+        raise gr.Error("The final sheet needs every question from the graded exam.")
     final_marks = []
-    for question, values in enumerate(marks, start=1):
-        maximum = 1 if question <= 20 else 2
+    for (question, maximum), values in zip(limits, marks, strict=True):
         try:
             q, point = values
             if type(q) is bool or type(point) is bool or float(q) != question:
@@ -123,7 +149,7 @@ def sign_off(context, marks):
         except (TypeError, ValueError, OverflowError) as exc:
             raise gr.Error(f"Check Q{question}. Enter a valid teacher mark from 0 to {maximum}.") from exc
         final_marks.append({"question_id": question, "mark": point})
-    signed = {"request_id": context["id"], "teacher_signed_off": True, "maximum": 50,
+    signed = {"request_id": context["id"], "teacher_signed_off": True, "maximum": sum(maximum for _, maximum in limits),
               "total": sum(row["mark"] for row in final_marks), "marks": final_marks}
     if "review_started" in context and "proposals" in context:
         previous = context["proposals"]
@@ -165,6 +191,7 @@ def build_app():
     with gr.Blocks(title="Exam grading assistant") as demo:
         gr.Markdown("# Exam grading assistant")
         library = gr.State({})
+        exam_state = gr.State(None)
         course = gr.Dropdown([BUILTIN], value=BUILTIN, label="Course materials used for grading")
         with gr.Tab("App"):
             upload = gr.File(label="Exam PDF or vision JSON", file_types=[".pdf",".json"], type="filepath")
@@ -177,11 +204,11 @@ def build_app():
             teacher_marks = gr.Dataframe(headers=["Q","Teacher mark"], type="array", datatype=["number","number"],
                                          interactive=True, label="Teacher marks · complete empty cells before sign-off")
             ctx = gr.State(None)
-            approve = gr.Button("Sign off all 35 marks")
+            approve = gr.Button("Sign off all marks")
             signed = gr.JSON(label="Final teacher-approved sheet")
             outputs = [status,evidence,teacher_marks,ctx,signed]
-            go.click(display,[upload,library,course],outputs,api_name="run")
-            example.click(lambda lib, active: display(pipeline.EXAMPLE, lib, active),[library,course],outputs,api_name="grade_example")
+            go.click(display,[upload,library,course,exam_state],outputs,api_name="run")
+            example.click(lambda lib, active, state: display(pipeline.EXAMPLE, lib, active, state),[library,course,exam_state],outputs,api_name="grade_example")
             approve.click(sign_off,[ctx,teacher_marks],signed,api_name=False)
             with gr.Row():
                 up = gr.Button("Helpful")
@@ -193,6 +220,9 @@ def build_app():
         with gr.Tab("Materials"):
             gr.Markdown("Add searchable course PDFs for this browser session. With semantic retrieval enabled, "
                         "indexing sends course passages to Gemini for embeddings. Page numbers start at the PDF's first page.")
+            exam_file = gr.File(label="Written exam definition (optional JSON)", file_types=[".json"], type="filepath")
+            load_exam = gr.Button("Apply exam definition")
+            exam_info = gr.Textbox(label="Active exam", value="Built-in ML exam selected.", interactive=False)
             name = gr.Textbox(label="Course to add to", value="My ML course")
             material = gr.File(label="Course PDF", file_types=[".pdf"], type="filepath")
             add = gr.Button("Index PDF and select course", variant="primary")
@@ -203,7 +233,9 @@ def build_app():
             passages = gr.Dataframe(headers=["Source","PDF page","Passage","Score"],
                                     label="Top passages for the selected course and question", interactive=False)
             add.click(index_material,[material,name,library],[library,course,indexed,passages],api_name="index_material")
-            search.click(preview_material,[question,library,course],passages,api_name="find_passages")
+            load_exam.click(select_exam,[exam_file],[exam_state,exam_info,question]).success(
+                lambda: ("", [], [], None, None, []), None, [*outputs, passages], api_name=False)
+            search.click(preview_material,[question,library,course,exam_state],passages,api_name="find_passages")
             course.change(lambda: [],None,passages,api_name=False)
             question.change(lambda: [],None,passages,api_name=False)
         with gr.Tab("Monitoring"):

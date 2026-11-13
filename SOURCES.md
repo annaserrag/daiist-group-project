@@ -9,3 +9,15 @@ The additional written evaluation used two raw, uncorrected PDFs from the publis
 - Wikipedia contributors, English Wikipedia; the exact article links in sources.json also link to their page histories for attribution. Adapted excerpts are licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Excerpts were selected and whitespace normalized.
 - OpenStax is **not** in this index: the [book's reuse notice](https://openstax.org/books/principles-data-science/pages/1-2-data-science-in-practice) specifies prior permission for ingestion into generative AI offerings.
 - [Gemini embeddings](https://ai.google.dev/gemini-api/docs/embeddings) and [LangChain structured output](https://docs.langchain.com/oss/python/langchain/structured-output) document the query/document format and agent interface. No provider benchmark or cost claim is inferred from documentation.
+
+
+### Built-in study notes
+
+Seven short, original summaries cover concepts missing from the earlier retrieval window. Their displayed titles identify them as **Component 2 study notes**. The quote for each proposal comes from the indexed summary. Its URL identifies the underlying reference. Uploaded teacher courses use their own passages. The bundled embeddings represent only the public teaching text. Run `python -m exam_grader.build teaching-vectors` after editing the notes.
+
+- The structured-records note draws on the comparison of predefined schemas and tagged or nested records. [AWS structured data](https://aws.amazon.com/what-is/structured-data/)
+- The applications note uses diagnostic image analysis, fraud detection and retail recommendations. [Google Cloud applications](https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning)
+- The two outlier notes cover investigation, correction of verified errors, robust analysis and box-plot fences. [NIST outlier detection](https://itl.nist.gov/div898/handbook/eda/section3/eda35h.htm) · [NIST outlier criteria](https://www.itl.nist.gov/div898/handbook/prc/section1/prc16.htm)
+- The three scikit-learn notes cover distance-based neighbor selection, feature scaling and RBF decision boundaries. [Neighbors](https://scikit-learn.org/stable/modules/neighbors.html) · [Scaling](https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html) · [Kernels](https://scikit-learn.org/stable/auto_examples/svm/plot_svm_kernels.html)
+
+The wave course PDF, its exam and its expected answers are project-authored engineering fixtures.

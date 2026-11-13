@@ -38,7 +38,7 @@ def row(q, reason, mark=None, *, feedback="", citation=None, score=None, searche
                 status="review" if mark is None else "proposed", reason=reason,
                 feedback=feedback, citation=citation, retrieval_score=score, searches=searches)
 
-def checked_mark(q, response, hits, searches):
+def checked_mark(q, response, hits, searches, *, guide=None):
     score = hits[0]["score"]
     fields = dict(score=score,searches=searches)
     if not isinstance(response,dict) or response.get("needs_review") is not False:
@@ -50,7 +50,7 @@ def checked_mark(q, response, hits, searches):
     deductions = response.get("deductions")
     if not isinstance(deductions, list):
         return row(q, "unexplained_deduction", **fields)
-    guide = CRITERIA[q]
+    guide = CRITERIA[q] if guide is None else guide
     seen = set()
     lost = 0
     explanations = []
@@ -79,10 +79,10 @@ def checked_mark(q, response, hits, searches):
     return row(q,"grounded_proposal",m,feedback=feedback,citation=cite,**fields) | {"deductions": deductions}
 
 
-def checked(q, response, hits, searches, student_text=""):
+def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
     """Require source-backed evidence for every criterion, including deductions."""
-    decision = checked_mark(q, response, hits, searches)
-    guide = CRITERIA[q]
+    decision = checked_mark(q, response, hits, searches, guide=custom_guide)
+    guide = CRITERIA[q] if custom_guide is None else custom_guide
     entries = response.get("criterion_evidence") if isinstance(response, dict) else None
     entries = entries if isinstance(entries, list) else []
     sources = {hit["id"]: hit for hit in hits}
@@ -105,11 +105,11 @@ def checked(q, response, hits, searches, student_text=""):
         labels = [hit["title"], hit["heading"], *hit.get("labels", [])]
         if any(quote.casefold() in label.casefold() for label in labels):
             continue
-        if not supports_criterion(q, criterion, quote):
+        if custom_guide is None and not supports_criterion(q, criterion, quote):
             continue
         citations[criterion] = {k:hit[k] for k in ("id","title","heading","url","page") if k in hit}
         citations[criterion].update(quote=quote, coverage=e["coverage"])
-    if q == 30 and decision["mark"] is not None:
+    if custom_guide is None and q == 30 and decision["mark"] is not None:
         valid = check_interval_example(student_text)
         arithmetic = valid is not None
         application = response.get("binning_application") or {}
@@ -148,7 +148,7 @@ def checked(q, response, hits, searches, student_text=""):
     decision["criteria_needing_evidence"] = missing
     return decision
 
-def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=False):
+def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=False, written_exam=None):
     """Return a teacher view and a separate record suitable for the course logger.
     allow_remote must come from a trusted server-side input provenance check, never from OCR JSON.
     agent.open_session() creates a per-exam meter (concurrent requests cannot mix usage).
@@ -162,11 +162,21 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
     answers = payload.get("answers") if envelope else None
     if not isinstance(answers,list) or len(answers)>100 or any(not isinstance(a,dict) for a in (answers or [])):
         status, answers = "invalid_contract", []
+    custom = {item.question_id: item for item in written_exam.questions} if written_exam else {}
+    questions = {q: item.question for q, item in custom.items()} if custom else QUESTIONS
+    if status == "in_scope":
+        expected_id = written_exam.exam_id if written_exam else "mendeley-sf3kvjwknt-v1"
+        # Legacy exports implied the bundled paper. A custom definition always needs an explicit match.
+        supplied_id = payload.get("exam_id")
+        if supplied_id is None and not custom:
+            supplied_id = expected_id
+        if supplied_id != expected_id:
+            status = "out_of_scope"
     buckets = {}
     unassigned = 0
     for ans in answers:
         q = ans.get("question_id")
-        if type(q) is not int or q not in KEY:
+        if type(q) is not int or q not in questions:
             unassigned += 1
         else:
             buckets.setdefault(q,[]).append(ans)
@@ -195,7 +205,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
             return row(q,"confirmed_blank",0,feedback="Vision explicitly confirmed an empty answer area.")
         if not txt:
             return row(q,"empty_transcription")
-        if q <= 20:
+        if not custom and q <= 20:
             if conf < p.min_read:
                 return row(q,"low_read_confidence")
             letter = txt.upper()
@@ -205,9 +215,9 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
             return row(q,"matches_key" if m else "differs_from_key",m,
                        feedback=f"Read {letter}; the published key gives {KEY[q]}.",
                        citation={"id":f"key-Q{q}","title":"Published answer key","url":KEY_URL})
-        if q in p.figure_questions:
+        if (custom[q].requires_figure if custom else q in p.figure_questions):
             return row(q,"context_check")
-        if q == 32:
+        if not custom and q == 32:
             if conf < p.min_read:
                 return row(q, "low_read_confidence")
             mark, feedback, deductions, credited, reason = hyperparameters.assess(txt)
@@ -230,7 +240,10 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
         if session is None:
             return row(q,"provider_disabled",**fields)
         try:
-            answer = session.grade(QUESTIONS[q],KEY[q],txt,hits)
+            if custom:
+                answer = session.grade(questions[q], custom[q].reference_answer, txt, hits, guide=custom[q].guide())
+            else:
+                answer = session.grade(questions[q], KEY[q], txt, hits)
         except MissingFrozenResponse:
             return row(q,"missing_frozen_response",**fields)
         except Exception as error:
@@ -240,10 +253,10 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                 failed["execution_issue"] = detail
             return failed
         visible = session.visible_evidence(hits) if hasattr(session,"visible_evidence") else hits
-        proposal = checked(q,answer,visible,searches,txt) | {"opened_passages":list(getattr(session,"last_opened",[]))}
+        proposal = checked(q,answer,visible,searches,txt, custom_guide=custom[q].guide() if custom else None) | {"opened_passages":list(getattr(session,"last_opened",[]))}
         # Published partial-credit decisions vary. An unconfirmed zero must not
         # become an anchor for the teacher assessing the train/test explanation.
-        if q == 22 and proposal["mark"] is not None and proposal["mark"] < 2:
+        if not custom and q == 22 and proposal["mark"] is not None and proposal["mark"] < 2:
             proposal.update(mark=None, status="review", reason="diagnosis_partial_review", deductions=[],
                             feedback="Teacher review. Check whether the answer identifies overfitting and "
                                      "explains why performance drops on unseen data. Decide partial credit "
@@ -257,17 +270,19 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                             feedback=f"Teacher check requested for the suggested {candidate:g}/2. " + proposal["feedback"])
         return proposal
 
-    out = [decide(q) for q in sorted(KEY)]
+    out = [decide(q) for q in sorted(questions)]
     for item in out:
         q = item["question_id"]
-        item["question"] = QUESTIONS[q]
+        item["question"] = questions[q]
+        if custom:
+            item["max_mark"] = 2
         item["readings"] = [a["text"][:4000] for a in buckets.get(q, []) if isinstance(a.get("text"), str)]
     reviewed = sum(r["mark"] is None for r in out)
     subtotal = sum(r["mark"] for r in out if r["mark"] is not None)
     total = subtotal if not reviewed else None
     near_pass = total is not None and p.pass_mark is not None and abs(total-p.pass_mark) <= p.pass_band
     teacher = {"exam_status":status,"answers":out,"proposed_subtotal":subtotal,"proposed_total":total,
-               "maximum":50,"review_count":reviewed,"near_pass_boundary":near_pass,"teacher_signoff_required":True}
+               "maximum":sum(r["max_mark"] for r in out),"review_count":reviewed,"near_pass_boundary":near_pass,"teacher_signoff_required":True}
     def avg(vals):
         return sum(vals)/len(vals) if vals else 0.
     readings = [a["confidence"] for ms in buckets.values() for a in ms if _prob(a.get("confidence"))]
@@ -284,7 +299,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
     record = {"input_summary":f"Exam OCR: {len(answers)} records, {len(buckets)} recognized question IDs.",
               "features":{"mean_read_confidence":avg(readings),"reading_count":len(readings),
                           "mean_retrieval_similarity":avg(sims),"retrieval_count":len(sims),
-                          "review_share":reviewed/35,"unassigned_answers":unassigned},
+                          "review_share":reviewed/len(out),"unassigned_answers":unassigned},
               "outputs":{"component_a":a_summary,"component_b":{"answers":b_summary,"near_pass_boundary":near_pass,
                         "usage_complete":usage["usage_complete"],"cost_known":usage.get("cost_known",usage["usage_complete"]),
                         "calls":usage["calls"],"cache_hits":usage.get("cache_hits",0),
@@ -295,7 +310,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                         "latency_s":elapsed}},
               "versions":{"component_a":"UNSET-by-vision-owner","component_b":getattr(agent,"version","no-provider"),
                           "retrieval":getattr(index,"version","no-index"),"contract":"vision.exam.v1","q32_rule":hyperparameters.VERSION,
-                          "evidence_rule":"per-criterion-v3-exact-labels",
+                          "evidence_rule":"per-criterion-v4-independent-mark",
                           "policy":sha256(json.dumps(asdict(p),sort_keys=True).encode()).hexdigest()[:12]},
               "review":bool(reviewed or near_pass),"tokens":usage["tokens"],"cost_eur":usage["cost_eur"]}
     return {"teacher":teacher,"record":record}

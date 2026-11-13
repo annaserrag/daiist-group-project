@@ -11,7 +11,7 @@ def file_sha256(path):
         return hashlib.file_digest(f,"sha256").hexdigest()
 
 def connect(raw_input, *, read_exam, vision_version, index, agent=None,
-            approved_hashes=(), policy=None, reader_charges_possible=True):
+            approved_hashes=(), policy=None, reader_charges_possible=True, written_exam=None):
     """A server-side hash allowlist permits API use only for vetted synthetic/redacted PDFs.
     read_exam(path) must read the same server-owned, immutable upload during this request.
     Never use a UI checkbox or a client-provided hash to authorize remote processing.
@@ -29,7 +29,7 @@ def connect(raw_input, *, read_exam, vision_version, index, agent=None,
         reader_failed = True
         payload = {"schema_version":"vision.exam.v1","exam_status":"unreadable","answers":[]}
     vision_seconds = perf_counter() - started
-    result = grade_exam(payload,index=index,agent=agent,policy=policy,allow_remote=approved)
+    result = grade_exam(payload,index=index,agent=agent,policy=policy,allow_remote=approved, written_exam=written_exam)
     record = result["record"]
     grader = record["outputs"]["component_b"]
     vision_usage = VisionUsage(tokens=0, cost_eur=0.0)

@@ -98,8 +98,17 @@ class Index:
         norm = math.sqrt(sum(x*x for x in vals.values())) or 1
         return {w:v/norm for w,v in vals.items()}
 
+    def for_questions(self, questions, query_vectors, exam_id):
+        from copy import copy
+        index = copy(self)
+        index.questions = questions
+        index.vectors = (dict(self.vectors, queries=query_vectors)
+                         if self.vectors is not None and query_vectors else None)
+        index.version = self.version + ":" + exam_id + (":semantic" if index.vectors else ":lexical")
+        return index
+
     def search(self, qid, answer="", k=3):
-        question = QUESTIONS[qid]
+        question = getattr(self, "questions", QUESTIONS)[qid]
         # Distance is implicit when the question asks about scaling in a neighbor method.
         q = self.weight(words(question+" "+answer) + query_expansion(question)
                         + topic_terms(question, distance_evidence=True))

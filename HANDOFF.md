@@ -30,6 +30,7 @@ uv run --locked --no-dev python -m exam_grader.metrics agreement eval/human_labe
 | Field | Meaning |
 |---|---|
 | schema_version | Literal "vision.exam.v1". Change it together if semantics change. |
+| exam_id (optional for the built-in ML paper) | For another written exam, copy the definition fingerprint shown by the teacher app or returned by `python -m exam_grader.written_exam path/to/exam.json`. The reader must identify which exam was scanned before returning its fingerprint. |
 | exam_status | "in_scope", "out_of_scope", or "unreadable". Only in-scope exams may receive proposals. |
 | answers | List; any order; keep duplicate detections visible. Do not fill absent questions. |
 | question_id | Integer 1–35, or null if the question cannot be assigned. Do not guess to satisfy the schema. |

@@ -8,7 +8,8 @@ from .catalog import DATA, QUESTIONS
 
 SHEET = DATA.parents[1] / "eval" / "retrieval_sources.csv"
 FIELDS = ("question_id", "question", "acceptable_sources", "review_status", "note")
-PAGES = {p["source"]: p["title"] for p in json.loads((DATA/"corpus.json").read_bytes())}
+PAGES = {p["source"]: p["title"] for name in ("corpus.json", "teaching-notes.json")
+         for p in json.loads((DATA / name).read_bytes())}
 LOCK = Lock()
 
 def decision(row):

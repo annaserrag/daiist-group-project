@@ -97,7 +97,7 @@ def main():
             return list(csv.DictReader(f))
     approved = set(os.getenv("GRADE_APPROVED_HASHES","").lower().split())
     approved.add(file_sha256(DATA/"vision-example.json"))
-    items = prepare_items(read(args.items),approved,Index(os.getenv("GRADE_INDEX_DESIGN","section")))
+    items = prepare_items(read(args.items),approved,Index(os.getenv("GRADE_INDEX_DESIGN","section"), teaching_notes=True))
     if len(items) < 20:
         raise ValueError("Select at least 20 feedback items.")
     human = read(args.human_labels) if args.human_labels else None

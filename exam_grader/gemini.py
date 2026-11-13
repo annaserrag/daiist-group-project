@@ -20,6 +20,13 @@ from pydantic import BaseModel, Field
 from .catalog import DATA, QUESTIONS
 from .rubric import CRITERIA, EVIDENCE_GUIDANCE
 
+CUSTOM_GUIDANCE = (
+    "For an application or calculation, locate a passage teaching the relevant rule. Apply it "
+    "to the values in the question or the student's example, and verify units and arithmetic. "
+    "The source can use different numbers. Cite the rule verbatim. A topic heading alone "
+    "or a formula unrelated to the calculation is insufficient."
+)
+
 GUIDES = {QUESTIONS[q]: guide for q, guide in CRITERIA.items()}
 GUIDANCE_BY_QUESTION = {QUESTIONS[q]: note for q, note in EVIDENCE_GUIDANCE.items()}
 
@@ -182,17 +189,17 @@ class Session:
         if code in (500, 502, 503, 504):
             return "provider_unavailable"
         return None
-    def grade(self, question,key,text,hits):
+    def grade(self, question,key,text,hits, *, guide=None):
         self.last_opened = []
         if self.meter.calls + 3 > 45:
             raise RuntimeError("Exam call limit")
-        data = dict(question=question,reference_answer=key,marking_guide=GUIDES.get(question, {}),student_answer=text,
+        data = dict(question=question,reference_answer=key,marking_guide=GUIDES.get(question, {}) if guide is None else guide,student_answer=text,
                     evidence=[{k:h[k] for k in ("id","title","heading","text")} for h in hits])
         # Include the exact question-specific instruction in the request fingerprint.
-        guidance = GUIDANCE_BY_QUESTION.get(question)
+        guidance = GUIDANCE_BY_QUESTION.get(question) if guide is None else CUSTOM_GUIDANCE
         if guidance:
             data["criterion_interpretation"] = guidance
-        binning = question == QUESTIONS[30]
+        binning = guide is None and question == QUESTIONS[30]
         signature = ([*self.owner.signature, BinningEvidenceReport.model_json_schema(), BINNING_CHECK]
                      if binning else self.owner.signature)
         def generate():

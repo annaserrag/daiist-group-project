@@ -125,6 +125,20 @@
       "title": "Schema Version",
       "type": "string"
     },
+    "exam_id": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Exam Id"
+    },
     "exam_status": {
       "enum": [
         "in_scope",

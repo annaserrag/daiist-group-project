@@ -1,0 +1,35 @@
+[
+  {
+    "id": "paraphrase",
+    "answers": [
+      "In a second four crests each move one 3-m wavelength: four times three is twelve metres per second.",
+      "The wait between crests shrinks to half. Twice as many cycles fit into each second."
+    ],
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "id": "incomplete",
+    "answers": [
+      "Speed equals frequency times wavelength.",
+      "The period gets cut in half."
+    ],
+    "expected": [
+      1,
+      1
+    ]
+  },
+  {
+    "id": "incorrect",
+    "answers": [
+      "I divide the frequency by the wavelength and get 1.33 seconds.",
+      "The period doubles because each cycle takes more time."
+    ],
+    "expected": [
+      0,
+      0
+    ]
+  }
+]

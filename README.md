@@ -23,6 +23,18 @@ To reproduce the page check, upload [the three-page ML handout](eval/ml-course-n
 
 With the configured Gemini key and semantic index, the app embeds uploaded course passages once per session and reuses the bundled exam question vectors. Without a key, you can still index PDFs and preview lexical retrieval. Live written grading requires the configured key and an approved exam input. Image-only course PDFs need OCR before uploading.
 
+## Use a different written exam
+
+In **Materials**, upload a teacher-authored JSON definition and choose **Apply exam definition**. It accepts 1–15 written questions worth two points each. Use unique question numbers from 1–35 and rubric weights in half-point steps. Set `requires_figure` for questions that need a diagram. Choose or upload the corresponding course material. The app searches using the new question text and applies the supplied rubric to each answer.
+
+The **Active exam** field displays a content-based `exam_id`. The reader must put that value in the top level of its `vision.exam.v1` export. Reapplying after a question, reference answer or rubric edit gives a new ID. A missing or different ID on a custom paper routes the whole exam to review. To restore the built-in ML paper, clear the definition file and click **Apply exam definition** again. Legacy exports for the built-in paper remain compatible.
+
+The [two-question physics definition](eval/waves-exam.json), [course PDF](eval/waves-course.pdf) and [six synthetic answers and expected marks](eval/waves-examples.json) provide a worked cross-subject example. The following command builds a private, ephemeral reader export for each synthetic paper, runs the production grader and prints its marks, evidence and PDF pages. It requires Gemini.
+
+~~~powershell
+uv run --locked --no-dev python -m exam_grader.written_transfer
+~~~
+
 ## Demonstrate the grading component
 
 1. Start the app and click **Try synthetic OCR example**. Show why Q1 is a valid proposal and why Q17 needs a teacher to inspect its selected option. With Gemini enabled, inspect the Q21 mark, citation and quoted text.

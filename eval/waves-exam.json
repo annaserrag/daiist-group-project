@@ -1,0 +1,39 @@
+{
+  "title": "Wave motion and measurement",
+  "questions": [
+    {
+      "question_id": 1,
+      "question": "A wave has a frequency of 4 Hz and a wavelength of 3 m. Determine its speed and explain the calculation.",
+      "reference_answer": "Use wave speed = frequency times wavelength. The speed is 12 metres per second.",
+      "criteria": [
+        {
+          "id": "relationship",
+          "points": 1,
+          "description": "States or uses speed = frequency times wavelength."
+        },
+        {
+          "id": "result",
+          "points": 1,
+          "description": "Obtains 12 m/s with a speed unit. Equivalent units are acceptable."
+        }
+      ]
+    },
+    {
+      "question_id": 32,
+      "question": "A loudspeaker doubles the frequency of a sound in the same air. What happens to its period and why?",
+      "reference_answer": "The period halves because period and frequency are reciprocals.",
+      "criteria": [
+        {
+          "id": "change",
+          "points": 1,
+          "description": "States that the period halves."
+        },
+        {
+          "id": "reason",
+          "points": 1,
+          "description": "Explains the inverse relation between frequency and period."
+        }
+      ]
+    }
+  ]
+}
