@@ -32,7 +32,8 @@ def resources():
     ranking = os.getenv("GRADE_EVIDENCE_RANKING", "multipart")
     if ranking not in {"multipart", "original"}:
         raise ValueError("GRADE_EVIDENCE_RANKING must be multipart or original.")
-    index = Index(design=design, semantic=mode == "semantic" or (mode == "auto" and has_vectors), multipart=ranking == "multipart")
+    index = Index(design=design, semantic=mode == "semantic" or (mode == "auto" and has_vectors), multipart=ranking == "multipart",
+                  teaching_notes=True)
     agent = None
     if os.getenv("GEMINI_API_KEY"):
         from exam_grader.gemini import Gemini

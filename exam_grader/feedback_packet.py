@@ -9,13 +9,15 @@ from html import escape
 from pathlib import Path
 
 from .catalog import DATA, KEY, QUESTIONS
-from .gemini import PREVIEW, Proposal
+from .gemini import Proposal
 from .grading import checked_mark
 from .heldout_written import FRESH_PAPERS, PAPERS
 from .integration import file_sha256
 from .judge import prepare_items
 from .retrieval import Index
 from .rubric import CRITERIA
+
+PREVIEW = 260  # Archived lexical run used this preview size.
 
 PROJECT = Path(__file__).resolve().parents[1]
 

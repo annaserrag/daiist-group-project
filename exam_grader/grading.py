@@ -135,6 +135,14 @@ def checked(q, response, hits, searches, student_text=""):
         details = " ".join(f"{c}: {guide[c][1]}" for c in missing)
         decision = row(q, "insufficient_evidence", score=hits[0]["score"], searches=searches,
                        feedback="Teacher review. The passages do not fully support these rubric points. " + details)
+    elif decision["mark"] is not None and "independent_mark" in response:
+        second = response["independent_mark"]
+        if (type(second) not in (int, float) or second not in (0, .5, 1, 1.5, 2)
+                or abs(decision["mark"] - second) >= 1):
+            decision = row(q, "mark_disagreement", score=hits[0]["score"], searches=searches,
+                           feedback="Teacher review. The two rubric assessments could not establish a "
+                                    "consistent mark. Check the student's demonstrated understanding "
+                                    "against the cited criteria.")
     decision["citation"] = next(iter(citations.values()), None)
     decision["criterion_evidence"] = citations
     decision["criteria_needing_evidence"] = missing

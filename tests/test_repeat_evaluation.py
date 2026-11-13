@@ -77,7 +77,7 @@ class RepeatEvaluation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ,{"GEMINI_API_KEY":"offline-fixture"}), patch.object(
                 ChatGoogleGenerativeAI,"_generate",side_effect=[
                     ChatResult(generations=[ChatGeneration(message=m)]) for m in
-                    (msg, AIMessage(content=json.dumps({"evidence":[{"criterion":"definition","coverage":"full",
+                    (msg, AIMessage(content=json.dumps({"independent_mark":2,"evidence":[{"criterion":"definition","coverage":"full",
                         "passage_id":best["id"],"quote":data["quote"]}]}),usage_metadata=msg.usage_metadata))]) as transport:
             root=Path(tmp)
             agent=Gemini(input_eur_per_million=1,output_eur_per_million=2)

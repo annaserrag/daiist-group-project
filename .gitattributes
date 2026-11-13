@@ -3,3 +3,4 @@ exam_grader/data/answerkey.txt -text
 exam_grader/data/corpus.json -text whitespace=cr-at-eol
 exam_grader/data/vision-example.json -text
 *.pdf binary
+exam_grader/data/teaching-notes.json -text

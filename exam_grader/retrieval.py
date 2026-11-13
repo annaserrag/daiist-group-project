@@ -45,7 +45,7 @@ def topic_terms(topic, *, distance_evidence):
     return terms
 
 class Index:
-    def __init__(self, design="section", semantic=False, *, multipart=True):
+    def __init__(self, design="section", semantic=False, *, multipart=True, teaching_notes=False):
         if design not in ("section","paragraph"):
             raise ValueError("Unknown chunking design")
         raw = (DATA/"corpus.json").read_bytes()
@@ -62,6 +62,17 @@ class Index:
             self.version = f"{design}:{digest(raw)[:12]}:{MODEL}:hybrid-v3"
         if multipart:
             self.version += ":multipart-v1"
+        if teaching_notes:
+            raw_notes = (DATA / "teaching-notes.json").read_bytes()
+            notes = chunks(json.loads(raw_notes), "paragraph")
+            if self.vectors:
+                extra = json.loads((DATA / "teaching-vectors.json").read_bytes())
+                if (extra["notes_hash"] != digest(raw_notes) or extra["model"] != MODEL
+                        or set(extra["docs"]) != {row["id"] for row in notes}):
+                    raise ValueError("Rebuild teaching vectors: manifest does not match")
+                self.vectors["docs"].update(extra["docs"])
+            self.rows.extend(notes)
+            self.version += ":notes-" + digest(raw_notes)[:12]
         self._prepare_bags()
 
     @classmethod

@@ -6,6 +6,13 @@ from decimal import Decimal
 # These questions ask for an equivalent definition or an application of a rule.
 # The source supplies the rule; the student's words and numbers supply the application.
 EVIDENCE_GUIDANCE = {
+    23: (
+        "For 2 points the response must connect an outcome to the predictors used to model it. "
+        "Accept response/explanatory variables or equivalent language. For 1 point accept an explicit "
+        "relationship among variables without their roles, or predicting a continuous outcome without "
+        "explaining the predictors. Merely naming regression variants or a different statistical task "
+        "does not establish either idea. Review an ambiguous reading that could change the credit."
+    ),
     28: (
         "For purpose, cleaning and transforming are alternative ways of preparing raw data. "
         "A passage describing either operation and its purpose in analysis or modelling fully supports "

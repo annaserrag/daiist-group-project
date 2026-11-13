@@ -103,7 +103,7 @@ def main():
     import env
     env.load_env()
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("action", choices=["sources","vectors"])
+    p.add_argument("action", choices=["sources","vectors","teaching-vectors"])
     p.add_argument("--design", choices=["section","paragraph"],default="section")
     opt = p.parse_args()
     source = DATA/"corpus.json"
@@ -115,6 +115,17 @@ def main():
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         raise SystemExit("Set GEMINI_API_KEY to build public-material embeddings.")
+    if opt.action == "teaching-vectors":
+        notes = (DATA / "teaching-notes.json").read_bytes()
+        passages = chunks(json.loads(notes), "paragraph")
+        docs = {r["id"]: vector(f"title: {r['title']} / {r['heading']} | text: {r['text']}", key)
+                for r in passages}
+        target = DATA / "teaching-vectors.json"
+        temporary = target.with_suffix(".tmp")
+        temporary.write_text(json.dumps({"model": MODEL, "notes_hash": digest(notes), "docs": docs},
+                                        separators=(",", ":")), encoding="utf-8")
+        temporary.replace(target)
+        return
     raw = source.read_bytes()
     rows = chunks(json.loads(raw), opt.design)
     cache_path = DATA/".embedding-cache.json"

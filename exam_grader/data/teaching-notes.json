@@ -1,0 +1,51 @@
+[
+  {
+    "source": "structured-records",
+    "title": "Component 2 study note · Structured and semi-structured data",
+    "heading": "Adapted from AWS",
+    "url": "https://aws.amazon.com/what-is/structured-data/",
+    "text": "Structured data uses a schema specified in advance. In a table, each row represents a record and the columns identify its fields. Semi-structured data can organize records using tags, nesting or other markers while allowing fields to vary between records."
+  },
+  {
+    "source": "industry-applications",
+    "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+    "heading": "Adapted from Google Cloud",
+    "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+    "text": "In healthcare, models can use medical images or patient records to help identify disease. In finance, transaction data can be used to detect fraud. Retailers use customer data for product recommendations, sales forecasting and inventory planning."
+  },
+  {
+    "source": "outlier-handling",
+    "title": "Component 2 study note · Detecting and handling outliers",
+    "heading": "Adapted from NIST",
+    "url": "https://itl.nist.gov/div898/handbook/eda/section3/eda35h.htm",
+    "text": "A plot or an outlier test can flag an observation for investigation. An unusual value can be a measurement error or an important genuine observation. Correct a verified error when possible or remove it from the analysis. For a genuine extreme observation, retaining it and using a robust statistical method can be appropriate."
+  },
+  {
+    "source": "outlier-boxplot",
+    "title": "Component 2 study note · Box plots and outlier detection",
+    "heading": "Adapted from NIST",
+    "url": "https://www.itl.nist.gov/div898/handbook/prc/section1/prc16.htm",
+    "text": "Use a box plot to identify possible outliers. The inner fences lie 1.5 interquartile ranges below the first quartile and above the third quartile. Observations beyond an inner fence warrant examination."
+  },
+  {
+    "source": "rbf-boundary",
+    "title": "Component 2 study note · RBF kernels and nonlinear classification",
+    "heading": "Adapted from scikit-learn",
+    "url": "https://scikit-learn.org/stable/auto_examples/svm/plot_svm_kernels.html",
+    "text": "The radial basis function (RBF) measures similarity from the distance between two inputs. Similarity decreases as their separation grows. An SVM can use these similarities to fit a separating hyperplane in an implicit feature space, producing a curved decision boundary in the original input coordinates."
+  },
+  {
+    "source": "neighbor-distance",
+    "title": "Component 2 study note · K-nearest neighbors and prediction",
+    "heading": "Adapted from scikit-learn",
+    "url": "https://scikit-learn.org/stable/modules/neighbors.html",
+    "text": "For a new observation, a K-nearest neighbors model selects the K training examples closest to it according to a distance measure. Their labels or target values are then used to make the prediction."
+  },
+  {
+    "source": "neighbor-scaling",
+    "title": "Component 2 study note · Why scaling changes K-nearest neighbors",
+    "heading": "Adapted from scikit-learn",
+    "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
+    "text": "K-nearest neighbors picks training examples by distance. With features measured on very different scales, the wider-ranging feature can dominate distances and change which examples are nearest. Scaling features to comparable ranges gives each feature a more comparable influence on the neighborhood."
+  }
+]
