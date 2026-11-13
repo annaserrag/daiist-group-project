@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Literal
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.exceptions import OutputParserException
 from langsmith import tracing_context
 from pydantic import BaseModel, Field
 
@@ -142,7 +143,8 @@ def main():
                     code = getattr(upstream, "code", None)
                     details = getattr(upstream, "details", {}) or {}
                     daily = "perday" in json.dumps(details, default=str).lower()
-                    if daily or code not in (429, 500, 502, 503, 504) or attempt == 2:
+                    retryable = isinstance(error, OutputParserException) or code in (429, 500, 502, 503, 504)
+                    if daily or not retryable or attempt == 2:
                         limit = "daily quota" if daily else f"HTTP {code}"
                         raise SystemExit(f"Judge stopped at {ident} ({type(error).__name__}, {limit}). "
                                          "Completed items can be resumed.") from None
