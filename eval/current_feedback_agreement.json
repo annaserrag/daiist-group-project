@@ -1,0 +1,57 @@
+{
+  "scope": "20 current-grader feedback examples from seven papers. Javi approved AI-assisted recommendations before seeing the frozen judge decisions.",
+  "agreed": 13,
+  "n": 20,
+  "exact_agreement": 0.65,
+  "human/judge": {
+    "pass/pass": 11,
+    "pass/fail": 3,
+    "fail/fail": 2,
+    "fail/pass": 4
+  },
+  "frozen_predictions_sha256": "931c0ca68d9c1e6b68263ae691c38c432afc185b5875b5a7ea3e2784aa3067ac",
+  "disagreements": [
+    {
+      "item": 3,
+      "id": "current-Student_2-q28",
+      "reviewer": "pass",
+      "judge": "fail"
+    },
+    {
+      "item": 7,
+      "id": "current-Student_41-q28",
+      "reviewer": "pass",
+      "judge": "fail"
+    },
+    {
+      "item": 9,
+      "id": "current-Student_2-q23",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 11,
+      "id": "current-Student_1-q30",
+      "reviewer": "pass",
+      "judge": "fail"
+    },
+    {
+      "item": 14,
+      "id": "current-Student_3-q21",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 16,
+      "id": "current-Student_1-q28",
+      "reviewer": "fail",
+      "judge": "pass"
+    },
+    {
+      "item": 20,
+      "id": "current-Student_3-q28",
+      "reviewer": "fail",
+      "judge": "pass"
+    }
+  ]
+}
