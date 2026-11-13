@@ -61,6 +61,20 @@ class EvidenceReport(BaseModel):
         description="Independent mark from the rubric and student response, or null if genuinely ambiguous.")
     evidence: list[CriterionEvidence]
 
+def custom_evidence_schema(guide):
+    # Each teacher criterion gets a required slot. A verifier can explicitly return no evidence.
+    entry = {"type":"object", "properties":{
+        "coverage":{"type":"string","enum":["full","partial"]},
+        "passage_id":{"type":"string"}, "quote":{"type":"string"}},
+        "required":["coverage","passage_id","quote"]}
+    fields = {criterion:{"anyOf":[entry, {"type":"null"}], "description":description}
+              for criterion, (_, description) in guide.items()}
+    return {"title":"WrittenEvidence", "type":"object", "properties":{
+        "standards":{"type":"object","properties":fields,"required":list(fields)},
+        "independent_mark":{"anyOf":[{"type":"number","enum":[0,.5,1,1.5,2]},{"type":"null"}]}},
+        "required":["standards","independent_mark"]}
+
+
 class BinningApplication(BaseModel):
     verdict: Literal["valid", "invalid", "absent", "uncertain"]
     student_quote: str = Field(description="Exact contiguous student text containing the example, or empty if absent.")
@@ -157,6 +171,7 @@ class Gemini:
             raise ValueError("Set GEMINI_API_KEY before enabling live grading.")
         llm = ChatGoogleGenerativeAI(model=model,api_key=key,vertexai=False,temperature=0,
                                     max_tokens=700,max_retries=0,timeout=40)
+        self.llm = llm
         self.evidence_checker = llm.with_structured_output(EvidenceReport, method="json_schema")
         self.binning_checker = llm.with_structured_output(BinningEvidenceReport, method="json_schema")
         middleware = [ModelCallLimitMiddleware(run_limit=2,exit_behavior="error"),
@@ -215,6 +230,11 @@ class Session:
         binning = guide is None and question == QUESTIONS[30]
         signature = ([*self.owner.signature, BinningEvidenceReport.model_json_schema(), BINNING_CHECK]
                      if binning else self.owner.signature)
+        custom_schema = custom_evidence_schema(guide) if guide is not None else None
+        if custom_schema:
+            signature = [*signature, custom_schema]
+            data["marking_guide"] = [{"id":c,"maximum":points,"standard":standard}
+                                     for c,(points,standard) in guide.items()]
         def generate():
             call = Meter()
             full={h["id"]:h["text"] for h in hits}
@@ -233,12 +253,19 @@ class Session:
                 with tracing_context(enabled=False):
                     checker = self.owner.binning_checker if binning else self.owner.evidence_checker
                     instructions = "\n".join(s for s in (EVIDENCE_PROMPT, guidance, BINNING_CHECK if binning else "") if s)
+                    if custom_schema:
+                        checker = self.owner.llm.with_structured_output(custom_schema, method="json_schema")
                     report = checker.invoke(
                         [("system", instructions),
                          ("human", json.dumps(audit,ensure_ascii=False))],
                         config={"callbacks":[call]})
-                answer["criterion_evidence"] = [e.model_dump() for e in report.evidence]
-                answer["independent_mark"] = report.independent_mark
+                if custom_schema:
+                    answer["criterion_evidence"] = [dict(item, criterion=c) for c in guide
+                        if isinstance(item := report["standards"].get(c), dict)]
+                    answer["independent_mark"] = report["independent_mark"]
+                else:
+                    answer["criterion_evidence"] = [e.model_dump() for e in report.evidence]
+                    answer["independent_mark"] = report.independent_mark
                 if binning:
                     answer["binning_application"] = report.application.model_dump()
                 return {"proposal":answer,"opened":opened}, (call.inputs,call.outputs) if call.complete else None
