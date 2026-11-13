@@ -67,6 +67,19 @@ class WrittenTransfer(unittest.TestCase):
             self.assertEqual(threshold(written_exam=exam), 0)
             self.assertIsNone(threshold(policy=Policy()))
 
+    def test_custom_reader_inspection_checks_the_selected_question_set(self):
+        from exam_grader.handoff import inspect_export
+        exam = WrittenExam.load(DATA / "waves-exam.json")
+        answer = dict(question_id=1, text="A response", state="read", confidence=1, id_confidence=1)
+        packet = dict(schema_version="vision.exam.v1", exam_status="in_scope",
+                      exam_id=exam.exam_id, answers=[answer])
+        report = inspect_export(packet, written_exam=exam)
+        self.assertTrue(report["valid"])
+        self.assertEqual(report["undetected_question_ids"], [32])
+        self.assertFalse(inspect_export(packet)["valid"])
+        packet["answers"] = [answer | {"question_id": 2}]
+        self.assertEqual(inspect_export(packet, written_exam=exam)["unexpected_question_ids"], [2])
+
     def test_validation_and_binding_to_rubric_revision(self):
         exam = WrittenExam.load(DATA / "waves-exam.json")
         data = exam.model_dump()

@@ -43,7 +43,7 @@ uv run --locked --no-dev python -m exam_grader.metrics agreement eval/human_labe
 
 **Example:** Vision reads a clear “B” but cannot distinguish Q1 from Q7. Return an unassigned detection or flag low ID confidence. A high letter confidence does not justify giving Q1 a mark. A missing region is also different from a confidently empty region: one needs review, the other can receive a proposed zero.
 
-Anna can validate an export with the [JSON Schema](exam_grader/data/vision.exam.v1.schema.json) or run the command below in the team checkout. It checks field types and reports duplicate, unassigned and missing question numbers without printing student text. A partial export can pass the format check and still need teacher review.
+Anna can validate an export with the [JSON Schema](exam_grader/data/vision.exam.v1.schema.json) or run the command below in the team checkout. It checks field types and reports duplicate, unassigned and missing question numbers without printing student text. A partial export can pass the format check and still need teacher review. For a different written exam, add `--written-exam path/to/definition.json` to both the export check and the PDF comparison. The check uses the selected exam’s fingerprint and question numbers.
 
 ~~~powershell
 uv run --no-dev python -m exam_grader.handoff exam_grader/data/vision-example.json
@@ -51,7 +51,7 @@ uv run --no-dev python -m exam_grader.handoff exam_grader/data/vision-example.js
 
 ## Component 2 returns two views
 
-- **teacher:** 35 ordered question rows containing a proposed mark or null, review reason, feedback and citation. An incomplete exam has a subtotal but no total. Every exam still requires teacher sign-off.
+- **teacher:** one row per question (35 on the built-in exam) containing a proposed mark or null, review reason, feedback and citation. An incomplete exam has a subtotal but no total. Every exam still requires teacher sign-off.
 - **record:** exactly the pipeline data intended for the template logger. Contains counts, statuses, source IDs, versions, usage and numeric features; no scan, filename, OCR text, quote, or feedback. The teacher view is transient. Do not concatenate it into the record.
 - A duplicate detection withholds that question. An unknown ID can belong anywhere and blocks the whole exam in v1. Weak retrieval or OCR never silently becomes zero. “differs_from_key” is a proposed incorrect response; “review” means the grader cannot propose a defensible mark.
 

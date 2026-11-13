@@ -24,7 +24,7 @@ def assigned(payload):
 
 def compare(pdf, reference, reader, *, written_exam=None):
     gold = json.loads(reference.read_bytes())
-    if not inspect_export(gold)["valid"]:
+    if not inspect_export(gold, written_exam=written_exam)["valid"]:
         raise ValueError("Correct the reference export before checking the reader.")
     if gold["exam_status"] == "in_scope" and not assigned(gold):
         raise ValueError("An in-scope reference needs an independently assigned answer.")
@@ -37,7 +37,7 @@ def compare(pdf, reference, reader, *, written_exam=None):
 
     def capture(path):
         payload = reader.read_exam(path)
-        observed["contract"] = inspect_export(payload)
+        observed["contract"] = inspect_export(payload, written_exam=written_exam)
         if observed["contract"]["valid"]:
             observed["payload"] = payload
         return payload
