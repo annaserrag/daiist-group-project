@@ -4,6 +4,14 @@
 
 Run these commands from the repository root.
 
+Recalculate the written generalization results from the released anonymized predictions and teacher marks. This command requires neither a key nor access to the original student papers. It reports proposal and review counts on all readable answers, then computes errors only for proposals with a numerical reference. It also calculates the error of awarding full credit on the same selected answers.
+
+```powershell
+uv run --locked --no-dev python -m exam_grader.generalization
+```
+
+The ML files identify each paper and question, the frozen policy and the checksums of the private exports. The UNT file records the public dataset archive hash, zero-based response line numbers, numeric scale, rubrics and source notes. Its new-question test uses different prompts from all development trials. The [physics demonstration](../README.md#use-a-different-written-exam) can be rerun live with the included definition and PDF.
+
 After completing the 23-item worksheet and saving the downloaded CSV as `eval/human_labels.csv`, compare your labels with the already frozen judge predictions. This command runs locally without a key. It joins items by ID and prints the pass/fail counts, including cases the judge passed that you failed. You can run it before Anna's reader or the course case set is ready.
 
 ```powershell
@@ -14,7 +22,7 @@ uv run --locked --no-dev python -m exam_grader.metrics agreement eval/human_labe
 Retrieval and drift replays use public material. The monitoring replay downloads the checksum-verified teacher CSV or accepts a local copy via `--teacher-csv`.
 
 ```powershell
-uv run --locked --no-dev python -m exam_grader.metrics retrieval eval/retrieval_sources.csv --written-only --semantic
+uv run --locked --no-dev python -m exam_grader.metrics retrieval eval/retrieval_sources.csv --written-only --semantic --teaching-notes
 uv run --locked --no-dev python -m exam_grader.monitor_replay
 ```
 

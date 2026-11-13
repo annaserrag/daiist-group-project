@@ -1,0 +1,167 @@
+{
+  "exam_id": "written-6ccfcccc3b741a6549eeb3f0bc111455cf9c84bbfd8662fd6a25c75808516d9a",
+  "scope": "synthetic engineering check of a different written exam",
+  "questions": [
+    {
+      "case": "paraphrase",
+      "question": 1,
+      "expected": 2,
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "page": 1,
+      "criteria": {
+        "relationship": {
+          "id": "pdf-90784416f72a83c4bc31-p1-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "page": 1,
+          "quote": "Its speed is the frequency multiplied by the wavelength",
+          "coverage": "full"
+        },
+        "result": {
+          "id": "pdf-90784416f72a83c4bc31-p1-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "page": 1,
+          "quote": "With wavelength in metres, the resulting speed is measured in metres per second.",
+          "coverage": "full"
+        }
+      }
+    },
+    {
+      "case": "paraphrase",
+      "question": 32,
+      "expected": 2,
+      "proposed": 2.0,
+      "reason": "grounded_proposal",
+      "page": 2,
+      "criteria": {
+        "change": {
+          "id": "pdf-90784416f72a83c4bc31-p2-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "page": 2,
+          "quote": "Doubling the frequency halves the period.",
+          "coverage": "full"
+        },
+        "reason": {
+          "id": "pdf-90784416f72a83c4bc31-p2-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "page": 2,
+          "quote": "Period and frequency are reciprocals: T = 1/f.",
+          "coverage": "full"
+        }
+      }
+    },
+    {
+      "case": "incomplete",
+      "question": 1,
+      "expected": 1,
+      "proposed": null,
+      "reason": "insufficient_evidence",
+      "page": 1,
+      "criteria": {
+        "relationship": {
+          "id": "pdf-90784416f72a83c4bc31-p1-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "page": 1,
+          "quote": "Its speed is the frequency multiplied by the wavelength",
+          "coverage": "full"
+        }
+      }
+    },
+    {
+      "case": "incomplete",
+      "question": 32,
+      "expected": 1,
+      "proposed": 1.0,
+      "reason": "grounded_proposal",
+      "page": 2,
+      "criteria": {
+        "change": {
+          "id": "pdf-90784416f72a83c4bc31-p2-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "page": 2,
+          "quote": "Doubling the frequency halves the period.",
+          "coverage": "full"
+        },
+        "reason": {
+          "id": "pdf-90784416f72a83c4bc31-p2-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "page": 2,
+          "quote": "Period and frequency are reciprocals: T = 1/f.",
+          "coverage": "full"
+        }
+      }
+    },
+    {
+      "case": "incorrect",
+      "question": 1,
+      "expected": 0,
+      "proposed": 0.0,
+      "reason": "grounded_proposal",
+      "page": 1,
+      "criteria": {
+        "relationship": {
+          "id": "pdf-90784416f72a83c4bc31-p1-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "page": 1,
+          "quote": "Its speed is the frequency multiplied by the wavelength: v = f times wavelength.",
+          "coverage": "full"
+        },
+        "result": {
+          "id": "pdf-90784416f72a83c4bc31-p1-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 1",
+          "url": "",
+          "page": 1,
+          "quote": "With wavelength in metres, the resulting speed is measured in metres per second.",
+          "coverage": "full"
+        }
+      }
+    },
+    {
+      "case": "incorrect",
+      "question": 32,
+      "expected": 0,
+      "proposed": 0.0,
+      "reason": "grounded_proposal",
+      "page": 2,
+      "criteria": {
+        "change": {
+          "id": "pdf-90784416f72a83c4bc31-p2-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "page": 2,
+          "quote": "Doubling the frequency halves the period.",
+          "coverage": "full"
+        },
+        "reason": {
+          "id": "pdf-90784416f72a83c4bc31-p2-0",
+          "title": "waves-course.pdf",
+          "heading": "PDF page 2",
+          "url": "",
+          "page": 2,
+          "quote": "Period and frequency are reciprocals: T = 1/f.",
+          "coverage": "full"
+        }
+      }
+    }
+  ],
+  "model": "gemini-3.1-flash-lite",
+  "commit": "23b6351"
+}

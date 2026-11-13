@@ -1,0 +1,480 @@
+{
+  "plan": {
+    "seed": 222613,
+    "papers": [
+      16,
+      31
+    ],
+    "questions": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      29,
+      30,
+      31,
+      33,
+      34,
+      35
+    ],
+    "excluded": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      10,
+      13,
+      15,
+      17,
+      18,
+      20,
+      22,
+      23,
+      33,
+      35,
+      36,
+      38,
+      40,
+      41,
+      42
+    ],
+    "model": "gemini-3.1-flash-lite",
+    "policy": "Min similarity .40, written review at or below 1. Use exact matches and >=1 differences on all scorable proposals; label coverage separately. No further adjustment using these teacher marks."
+  },
+  "commit": "2e0e044",
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "teacher_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "scan_hashes_pages": [
+    [
+      16,
+      "5cbb9199304a77edd62d688701ca2f4aca7d280ab8d2f2625b7f2ca26fc5cb39",
+      2
+    ],
+    [
+      31,
+      "b69692b6c04552b0de1b83dc66d624bbfd4f08b3d8b78511a9e1075b83540040",
+      5
+    ]
+  ],
+  "snapshot_hashes": {
+    "16": {
+      "final": "e264ee2d57b6bdeec219b0b45153a0d206badfdc514cdd767c8d3587be361d7c",
+      "first": "e264ee2d57b6bdeec219b0b45153a0d206badfdc514cdd767c8d3587be361d7c",
+      "export": "7e36c8ac16515a9ad43f9bba25cdf655c9b150fc18d3c5e874ab3dda1fc14b0f"
+    },
+    "31": {
+      "final": "59a6329c0c75ea8e89ea666d7b65425ebc32a6f944ae65bc149a6412042a3142",
+      "first": "0bce76cb4387d34974a7d26b8c7c67394843f86d8270fd508683006f1f372fc6",
+      "export": "2a333dfa4d21e6f60e68863ffeac08adef0738fac82603750f29c3d2f00b91fe"
+    }
+  },
+  "all_slots": {
+    "n": 26,
+    "proposals": 1,
+    "reviews": 25,
+    "paired": 1,
+    "numeric_reference": 20,
+    "exact": 0,
+    "within_half": 1,
+    "off_at_least_one": 0,
+    "under_by_one": 0,
+    "over_by_one": 0,
+    "mae": 0.5,
+    "always_full_exact_same_proposals": 0,
+    "always_full_mae_same_proposals": 0.5,
+    "reason_counts": {
+      "written_mark_review": 9,
+      "diagnosis_partial_review": 2,
+      "insufficient_evidence": 4,
+      "provider_failure": 2,
+      "missing_detection": 6,
+      "mark_disagreement": 1,
+      "grounded_proposal": 1,
+      "context_check": 1
+    }
+  },
+  "readable": {
+    "n": 20,
+    "proposals": 1,
+    "reviews": 19,
+    "paired": 1,
+    "numeric_reference": 20,
+    "exact": 0,
+    "within_half": 1,
+    "off_at_least_one": 0,
+    "under_by_one": 0,
+    "over_by_one": 0,
+    "mae": 0.5,
+    "always_full_exact_same_proposals": 0,
+    "always_full_mae_same_proposals": 0.5,
+    "reason_counts": {
+      "written_mark_review": 9,
+      "diagnosis_partial_review": 2,
+      "insufficient_evidence": 4,
+      "provider_failure": 2,
+      "mark_disagreement": 1,
+      "grounded_proposal": 1,
+      "context_check": 1
+    }
+  },
+  "input_states": {
+    "read": 20,
+    "missing": 6
+  },
+  "per_paper": {
+    "16": {
+      "n": 7,
+      "proposals": 0,
+      "reviews": 7,
+      "paired": 0,
+      "numeric_reference": 7,
+      "exact": 0,
+      "within_half": 0,
+      "off_at_least_one": 0,
+      "under_by_one": 0,
+      "over_by_one": 0,
+      "mae": null,
+      "always_full_exact_same_proposals": 0,
+      "always_full_mae_same_proposals": null,
+      "reason_counts": {
+        "written_mark_review": 3,
+        "diagnosis_partial_review": 1,
+        "insufficient_evidence": 1,
+        "provider_failure": 2
+      }
+    },
+    "31": {
+      "n": 13,
+      "proposals": 1,
+      "reviews": 12,
+      "paired": 1,
+      "numeric_reference": 13,
+      "exact": 0,
+      "within_half": 1,
+      "off_at_least_one": 0,
+      "under_by_one": 0,
+      "over_by_one": 0,
+      "mae": 0.5,
+      "always_full_exact_same_proposals": 0,
+      "always_full_mae_same_proposals": 0.5,
+      "reason_counts": {
+        "mark_disagreement": 1,
+        "diagnosis_partial_review": 1,
+        "written_mark_review": 6,
+        "insufficient_evidence": 3,
+        "grounded_proposal": 1,
+        "context_check": 1
+      }
+    }
+  },
+  "pairs": [
+    {
+      "paper": 16,
+      "question": 21,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 1.0
+    },
+    {
+      "paper": 16,
+      "question": 22,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "diagnosis_partial_review",
+      "execution_issue": null,
+      "first_reason": "diagnosis_partial_review",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 23,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 1.0
+    },
+    {
+      "paper": 16,
+      "question": 24,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "execution_issue": null,
+      "first_reason": "insufficient_evidence",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 25,
+      "state": "read",
+      "teacher": 0.0,
+      "mark": null,
+      "reason": "provider_failure",
+      "execution_issue": "provider_unavailable",
+      "first_reason": "provider_failure",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 26,
+      "state": "read",
+      "teacher": 1.5,
+      "mark": null,
+      "reason": "provider_failure",
+      "execution_issue": "structured_response_invalid",
+      "first_reason": "provider_failure",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 27,
+      "state": "read",
+      "teacher": 0.5,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 0.0
+    },
+    {
+      "paper": 16,
+      "question": 29,
+      "state": "missing",
+      "teacher": null,
+      "mark": null,
+      "reason": "missing_detection",
+      "execution_issue": null,
+      "first_reason": "missing_detection",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 30,
+      "state": "missing",
+      "teacher": null,
+      "mark": null,
+      "reason": "missing_detection",
+      "execution_issue": null,
+      "first_reason": "missing_detection",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 31,
+      "state": "missing",
+      "teacher": null,
+      "mark": null,
+      "reason": "missing_detection",
+      "execution_issue": null,
+      "first_reason": "missing_detection",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 33,
+      "state": "missing",
+      "teacher": null,
+      "mark": null,
+      "reason": "missing_detection",
+      "execution_issue": null,
+      "first_reason": "missing_detection",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 34,
+      "state": "missing",
+      "teacher": null,
+      "mark": null,
+      "reason": "missing_detection",
+      "execution_issue": null,
+      "first_reason": "missing_detection",
+      "first_mark": null
+    },
+    {
+      "paper": 16,
+      "question": 35,
+      "state": "missing",
+      "teacher": null,
+      "mark": null,
+      "reason": "missing_detection",
+      "execution_issue": null,
+      "first_reason": "missing_detection",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 21,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "mark_disagreement",
+      "execution_issue": null,
+      "first_reason": "mark_disagreement",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 22,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "diagnosis_partial_review",
+      "execution_issue": null,
+      "first_reason": "diagnosis_partial_review",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 23,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 1.0
+    },
+    {
+      "paper": 31,
+      "question": 24,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "execution_issue": null,
+      "first_reason": "provider_failure",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 25,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 0.5
+    },
+    {
+      "paper": 31,
+      "question": 26,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 1.0
+    },
+    {
+      "paper": 31,
+      "question": 27,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "execution_issue": null,
+      "first_reason": "insufficient_evidence",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 29,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "provider_failure",
+      "first_mark": null,
+      "suggestion_shown_for_review": 0.0
+    },
+    {
+      "paper": 31,
+      "question": 30,
+      "state": "read",
+      "teacher": 2.0,
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "execution_issue": null,
+      "first_reason": "insufficient_evidence",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 31,
+      "state": "read",
+      "teacher": 1.5,
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "execution_issue": null,
+      "first_reason": "grounded_proposal",
+      "first_mark": 2.0
+    },
+    {
+      "paper": 31,
+      "question": 33,
+      "state": "read",
+      "teacher": 0.5,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 0.0
+    },
+    {
+      "paper": 31,
+      "question": 34,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "context_check",
+      "execution_issue": null,
+      "first_reason": "context_check",
+      "first_mark": null
+    },
+    {
+      "paper": 31,
+      "question": 35,
+      "state": "read",
+      "teacher": 1.0,
+      "mark": null,
+      "reason": "written_mark_review",
+      "execution_issue": null,
+      "first_reason": "written_mark_review",
+      "first_mark": null,
+      "suggestion_shown_for_review": 0.0
+    }
+  ],
+  "low_mark_referrals": {
+    "n": 9,
+    "exact": 2,
+    "off_at_least_one": 5,
+    "mae": 0.8333333333333334,
+    "scope": "Candidate marks visible only to teachers on rows referred by the preselected cutoff. These were not issued as proposals."
+  }
+}

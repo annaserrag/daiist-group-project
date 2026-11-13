@@ -1,14 +1,22 @@
-# Component 2 readiness audit · 11 November 2026
+# Component 2 readiness audit · 13 November 2026
 
 ## Current handoff
 
+Teachers can upload an exam definition and course PDF, preview retrieved pages, inspect evidence for each criterion and sign off the chosen exam. The stock paper retains its own key and grading rules. The reader checker verifies the selected question set and rubric fingerprint. The Windows suite passed all 62 tests. [Interface and integration instructions](HANDOFF.md)
+
+On four randomly selected ML papers, the new default proposed nine of 39 readable marks, matched five and differed by a point or more on two. On two further papers reserved for confirmation, it proposed one of 20 readable marks. That proposal was half a point above the teacher. Nine low-mark referrals included five tentative scores at least a point from the reference. High review workload and partial-credit calibration remain the main weaknesses on the stock exam. [Study and comparison](REPORT.md#generalization-to-new-students-and-different-questions)
+
+On two previously unused computing questions, seven of eight answers received proposals, four matched exactly and all seven were within half a point. The production path also passed a page-citation check on a synthetic physics exam. A real handwritten PDF and checked export from Anna, the 30 team evaluation cases, deployment verification and timed teacher sign-off remain outstanding. The current course checker stops at the empty team case table. [Answer-level evidence](eval/generalization_unt.json) · [Physics check](eval/generalization_waves.json)
+
+## Earlier component checks
+
 On 13 November, the revised Q22 route proposed 2/2 on two of 13 vetted transcriptions. Both agreed with the teacher. Six partial-credit decisions went to the teacher, three answers had insufficient verified evidence, and two readings were missing. The full 42-slot regression set still required 31 reviews. On the historical feedback packet, judging each claim against the displayed quotes reduced false passes from ten to five and introduced four false fails. [Paired results](eval/q22_routing_and_judge_replay.json)
 
-On 12 November, a frozen-cache regression check found that the course evaluator could count an unavailable model response as a successful targeted referral. It now records `missing_frozen_response` as an execution issue and fails that targeted expectation. On the same fixture, a genuine Q17 invalid-choice referral still passes. The suite now includes 45 tests. This change affects the course evaluator. The four-paper grading measurements use separately archived proposals.
+On 12 November, a frozen-cache regression check found that the course evaluator could count an unavailable model response as a successful targeted referral. It now records `missing_frozen_response` as an execution issue and fails that targeted expectation. On the same fixture, a genuine Q17 invalid-choice referral still passes. The suite at that checkpoint included 45 tests. This change affects the course evaluator. The four-paper grading measurements use separately archived proposals.
 
 **The grading branch is ready for joint integration testing. The complete course submission still needs team evidence.**
 
-The latest test used four previously unseen papers (13, 18, 35 and 22) with the revised grader frozen at `c4b76bb`. Across 56 written slots, it proposed 31 marks and referred 25 (45%). Of 30 proposals with numerical teacher marks, 16 agreed exactly and 17 were within half a point. Mean absolute error was 0.55/2, compared with 0.52/2 for the question-mean baseline on the same 30. Twelve proposals were at least a point below the teacher and one was at least a point above. Q32 was excluded because all 50 responses had been used in development. [Four-paper evaluation](eval/written_validation_four.json)
+An earlier test used four previously unseen papers (13, 18, 35 and 22) with the revised grader frozen at `c4b76bb`. Across 56 written slots, it proposed 31 marks and referred 25 (45%). Of 30 proposals with numerical teacher marks, 16 agreed exactly and 17 were within half a point. Mean absolute error was 0.55/2, compared with 0.52/2 for the question-mean baseline on the same 30. Twelve proposals were at least a point below the teacher and one was at least a point above. Q32 was excluded because all 50 responses had been used in development. [Four-paper evaluation](eval/written_validation_four.json)
 
 The teacher can require additional review of low model proposals. On the four new papers, referring proposed zeros raised reviews to 39/56 and retained 13 exact matches among 16 comparable proposals. Referring every proposal at or below 1/2 raised reviews to 45/56 and retained 10 exact matches among 10 comparable proposals. One further retained proposal lacked a numerical teacher mark. Both policies are workload trade-offs. The stricter setting and default both reproduced their expected decisions for all 56 slots with networking disabled. [Routing comparison](eval/written_review_policies.json)
 

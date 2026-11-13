@@ -1,0 +1,3011 @@
+{
+  "plan": {
+    "papers": [
+      10,
+      23,
+      38,
+      40
+    ],
+    "excluded": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      13,
+      15,
+      17,
+      18,
+      20,
+      22,
+      33,
+      35,
+      36,
+      41,
+      42
+    ],
+    "questions": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      29,
+      30,
+      31,
+      33,
+      34,
+      35
+    ],
+    "seed": 13112026,
+    "baseline": "1c58e6bac4e437ad73cbdd857b65630809b7b30f",
+    "selection": "Four fresh full papers before reading student answers or teacher marks. Primary denominator: readable student responses; frozen paired predictions before scoring. Exact matches per readable answer should increase without increasing one-point disagreements per readable answer."
+  },
+  "policy_selection": {
+    "additional_arm": "For bundled ML only, additionally refer marks <=1 using existing Policy.written_review_at_or_below. Compare this operating point on the same frozen candidate proposals. Set as stock default only if exact matches per readable response exceed baseline, one-point errors per readable response do not exceed baseline, and it offers at least as many proposals as baseline. Prefer the unrestricted candidate if it meets the original gates with no more large errors than the conservative arm. Otherwise retain the prior grader or show experimental configuration. For new exams keep teacher-defined rubric and the independent assessment.",
+    "basis": "eval/written_review_policies.json and previous five-paper development results. Added after implementation, before fresh teacher outcomes were opened."
+  },
+  "candidate_original": "ce8eafc",
+  "candidate_second_model": "0c2b4d0",
+  "groups": {
+    "baseline": "1c58e6b / gemini-3.5-flash-lite",
+    "candidate": "ce8eafc / gemini-3.5-flash-lite",
+    "alt-baseline": "1c58e6b / gemini-3.1-flash-lite",
+    "alt-candidate": "0c2b4d0 / gemini-3.1-flash-lite",
+    "conservative": "additional existing cutoff 1 applied to alt-candidate; confirmed blanks excluded from readable denominator"
+  },
+  "dataset": "10.17632/sf3kvjwknt.1",
+  "teacher_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "scan_hashes": [
+    [
+      10,
+      "3e984138fa96f81b216d6350c4c8a7157dece81920fde2ca41c1a3a4037eb44e",
+      4
+    ],
+    [
+      23,
+      "5b16b5734fafaaff3a571f87b3119e9701122c652c30e09b92de4f905e9562ff",
+      4
+    ],
+    [
+      38,
+      "55813eee8ea9d94466c5ee3e99b9328018210274cbee9ed39be389bcb2715c93",
+      4
+    ],
+    [
+      40,
+      "8de1de5b92bd9e68e5cd54331995fd7a545ee7932e87572efa8a9979bcba62c1",
+      4
+    ]
+  ],
+  "export_hashes": {
+    "10": "4532be75e1e15d93662b3ef35f19ffc7841bdeeec2218e61e43f6f406442afa7",
+    "23": "57038fd8a3edd94ef7219a6d0e6954dd5af02e53428fa12f574c36bd0964f116",
+    "38": "3de1ec268991de2dd0618414b77ad7d403ec4cab888287fbf74b1c2085beb6d3",
+    "40": "0c3cc2ed789cc5d8e6a149ce6cfaf13cac4347239adae2616c8527d990e8f55d"
+  },
+  "blind_hashes": {
+    "baseline": {
+      "10": "e1eb78c5689b4c7f4acf0f0cfb34fe919486d04fd9d386459785a3a48f2193fb",
+      "23": "64acb59294dae73d2535655029c33f16b13e5487b0c4761a6ae68328829df657",
+      "38": "0089c3eba7a85e4a41668844e4147f0985005ad8cb3b22a2f5e8671ad46cff63",
+      "40": "3be99797598f8653f26f55ad3cb0908897369339d9c9912752d95a531044ead5"
+    },
+    "candidate": {
+      "10": "33cf09c0f7beb58f27ee1c39103f9ed96a208359b6b653ae27c012ce3d290f26",
+      "23": "6d388ebf39edbf4b61de3637f75738e134decabd0457518f5ef7bc2dbbb33c66",
+      "38": "a827f39c5f243dfb3b35aca67450d5e7ae84212e4e15c1524cda7d9152dfeb47",
+      "40": "6f9a1293addd4343bedb219aafa000e08bfa289d7fb963afcfdc6c1e12dca335"
+    },
+    "alt-baseline": {
+      "10": "1e1ea35a5fe515e28b6e39bc64d92aea109bfae83b098f6a48197cb71c5ea7a2",
+      "23": "1dfdafc313ec035b7ea748422449fc46cb38cacdb71cb7a62926f8560a176524",
+      "38": "35844375f4ea0dc60c54f18b89e00b0069caeafdc12498b4bffbd0cd007359eb",
+      "40": "91627d108c15fe7593a344a53a29b82d67472cae4494644477586bd99fcb5cbb"
+    },
+    "alt-candidate": {
+      "10": "aa1aba28399671aa05ec0844f01d833e4dce4d1f82a0684de95489b77ba9d2b2",
+      "23": "e886e8cb8978de8faf0efc78156b0c2fce26265758f9ad6d3d01d7fde48e7427",
+      "38": "e2b2d139e9a3fd0a3f55379ca4fd0cf372fe99b44d9dacd3b7036077beacea75",
+      "40": "46cc344b260ee85b075284084d9e8d3c0a7ce8b81d9b5ee64c5b79766c4632e2"
+    }
+  },
+  "readable": {
+    "baseline": {
+      "n": 39,
+      "proposed": 7,
+      "review": 32,
+      "paired": 7,
+      "reference_missing": 0,
+      "exact": 4,
+      "off_at_least_one": 3,
+      "under_one": 2,
+      "over_one": 1,
+      "mae": 0.42857142857142855,
+      "reasons": {
+        "grounded_proposal": 7,
+        "unverified_citation": 4,
+        "insufficient_evidence": 19,
+        "context_check": 3,
+        "diagnosis_partial_review": 3,
+        "provider_failure": 3
+      },
+      "operational_failures": 3,
+      "first_attempt_failures": 18
+    },
+    "candidate": {
+      "n": 39,
+      "proposed": 13,
+      "review": 26,
+      "paired": 13,
+      "reference_missing": 0,
+      "exact": 5,
+      "off_at_least_one": 7,
+      "under_one": 6,
+      "over_one": 1,
+      "mae": 0.6538461538461539,
+      "reasons": {
+        "grounded_proposal": 13,
+        "insufficient_evidence": 6,
+        "mark_disagreement": 1,
+        "context_check": 3,
+        "diagnosis_partial_review": 1,
+        "provider_failure": 15
+      },
+      "operational_failures": 15,
+      "first_attempt_failures": 25
+    },
+    "alt-baseline": {
+      "n": 39,
+      "proposed": 8,
+      "review": 31,
+      "paired": 8,
+      "reference_missing": 0,
+      "exact": 4,
+      "off_at_least_one": 4,
+      "under_one": 2,
+      "over_one": 2,
+      "mae": 0.5,
+      "reasons": {
+        "unverified_citation": 2,
+        "grounded_proposal": 8,
+        "insufficient_evidence": 19,
+        "provider_failure": 4,
+        "context_check": 3,
+        "diagnosis_partial_review": 3
+      },
+      "operational_failures": 4,
+      "first_attempt_failures": 12
+    },
+    "alt-candidate": {
+      "n": 39,
+      "proposed": 17,
+      "review": 22,
+      "paired": 17,
+      "reference_missing": 0,
+      "exact": 6,
+      "off_at_least_one": 9,
+      "under_one": 6,
+      "over_one": 3,
+      "mae": 0.7058823529411765,
+      "reasons": {
+        "grounded_proposal": 17,
+        "insufficient_evidence": 8,
+        "provider_failure": 4,
+        "context_check": 3,
+        "diagnosis_partial_review": 3,
+        "mark_disagreement": 2,
+        "unverified_citation": 2
+      },
+      "operational_failures": 4,
+      "first_attempt_failures": 11
+    },
+    "conservative": {
+      "n": 39,
+      "proposed": 9,
+      "review": 30,
+      "paired": 9,
+      "reference_missing": 0,
+      "exact": 5,
+      "off_at_least_one": 2,
+      "under_one": 0,
+      "over_one": 2,
+      "mae": 0.3333333333333333,
+      "reasons": {
+        "grounded_proposal": 9,
+        "insufficient_evidence": 8,
+        "written_mark_review": 8,
+        "provider_failure": 4,
+        "context_check": 3,
+        "diagnosis_partial_review": 3,
+        "mark_disagreement": 2,
+        "unverified_citation": 2
+      },
+      "operational_failures": 4,
+      "first_attempt_failures": 11
+    }
+  },
+  "all_slots": {
+    "baseline": {
+      "n": 52,
+      "proposed": 7,
+      "review": 45,
+      "paired": 7,
+      "reference_missing": 13,
+      "exact": 4,
+      "off_at_least_one": 3,
+      "under_one": 2,
+      "over_one": 1,
+      "mae": 0.42857142857142855,
+      "reasons": {
+        "grounded_proposal": 7,
+        "missing_detection": 13,
+        "unverified_citation": 4,
+        "insufficient_evidence": 19,
+        "context_check": 3,
+        "diagnosis_partial_review": 3,
+        "provider_failure": 3
+      },
+      "operational_failures": 3,
+      "first_attempt_failures": 18
+    },
+    "candidate": {
+      "n": 52,
+      "proposed": 13,
+      "review": 39,
+      "paired": 13,
+      "reference_missing": 13,
+      "exact": 5,
+      "off_at_least_one": 7,
+      "under_one": 6,
+      "over_one": 1,
+      "mae": 0.6538461538461539,
+      "reasons": {
+        "grounded_proposal": 13,
+        "missing_detection": 13,
+        "insufficient_evidence": 6,
+        "mark_disagreement": 1,
+        "context_check": 3,
+        "diagnosis_partial_review": 1,
+        "provider_failure": 15
+      },
+      "operational_failures": 15,
+      "first_attempt_failures": 25
+    },
+    "alt-baseline": {
+      "n": 52,
+      "proposed": 8,
+      "review": 44,
+      "paired": 8,
+      "reference_missing": 13,
+      "exact": 4,
+      "off_at_least_one": 4,
+      "under_one": 2,
+      "over_one": 2,
+      "mae": 0.5,
+      "reasons": {
+        "unverified_citation": 2,
+        "missing_detection": 13,
+        "grounded_proposal": 8,
+        "insufficient_evidence": 19,
+        "provider_failure": 4,
+        "context_check": 3,
+        "diagnosis_partial_review": 3
+      },
+      "operational_failures": 4,
+      "first_attempt_failures": 12
+    },
+    "alt-candidate": {
+      "n": 52,
+      "proposed": 17,
+      "review": 35,
+      "paired": 17,
+      "reference_missing": 13,
+      "exact": 6,
+      "off_at_least_one": 9,
+      "under_one": 6,
+      "over_one": 3,
+      "mae": 0.7058823529411765,
+      "reasons": {
+        "grounded_proposal": 17,
+        "missing_detection": 13,
+        "insufficient_evidence": 8,
+        "provider_failure": 4,
+        "context_check": 3,
+        "diagnosis_partial_review": 3,
+        "mark_disagreement": 2,
+        "unverified_citation": 2
+      },
+      "operational_failures": 4,
+      "first_attempt_failures": 11
+    },
+    "conservative": {
+      "n": 52,
+      "proposed": 9,
+      "review": 43,
+      "paired": 9,
+      "reference_missing": 13,
+      "exact": 5,
+      "off_at_least_one": 2,
+      "under_one": 0,
+      "over_one": 2,
+      "mae": 0.3333333333333333,
+      "reasons": {
+        "grounded_proposal": 9,
+        "missing_detection": 13,
+        "insufficient_evidence": 8,
+        "written_mark_review": 8,
+        "provider_failure": 4,
+        "context_check": 3,
+        "diagnosis_partial_review": 3,
+        "mark_disagreement": 2,
+        "unverified_citation": 2
+      },
+      "operational_failures": 4,
+      "first_attempt_failures": 11
+    }
+  },
+  "per_question": {
+    "21": {
+      "alt-baseline": {
+        "n": 4,
+        "proposed": 2,
+        "review": 2,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 1,
+        "off_at_least_one": 1,
+        "under_one": 0,
+        "over_one": 1,
+        "mae": 0.5,
+        "reasons": {
+          "unverified_citation": 2,
+          "grounded_proposal": 2
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 4,
+        "proposed": 4,
+        "review": 0,
+        "paired": 4,
+        "reference_missing": 0,
+        "exact": 2,
+        "off_at_least_one": 1,
+        "under_one": 0,
+        "over_one": 1,
+        "mae": 0.375,
+        "reasons": {
+          "grounded_proposal": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "conservative": {
+        "n": 4,
+        "proposed": 4,
+        "review": 0,
+        "paired": 4,
+        "reference_missing": 0,
+        "exact": 2,
+        "off_at_least_one": 1,
+        "under_one": 0,
+        "over_one": 1,
+        "mae": 0.375,
+        "reasons": {
+          "grounded_proposal": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      }
+    },
+    "22": {
+      "alt-baseline": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "diagnosis_partial_review": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "alt-candidate": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "diagnosis_partial_review": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "conservative": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "diagnosis_partial_review": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      }
+    },
+    "23": {
+      "alt-baseline": {
+        "n": 4,
+        "proposed": 4,
+        "review": 0,
+        "paired": 4,
+        "reference_missing": 0,
+        "exact": 1,
+        "off_at_least_one": 3,
+        "under_one": 2,
+        "over_one": 1,
+        "mae": 0.75,
+        "reasons": {
+          "grounded_proposal": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 4,
+        "proposed": 2,
+        "review": 2,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 1,
+        "off_at_least_one": 1,
+        "under_one": 1,
+        "over_one": 0,
+        "mae": 0.5,
+        "reasons": {
+          "grounded_proposal": 2,
+          "provider_failure": 1,
+          "mark_disagreement": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 2
+      },
+      "conservative": {
+        "n": 4,
+        "proposed": 1,
+        "review": 3,
+        "paired": 1,
+        "reference_missing": 0,
+        "exact": 1,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": 0.0,
+        "reasons": {
+          "grounded_proposal": 1,
+          "provider_failure": 1,
+          "written_mark_review": 1,
+          "mark_disagreement": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 2
+      }
+    },
+    "24": {
+      "alt-baseline": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 2,
+          "provider_failure": 2
+        },
+        "operational_failures": 2,
+        "first_attempt_failures": 3
+      },
+      "alt-candidate": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 2,
+          "provider_failure": 1,
+          "unverified_citation": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 2
+      },
+      "conservative": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 2,
+          "provider_failure": 1,
+          "unverified_citation": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 2
+      }
+    },
+    "25": {
+      "alt-baseline": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 4,
+        "proposed": 2,
+        "review": 2,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 2,
+        "under_one": 1,
+        "over_one": 1,
+        "mae": 1.5,
+        "reasons": {
+          "grounded_proposal": 2,
+          "mark_disagreement": 1,
+          "insufficient_evidence": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "conservative": {
+        "n": 4,
+        "proposed": 1,
+        "review": 3,
+        "paired": 1,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 1,
+        "under_one": 0,
+        "over_one": 1,
+        "mae": 1.0,
+        "reasons": {
+          "written_mark_review": 1,
+          "mark_disagreement": 1,
+          "grounded_proposal": 1,
+          "insufficient_evidence": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      }
+    },
+    "26": {
+      "alt-baseline": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "provider_failure": 1,
+          "insufficient_evidence": 3
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 4,
+        "proposed": 2,
+        "review": 2,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 1,
+        "under_one": 1,
+        "over_one": 0,
+        "mae": 0.75,
+        "reasons": {
+          "provider_failure": 1,
+          "insufficient_evidence": 1,
+          "grounded_proposal": 2
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 1
+      },
+      "conservative": {
+        "n": 4,
+        "proposed": 1,
+        "review": 3,
+        "paired": 1,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": 0.5,
+        "reasons": {
+          "provider_failure": 1,
+          "insufficient_evidence": 1,
+          "grounded_proposal": 1,
+          "written_mark_review": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 1
+      }
+    },
+    "27": {
+      "alt-baseline": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "unverified_citation": 1,
+          "insufficient_evidence": 2
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 2
+      },
+      "conservative": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "unverified_citation": 1,
+          "insufficient_evidence": 2
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 2
+      }
+    },
+    "29": {
+      "alt-baseline": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 2
+      },
+      "alt-candidate": {
+        "n": 4,
+        "proposed": 4,
+        "review": 0,
+        "paired": 4,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 4,
+        "under_one": 3,
+        "over_one": 1,
+        "mae": 1.25,
+        "reasons": {
+          "grounded_proposal": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "conservative": {
+        "n": 4,
+        "proposed": 0,
+        "review": 4,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "written_mark_review": 4
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      }
+    },
+    "30": {
+      "alt-baseline": {
+        "n": 2,
+        "proposed": 0,
+        "review": 2,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 1,
+          "provider_failure": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 2,
+        "proposed": 0,
+        "review": 2,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 1,
+          "provider_failure": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 1
+      },
+      "conservative": {
+        "n": 2,
+        "proposed": 0,
+        "review": 2,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 1,
+          "provider_failure": 1
+        },
+        "operational_failures": 1,
+        "first_attempt_failures": 1
+      }
+    },
+    "31": {
+      "alt-baseline": {
+        "n": 3,
+        "proposed": 2,
+        "review": 1,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 2,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": 0.0,
+        "reasons": {
+          "grounded_proposal": 2,
+          "insufficient_evidence": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "alt-candidate": {
+        "n": 3,
+        "proposed": 2,
+        "review": 1,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 2,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": 0.0,
+        "reasons": {
+          "grounded_proposal": 2,
+          "insufficient_evidence": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      },
+      "conservative": {
+        "n": 3,
+        "proposed": 2,
+        "review": 1,
+        "paired": 2,
+        "reference_missing": 0,
+        "exact": 2,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": 0.0,
+        "reasons": {
+          "grounded_proposal": 2,
+          "insufficient_evidence": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 1
+      }
+    },
+    "33": {
+      "alt-baseline": {
+        "n": 1,
+        "proposed": 0,
+        "review": 1,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "insufficient_evidence": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "alt-candidate": {
+        "n": 1,
+        "proposed": 1,
+        "review": 0,
+        "paired": 1,
+        "reference_missing": 0,
+        "exact": 1,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": 0.0,
+        "reasons": {
+          "grounded_proposal": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "conservative": {
+        "n": 1,
+        "proposed": 0,
+        "review": 1,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "written_mark_review": 1
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      }
+    },
+    "34": {
+      "alt-baseline": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "context_check": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "alt-candidate": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "context_check": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "conservative": {
+        "n": 3,
+        "proposed": 0,
+        "review": 3,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {
+          "context_check": 3
+        },
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      }
+    },
+    "35": {
+      "alt-baseline": {
+        "n": 0,
+        "proposed": 0,
+        "review": 0,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {},
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "alt-candidate": {
+        "n": 0,
+        "proposed": 0,
+        "review": 0,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {},
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      },
+      "conservative": {
+        "n": 0,
+        "proposed": 0,
+        "review": 0,
+        "paired": 0,
+        "reference_missing": 0,
+        "exact": 0,
+        "off_at_least_one": 0,
+        "under_one": 0,
+        "over_one": 0,
+        "mae": null,
+        "reasons": {},
+        "operational_failures": 0,
+        "first_attempt_failures": 0
+      }
+    }
+  },
+  "pairs": [
+    {
+      "paper": 10,
+      "question": 21,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "candidate": {
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.5
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "unverified_citation",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.5
+      },
+      "conservative": {
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.5
+      }
+    },
+    {
+      "paper": 10,
+      "question": 22,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 23,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "unverified_citation",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      }
+    },
+    {
+      "paper": 10,
+      "question": 24,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 25,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      }
+    },
+    {
+      "paper": 10,
+      "question": 26,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 27,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 29,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      }
+    },
+    {
+      "paper": 10,
+      "question": 30,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 31,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 33,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 34,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 10,
+      "question": 35,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 21,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      }
+    },
+    {
+      "paper": 23,
+      "question": 22,
+      "input_state": "read",
+      "teacher": 0.0,
+      "baseline": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 23,
+      "input_state": "read",
+      "teacher": 0.0,
+      "baseline": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "alt-baseline": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.0
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 24,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 25,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "first_reason": "mark_disagreement",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "first_reason": "mark_disagreement",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 26,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 27,
+      "input_state": "read",
+      "teacher": 0.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 29,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      }
+    },
+    {
+      "paper": 23,
+      "question": 30,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 31,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "unverified_citation",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      }
+    },
+    {
+      "paper": 23,
+      "question": 33,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 34,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 23,
+      "question": 35,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 21,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      }
+    },
+    {
+      "paper": 38,
+      "question": 22,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 23,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.0
+      },
+      "candidate": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.0
+      },
+      "alt-candidate": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 24,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 25,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      }
+    },
+    {
+      "paper": 38,
+      "question": 26,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.5
+      },
+      "conservative": {
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.5
+      }
+    },
+    {
+      "paper": 38,
+      "question": 27,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 29,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 30,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 31,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 33,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 34,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 38,
+      "question": 35,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 21,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 2.0
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 22,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "diagnosis_partial_review",
+        "first_reason": "diagnosis_partial_review",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 23,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "first_reason": "mark_disagreement",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "first_reason": "mark_disagreement",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 24,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "unverified_citation",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "unverified_citation",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 25,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 26,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      }
+    },
+    {
+      "paper": 40,
+      "question": 27,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 29,
+      "input_state": "read",
+      "teacher": 0.0,
+      "baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.0
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "grounded_proposal",
+        "first_mark": 1.0
+      }
+    },
+    {
+      "paper": 40,
+      "question": 30,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 31,
+      "input_state": "read",
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 33,
+      "input_state": "read",
+      "teacher": 0.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "first_reason": "insufficient_evidence",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "first_reason": "grounded_proposal",
+        "first_mark": 0.0
+      }
+    },
+    {
+      "paper": 40,
+      "question": 34,
+      "input_state": "read",
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "context_check",
+        "first_reason": "context_check",
+        "first_mark": null
+      }
+    },
+    {
+      "paper": 40,
+      "question": 35,
+      "input_state": "missing",
+      "teacher": null,
+      "baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-baseline": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "alt-candidate": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      },
+      "conservative": {
+        "mark": null,
+        "reason": "missing_detection",
+        "first_reason": "missing_detection",
+        "first_mark": null
+      }
+    }
+  ],
+  "retrieval": {
+    "status": "complete",
+    "search": "semantic",
+    "scope": "written",
+    "questions_in_scope": 15,
+    "reviewed": 15,
+    "supported": 14,
+    "open_questions": [],
+    "corpus_gaps": [],
+    "missing_exam_context_excluded": [
+      34
+    ],
+    "paragraph": {
+      "index": "paragraph:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1:notes-1a091b39492c",
+      "first_supporting_chunk_rank_in_top5": {
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 2,
+        "26": 2,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1,
+        "31": 1,
+        "32": 1,
+        "33": 1,
+        "35": 2
+      },
+      "vectors_sha256": "e8983437e3a3238bd528559e5803fa112d645d7cfe9def2a0993f9e3626707de",
+      "hit@1": 0.7857142857142857,
+      "hit@1_including_reviewed_gaps": 0.7857142857142857,
+      "hit@3": 1.0,
+      "hit@3_including_reviewed_gaps": 1.0,
+      "hit@5": 1.0,
+      "hit@5_including_reviewed_gaps": 1.0
+    },
+    "section": {
+      "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v1:notes-1a091b39492c",
+      "first_supporting_chunk_rank_in_top5": {
+        "21": 1,
+        "22": 3,
+        "23": 1,
+        "24": 1,
+        "25": 3,
+        "26": 1,
+        "27": 1,
+        "28": 2,
+        "29": 2,
+        "30": 1,
+        "31": 1,
+        "32": 1,
+        "33": 1,
+        "35": 2
+      },
+      "vectors_sha256": "bb3a28617fb8ffc6bfdcdae8ccb4cf21490f574207aebe5e51f326ae086cee6f",
+      "hit@1": 0.6428571428571429,
+      "hit@1_including_reviewed_gaps": 0.6428571428571429,
+      "hit@3": 1.0,
+      "hit@3_including_reviewed_gaps": 1.0,
+      "hit@5": 1.0,
+      "hit@5_including_reviewed_gaps": 1.0
+    }
+  },
+  "production_replay": {
+    "decisions_matched": 48,
+    "unresolved_original_service_failures": 4,
+    "network_calls": 0
+  }
+}

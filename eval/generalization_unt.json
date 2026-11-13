@@ -1,0 +1,1573 @@
+{
+  "study": "Mohler, Bunescu & Mihalcea, ACL 2011. Grade agreement on four new prompts from two UNT computing exams. Teacher-provided reference answers, project-authored rubrics and independent source summaries. No scans or marks sent to Gemini.",
+  "source": "https://lit.eecs.umich.edu/downloads.html",
+  "reference_scale": "Published ave file on 0–5 multiplied by 0.4. Raw individual exam raters on 0–10 divided by 5. Published averages sometimes differ slightly from the arithmetic mean of the normalized raw raters.",
+  "archive_sha256": "5abee7ee804a2c5ae802b226230fb14c5bdb894f0f33bab6e20b4e7f1ed89247",
+  "model": "gemini-3.1-flash-lite",
+  "commit": "0c2b4d0",
+  "plan": {
+    "questions": [
+      "11.5",
+      "11.9",
+      "12.6",
+      "12.7"
+    ],
+    "indices": {
+      "11.5": [
+        6,
+        8,
+        14,
+        15,
+        16,
+        24
+      ],
+      "11.9": [
+        2,
+        10,
+        15,
+        17,
+        21,
+        24
+      ],
+      "12.6": [
+        2,
+        9,
+        10,
+        11,
+        24,
+        26
+      ],
+      "12.7": [
+        2,
+        12,
+        14,
+        20,
+        21,
+        24
+      ]
+    },
+    "seed": 181113,
+    "sampling": "Four conceptual data structures exam prompts selected from the instructor questions before reading answers or scores. Six response lines sampled per question without score stratification. Compare normalized continuous dual-rater mean on 0-2 with no rounding. Also report within half point, MAE, full-credit baseline."
+  },
+  "rubrics": {
+    "11.5": [
+      {
+        "id": "definition",
+        "points": 2,
+        "description": "Identifies a function calling itself. No extra base-case explanation is required."
+      }
+    ],
+    "11.9": [
+      {
+        "id": "divide",
+        "points": 1,
+        "description": "Breaks a problem into smaller instances."
+      },
+      {
+        "id": "solve",
+        "points": 0.5,
+        "description": "Solves the smaller instances recursively or describes repeated subdivision to a solvable case."
+      },
+      {
+        "id": "combine",
+        "points": 0.5,
+        "description": "Combines the subsolutions into the original solution."
+      }
+    ],
+    "12.6": [
+      {
+        "id": "order",
+        "points": 2,
+        "description": "Identifies a first-in first-out collection by name or equivalently describes insertion at one end and removal from the other. No operation names are required. A contradiction in ordering needs review if the intended answer is unclear."
+      }
+    ],
+    "12.7": [
+      {
+        "id": "push",
+        "points": 1,
+        "description": "Names push or describes adding to the top."
+      },
+      {
+        "id": "pop",
+        "points": 1,
+        "description": "Names pop or describes removing from the top."
+      }
+    ]
+  },
+  "teaching_sources": [
+    {
+      "id": "cs-1",
+      "source": "cs-1",
+      "title": "Component 2 study note / Recursion",
+      "heading": "Recursion",
+      "url": "https://xlinux.nist.gov/dads/HTML/recursion.html",
+      "text": "A recursive function invokes itself while solving a task. In a terminating recursive computation, the calls progress toward a base case that can be answered directly."
+    },
+    {
+      "id": "cs-2",
+      "source": "cs-2",
+      "title": "Component 2 study note / Divide and conquer",
+      "heading": "Divide and conquer",
+      "url": "https://xlinux.nist.gov/dads/HTML/divideAndConquer.html",
+      "text": "Divide and conquer breaks the original task into smaller instances, recursively solves the pieces, then combines their answers. A small enough instance can be solved directly."
+    },
+    {
+      "id": "cs-3",
+      "source": "cs-3",
+      "title": "Component 2 study note / Using a queue",
+      "heading": "Using a queue",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-queues",
+      "text": "A queue serves items in first-in, first-out (FIFO) order. Enqueue appends to the back, and dequeue removes the oldest item from the front."
+    },
+    {
+      "id": "cs-4",
+      "source": "cs-4",
+      "title": "Component 2 study note / Using a stack",
+      "heading": "Using a stack",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks",
+      "text": "A stack keeps items in last-in, first-out order. Push adds an item to the top of the stack. Pop removes the most recently pushed item from the top."
+    }
+  ],
+  "blind_hashes": [
+    "21b4ac29b7c3166191ef38bba271f4fdf27b5880d796a7fd99bf92c9e69080bb",
+    "bf8aacb037c741f5b60197fe98ac1afef9472395f38f27d633a633f52f600549",
+    "dbe4e6c4290fbb85eeb4f7c22b803f877239a23571bfe426c8c1a6cb933b2397",
+    "afa755b6aca3c34b065ebd41aa4d0546dacb3f7709d24c78eeba1d2353db7100",
+    "57e61f5a027947ca31c45e1c5d63acac407b05881525276cd2de708800fa1f70",
+    "220ce3cc428bbdab2e27fb76e7c6a6e7765aada2d8e11b6bf4794ab4a8e47853"
+  ],
+  "overall": {
+    "n": 24,
+    "proposed": 14,
+    "review": 10,
+    "exact": 10,
+    "within_half": 14,
+    "off_one": 0,
+    "mae": 0.09285714285714285,
+    "always_two_mae_same_cases": 0.05714285714285713,
+    "always_two_exact": 11,
+    "raw_mean_mae_on_proposals": 0.09999999999999999,
+    "inter_rater_mae": 0.25416666666666665
+  },
+  "per_question": {
+    "11.5": {
+      "n": 6,
+      "proposed": 6,
+      "review": 0,
+      "exact": 3,
+      "within_half": 6,
+      "off_one": 0,
+      "mae": 0.1333333333333333,
+      "always_two_mae_same_cases": 0.1333333333333333,
+      "always_two_exact": 3,
+      "raw_mean_mae_on_proposals": 0.15,
+      "inter_rater_mae": 0.3
+    },
+    "11.9": {
+      "n": 6,
+      "proposed": 1,
+      "review": 5,
+      "exact": 0,
+      "within_half": 1,
+      "off_one": 0,
+      "mae": 0.5,
+      "always_two_mae_same_cases": 0.0,
+      "always_two_exact": 1,
+      "raw_mean_mae_on_proposals": 0.5,
+      "inter_rater_mae": 0.14999999999999994
+    },
+    "12.6": {
+      "n": 6,
+      "proposed": 1,
+      "review": 5,
+      "exact": 1,
+      "within_half": 1,
+      "off_one": 0,
+      "mae": 0.0,
+      "always_two_mae_same_cases": 0.0,
+      "always_two_exact": 1,
+      "raw_mean_mae_on_proposals": 0.0,
+      "inter_rater_mae": 0.5666666666666667
+    },
+    "12.7": {
+      "n": 6,
+      "proposed": 6,
+      "review": 0,
+      "exact": 6,
+      "within_half": 6,
+      "off_one": 0,
+      "mae": 0.0,
+      "always_two_mae_same_cases": 0.0,
+      "always_two_exact": 6,
+      "raw_mean_mae_on_proposals": 0.0,
+      "inter_rater_mae": 0.0
+    }
+  },
+  "pairs": [
+    {
+      "question": "11.5",
+      "response_line_zero_based": 6,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "definition": "cs-1"
+      }
+    },
+    {
+      "question": "11.5",
+      "response_line_zero_based": 8,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "definition": "cs-1"
+      }
+    },
+    {
+      "question": "11.5",
+      "response_line_zero_based": 14,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "definition": "cs-1"
+      }
+    },
+    {
+      "question": "11.5",
+      "response_line_zero_based": 15,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.8,
+      "raters": [
+        1.6,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "definition": "cs-1"
+      }
+    },
+    {
+      "question": "11.5",
+      "response_line_zero_based": 16,
+      "teacher": 1.6,
+      "raw_rater_mean": 1.5,
+      "raters": [
+        2.0,
+        1.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "definition": "cs-1"
+      }
+    },
+    {
+      "question": "11.5",
+      "response_line_zero_based": 24,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.8,
+      "raters": [
+        2.0,
+        1.6
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "definition": "cs-1"
+      }
+    },
+    {
+      "question": "11.9",
+      "response_line_zero_based": 2,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.7000000000000002,
+      "raters": [
+        1.8,
+        1.6
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {
+        "divide": "cs-2"
+      }
+    },
+    {
+      "question": "11.9",
+      "response_line_zero_based": 10,
+      "teacher": 1.6,
+      "raw_rater_mean": 1.65,
+      "raters": [
+        1.7,
+        1.6
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {
+        "divide": "cs-2"
+      }
+    },
+    {
+      "question": "11.9",
+      "response_line_zero_based": 15,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.7000000000000002,
+      "raters": [
+        1.8,
+        1.6
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {
+        "divide": "cs-2"
+      }
+    },
+    {
+      "question": "11.9",
+      "response_line_zero_based": 17,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.7000000000000002,
+      "raters": [
+        1.8,
+        1.6
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {
+        "divide": "cs-2"
+      }
+    },
+    {
+      "question": "11.9",
+      "response_line_zero_based": 21,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.7000000000000002,
+      "raters": [
+        1.8,
+        1.6
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {
+        "divide": "cs-2"
+      }
+    },
+    {
+      "question": "11.9",
+      "response_line_zero_based": 24,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 1.5,
+      "reason": "grounded_proposal",
+      "sources": {
+        "divide": "cs-2",
+        "solve": "cs-2",
+        "combine": "cs-2"
+      }
+    },
+    {
+      "question": "12.6",
+      "response_line_zero_based": 2,
+      "teacher": 1.8,
+      "raw_rater_mean": 1.8,
+      "raters": [
+        2.0,
+        1.6
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {}
+    },
+    {
+      "question": "12.6",
+      "response_line_zero_based": 9,
+      "teacher": 1.6,
+      "raw_rater_mean": 1.5,
+      "raters": [
+        1.0,
+        2.0
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {}
+    },
+    {
+      "question": "12.6",
+      "response_line_zero_based": 10,
+      "teacher": 1.0,
+      "raw_rater_mean": 1.0,
+      "raters": [
+        2.0,
+        0.0
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {}
+    },
+    {
+      "question": "12.6",
+      "response_line_zero_based": 11,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {}
+    },
+    {
+      "question": "12.6",
+      "response_line_zero_based": 24,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": null,
+      "reason": "insufficient_evidence",
+      "sources": {}
+    },
+    {
+      "question": "12.6",
+      "response_line_zero_based": 26,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "order": "cs-3"
+      }
+    },
+    {
+      "question": "12.7",
+      "response_line_zero_based": 2,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "push": "cs-4",
+        "pop": "cs-4"
+      }
+    },
+    {
+      "question": "12.7",
+      "response_line_zero_based": 12,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "push": "cs-4",
+        "pop": "cs-4"
+      }
+    },
+    {
+      "question": "12.7",
+      "response_line_zero_based": 14,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "push": "cs-4",
+        "pop": "cs-4"
+      }
+    },
+    {
+      "question": "12.7",
+      "response_line_zero_based": 20,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "push": "cs-4",
+        "pop": "cs-4"
+      }
+    },
+    {
+      "question": "12.7",
+      "response_line_zero_based": 21,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "push": "cs-4",
+        "pop": "cs-4"
+      }
+    },
+    {
+      "question": "12.7",
+      "response_line_zero_based": 24,
+      "teacher": 2.0,
+      "raw_rater_mean": 2.0,
+      "raters": [
+        2.0,
+        2.0
+      ],
+      "mark": 2.0,
+      "reason": "grounded_proposal",
+      "sources": {
+        "push": "cs-4",
+        "pop": "cs-4"
+      }
+    }
+  ],
+  "schema_replay": {
+    "commit": "790eacc",
+    "overall": {
+      "n": 24,
+      "proposed": 23,
+      "review": 1,
+      "exact": 12,
+      "within_half": 16,
+      "off_one": 2,
+      "mae": 0.32173913043478264,
+      "always_two_mae_same_cases": 0.15652173913043477,
+      "always_two_exact": 12,
+      "raw_mean_mae_on_proposals": 0.3065217391304348,
+      "inter_rater_mae": 0.25416666666666665
+    },
+    "per_question": {
+      "11.5": {
+        "n": 6,
+        "proposed": 6,
+        "review": 0,
+        "exact": 3,
+        "within_half": 6,
+        "off_one": 0,
+        "mae": 0.1333333333333333,
+        "always_two_mae_same_cases": 0.1333333333333333,
+        "always_two_exact": 3,
+        "raw_mean_mae_on_proposals": 0.15,
+        "inter_rater_mae": 0.3
+      },
+      "11.9": {
+        "n": 6,
+        "proposed": 5,
+        "review": 1,
+        "exact": 0,
+        "within_half": 0,
+        "off_one": 0,
+        "mae": 0.76,
+        "always_two_mae_same_cases": 0.23999999999999994,
+        "always_two_exact": 0,
+        "raw_mean_mae_on_proposals": 0.6900000000000002,
+        "inter_rater_mae": 0.14999999999999994
+      },
+      "12.6": {
+        "n": 6,
+        "proposed": 6,
+        "review": 0,
+        "exact": 3,
+        "within_half": 4,
+        "off_one": 2,
+        "mae": 0.4666666666666667,
+        "always_two_mae_same_cases": 0.26666666666666666,
+        "always_two_exact": 3,
+        "raw_mean_mae_on_proposals": 0.45,
+        "inter_rater_mae": 0.5666666666666667
+      },
+      "12.7": {
+        "n": 6,
+        "proposed": 6,
+        "review": 0,
+        "exact": 6,
+        "within_half": 6,
+        "off_one": 0,
+        "mae": 0.0,
+        "always_two_mae_same_cases": 0.0,
+        "always_two_exact": 6,
+        "raw_mean_mae_on_proposals": 0.0,
+        "inter_rater_mae": 0.0
+      }
+    },
+    "pairs": [
+      {
+        "question": "11.5",
+        "response_line_zero_based": 6,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 8,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 14,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 15,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.8,
+        "raters": [
+          1.6,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 16,
+        "teacher": 1.6,
+        "raw_rater_mean": 1.5,
+        "raters": [
+          2.0,
+          1.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 24,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.8,
+        "raters": [
+          2.0,
+          1.6
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 2,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.7000000000000002,
+        "raters": [
+          1.8,
+          1.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 10,
+        "teacher": 1.6,
+        "raw_rater_mean": 1.65,
+        "raters": [
+          1.7,
+          1.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 15,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.7000000000000002,
+        "raters": [
+          1.8,
+          1.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 17,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.7000000000000002,
+        "raters": [
+          1.8,
+          1.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 21,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.7000000000000002,
+        "raters": [
+          1.8,
+          1.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 24,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": null,
+        "reason": "provider_failure",
+        "sources": {}
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 2,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.8,
+        "raters": [
+          2.0,
+          1.6
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 9,
+        "teacher": 1.6,
+        "raw_rater_mean": 1.5,
+        "raters": [
+          1.0,
+          2.0
+        ],
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 10,
+        "teacher": 1.0,
+        "raw_rater_mean": 1.0,
+        "raters": [
+          2.0,
+          0.0
+        ],
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 11,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 24,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 26,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 2,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 12,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 14,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 20,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 21,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 24,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      }
+    ],
+    "hashes": {
+      "0": "ddc4d36945c73f47d5ae43b5e701db211bb72de2d9adf25f42ab5acfd365f3d6",
+      "1": "faeaf97ded645b6918069c5e136012f075dd78baa4e18a20534df4712b5a1d62",
+      "2": "6f59f6e8ffcb2ffc992b3637d1cbf914c02b6de86ebc0483e362efd2644b6fbe",
+      "3": "db498140a2030a71024009590ba6ec02dabfebee00d02d51004020e195f1401f",
+      "4": "c4c289b5122729c777d8fdf4044d124f86b42979c115465442fc64e20e5515a8",
+      "5": "85b9a9995cd0e035cdf6a325c657e92751ba361df2b2710fe1948e8bd44a9d15"
+    }
+  },
+  "fresh": {
+    "commit": "790eacc",
+    "overall": {
+      "n": 12,
+      "proposed": 12,
+      "review": 0,
+      "exact": 6,
+      "within_half": 10,
+      "off_one": 0,
+      "mae": 0.20000000000000004,
+      "always_two_mae_same_cases": 0.24999999999999997,
+      "always_two_exact": 6,
+      "raw_mean_mae_on_proposals": 0.15833333333333335,
+      "inter_rater_mae": 0.35
+    },
+    "per_question": {
+      "11.5": {
+        "n": 3,
+        "proposed": 3,
+        "review": 0,
+        "exact": 2,
+        "within_half": 3,
+        "off_one": 0,
+        "mae": 0.03333333333333336,
+        "always_two_mae_same_cases": 0.1333333333333333,
+        "always_two_exact": 2,
+        "raw_mean_mae_on_proposals": 0.0,
+        "inter_rater_mae": 0.3333333333333333
+      },
+      "11.9": {
+        "n": 3,
+        "proposed": 3,
+        "review": 0,
+        "exact": 0,
+        "within_half": 2,
+        "off_one": 0,
+        "mae": 0.5000000000000001,
+        "always_two_mae_same_cases": 0.33333333333333326,
+        "always_two_exact": 0,
+        "raw_mean_mae_on_proposals": 0.40000000000000013,
+        "inter_rater_mae": 0.6
+      },
+      "12.6": {
+        "n": 3,
+        "proposed": 3,
+        "review": 0,
+        "exact": 2,
+        "within_half": 2,
+        "off_one": 0,
+        "mae": 0.20000000000000004,
+        "always_two_mae_same_cases": 0.4666666666666666,
+        "always_two_exact": 2,
+        "raw_mean_mae_on_proposals": 0.16666666666666666,
+        "inter_rater_mae": 0.3333333333333333
+      },
+      "12.7": {
+        "n": 3,
+        "proposed": 3,
+        "review": 0,
+        "exact": 2,
+        "within_half": 3,
+        "off_one": 0,
+        "mae": 0.06666666666666665,
+        "always_two_mae_same_cases": 0.06666666666666665,
+        "always_two_exact": 2,
+        "raw_mean_mae_on_proposals": 0.06666666666666665,
+        "inter_rater_mae": 0.1333333333333333
+      }
+    },
+    "pairs": [
+      {
+        "question": "11.5",
+        "response_line_zero_based": 3,
+        "teacher": 1.6,
+        "raw_rater_mean": 1.5,
+        "raters": [
+          2.0,
+          1.0
+        ],
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 5,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.5",
+        "response_line_zero_based": 7,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "definition": "cs-1"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 13,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.7000000000000002,
+        "raters": [
+          1.8,
+          1.6
+        ],
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 20,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.7000000000000002,
+        "raters": [
+          1.8,
+          1.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "11.9",
+        "response_line_zero_based": 29,
+        "teacher": 1.4000000000000001,
+        "raw_rater_mean": 1.3,
+        "raters": [
+          2.0,
+          0.6
+        ],
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "divide": "cs-2",
+          "solve": "cs-2",
+          "combine": "cs-2"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 5,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 12,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.6",
+        "response_line_zero_based": 27,
+        "teacher": 0.6000000000000001,
+        "raw_rater_mean": 0.5,
+        "raters": [
+          1.0,
+          0.0
+        ],
+        "mark": 0.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "order": "cs-3"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 11,
+        "teacher": 1.8,
+        "raw_rater_mean": 1.8,
+        "raters": [
+          2.0,
+          1.6
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 17,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      },
+      {
+        "question": "12.7",
+        "response_line_zero_based": 27,
+        "teacher": 2.0,
+        "raw_rater_mean": 2.0,
+        "raters": [
+          2.0,
+          2.0
+        ],
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "sources": {
+          "push": "cs-4",
+          "pop": "cs-4"
+        }
+      }
+    ],
+    "hashes": {
+      "0": "ad68195f70be1b99f8c4bd1a73efe311bf42f1154897082a2c5c9c3ca1165e39",
+      "1": "6f6e8b0c10d841edd232c5e3cd72367dc1c49fead6b7fe3acd896198efc297c5",
+      "2": "6fb4fb311a180067ca074d52c59b186bed0d195f4441f58d0ccb9b272ae7b8d4"
+    },
+    "wording_overlap_check": {
+      "method": "Compare lowercased alphanumeric token sequences within each prompt against development and earlier fresh rows. Distinct public row indices can have identical short wording.",
+      "overlap": [
+        [
+          "12.7",
+          27
+        ]
+      ],
+      "nonduplicated": {
+        "n": 11,
+        "proposed": 11,
+        "exact": 5,
+        "within_half": 9,
+        "off_at_least_one": 0,
+        "mae": 0.21818181818181823
+      }
+    }
+  },
+  "fresh_selection": {
+    "seed": 571134,
+    "indices": {
+      "11.5": [
+        3,
+        5,
+        7
+      ],
+      "11.9": [
+        13,
+        20,
+        29
+      ],
+      "12.6": [
+        5,
+        12,
+        27
+      ],
+      "12.7": [
+        11,
+        17,
+        27
+      ]
+    },
+    "description": "Three new line numbers per question, disjoint from the 24 development responses, drawn after the schema fix and before seeing any reference grades."
+  },
+  "unseen_questions": {
+    "plan": {
+      "seed": 71311026,
+      "questions": [
+        "5.1",
+        "5.2"
+      ],
+      "indices": {
+        "5.1": [
+          2,
+          3,
+          7,
+          13
+        ],
+        "5.2": [
+          0,
+          9,
+          20,
+          27
+        ]
+      },
+      "design": "Two previously unused written prompts selected from the public instructor question list. Four randomly sampled student rows per prompt before inspecting their answers or scores. Frozen production custom rubric pathway. Report proposal coverage, exact, within half, off by at least one, and the always-full-credit baseline on the same proposals.",
+      "commit": "2e0e044",
+      "model": "gemini-3.1-flash-lite"
+    },
+    "exam": {
+      "title": "UNT sorting quiz",
+      "questions": [
+        {
+          "question_id": 1,
+          "question": "In one sentence, what is the main idea implemented by insertion sort?",
+          "reference_answer": "Taking one array element at a time, from left to right, it inserts it in the right position among the already sorted elements on its left.",
+          "criteria": [
+            {
+              "id": "iterate",
+              "points": 1.0,
+              "description": "Describes taking successive individual unsorted items to build an ordered portion."
+            },
+            {
+              "id": "insert",
+              "points": 1.0,
+              "description": "Places the current item where it belongs relative to previously sorted elements, including equivalent shift or swap explanations."
+            }
+          ],
+          "requires_figure": false
+        },
+        {
+          "question_id": 2,
+          "question": "In one sentence, what is the main idea implemented by selection sort?",
+          "reference_answer": "Taking one array element at a time, from left to right, it identifies the minimum from the remaining elements and swaps it with the current element.",
+          "criteria": [
+            {
+              "id": "select",
+              "points": 1.0,
+              "description": "Identifies the extreme remaining value, minimum for ascending order or maximum for descending order."
+            },
+            {
+              "id": "place",
+              "points": 1.0,
+              "description": "Moves the selected value to the next final position and continues on the remaining values."
+            }
+          ],
+          "requires_figure": false
+        }
+      ]
+    },
+    "sources": [
+      {
+        "id": "sort-1",
+        "source": "sort-1",
+        "title": "Component 2 study note / Insertion sort",
+        "heading": "Insertion sort",
+        "url": "https://xlinux.nist.gov/dads/HTML/insertionSort.html",
+        "text": "Insertion sort grows an ordered region. For each successive unsorted item, compare it with items already ordered and insert it in its proper position. Shifting or swapping preceding items can make room."
+      },
+      {
+        "id": "sort-2",
+        "source": "sort-2",
+        "title": "Component 2 study note / Selection sort",
+        "heading": "Selection sort",
+        "url": "https://xlinux.nist.gov/dads/HTML/selectionSort.html",
+        "text": "Selection sort repeatedly chooses the smallest value from the unsorted remainder and puts it in the next position of the sorted result. Swapping the chosen item into place is one implementation. Reversing the comparison selects the largest remaining item for descending order."
+      }
+    ],
+    "hashes": {
+      "0": "a4a6d35fa68ad122ce7e6d0efee8c9249497c6f8875b5073d556abf101abe05e",
+      "1": "d42f5443e1ddf4e6f729492a505bfcdb61729dc594f0d592c730f1d8d746b883",
+      "2": "cc6109a92ae60f67c6815fc95d7fa7b72f290d006bacbe0fd0c74c6da0b33315",
+      "3": "6c877baa342dd3f34bb3a9fc07bb239b307772cf82de358fa0c75236a3228a9a"
+    },
+    "overall": {
+      "n": 8,
+      "proposals": 7,
+      "reviews": 1,
+      "paired": 7,
+      "numeric_reference": 8,
+      "exact": 4,
+      "within_half": 7,
+      "off_at_least_one": 0,
+      "under_by_one": 0,
+      "over_by_one": 0,
+      "mae": 0.1571428571428572,
+      "always_full_exact_same_proposals": 4,
+      "always_full_mae_same_proposals": 0.19999999999999996,
+      "reason_counts": {
+        "grounded_proposal": 7,
+        "provider_failure": 1
+      }
+    },
+    "per_question": {
+      "5.1": {
+        "n": 4,
+        "proposals": 3,
+        "reviews": 1,
+        "paired": 3,
+        "numeric_reference": 4,
+        "exact": 1,
+        "within_half": 3,
+        "off_at_least_one": 0,
+        "under_by_one": 0,
+        "over_by_one": 0,
+        "mae": 0.2333333333333334,
+        "always_full_exact_same_proposals": 1,
+        "always_full_mae_same_proposals": 0.2666666666666666,
+        "reason_counts": {
+          "grounded_proposal": 3,
+          "provider_failure": 1
+        }
+      },
+      "5.2": {
+        "n": 4,
+        "proposals": 4,
+        "reviews": 0,
+        "paired": 4,
+        "numeric_reference": 4,
+        "exact": 3,
+        "within_half": 4,
+        "off_at_least_one": 0,
+        "under_by_one": 0,
+        "over_by_one": 0,
+        "mae": 0.10000000000000003,
+        "always_full_exact_same_proposals": 3,
+        "always_full_mae_same_proposals": 0.14999999999999997,
+        "reason_counts": {
+          "grounded_proposal": 4
+        }
+      }
+    },
+    "pairs": [
+      {
+        "question": "5.1",
+        "response_line_zero_based": 2,
+        "teacher": 1.4000000000000001,
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "sources": {
+          "iterate": "sort-1",
+          "insert": "sort-1"
+        }
+      },
+      {
+        "question": "5.1",
+        "response_line_zero_based": 3,
+        "teacher": 2.0,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "sources": {
+          "iterate": "sort-1",
+          "insert": "sort-1"
+        }
+      },
+      {
+        "question": "5.1",
+        "response_line_zero_based": 7,
+        "teacher": 1.8,
+        "mark": 1.5,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "sources": {
+          "iterate": "sort-1",
+          "insert": "sort-1"
+        }
+      },
+      {
+        "question": "5.1",
+        "response_line_zero_based": 13,
+        "teacher": 1.8,
+        "mark": null,
+        "reason": "provider_failure",
+        "first_reason": "provider_failure",
+        "sources": {}
+      },
+      {
+        "question": "5.2",
+        "response_line_zero_based": 0,
+        "teacher": 2.0,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "sources": {
+          "select": "sort-2",
+          "place": "sort-2"
+        }
+      },
+      {
+        "question": "5.2",
+        "response_line_zero_based": 9,
+        "teacher": 1.4000000000000001,
+        "mark": 1.0,
+        "reason": "grounded_proposal",
+        "first_reason": "provider_failure",
+        "sources": {
+          "select": "sort-2",
+          "place": "sort-2"
+        }
+      },
+      {
+        "question": "5.2",
+        "response_line_zero_based": 20,
+        "teacher": 2.0,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "sources": {
+          "select": "sort-2",
+          "place": "sort-2"
+        }
+      },
+      {
+        "question": "5.2",
+        "response_line_zero_based": 27,
+        "teacher": 2.0,
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "first_reason": "grounded_proposal",
+        "sources": {
+          "select": "sort-2",
+          "place": "sort-2"
+        }
+      }
+    ]
+  }
+}
