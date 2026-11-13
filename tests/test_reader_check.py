@@ -34,7 +34,7 @@ class ReaderAcceptance(unittest.TestCase):
                 reader = SimpleNamespace(VERSION="fixture", read_exam=lambda _: actual)
                 return compare(pdf, reference, reader)
             self.assertTrue(check(base)["exact_handoff"])
-            for payload in (base | {"answers":[]}, base | {"exam_status":"unreadable"},
+            for payload in (base | {"exam_id":"different-paper"}, base | {"answers":[]}, base | {"exam_status":"unreadable"},
                             base | {"answers":[base["answers"][0] | {"text":"A"}]}, {}):
                 self.assertFalse(check(payload)["exact_handoff"])
             self.assertEqual(check(base | {"answers":[]})["missing_ids"], [1])

@@ -38,7 +38,7 @@ def resources():
     if os.getenv("GEMINI_API_KEY"):
         from exam_grader.gemini import Gemini
         rates = [os.getenv(name) for name in ("GRADE_INPUT_EUR_PER_M", "GRADE_OUTPUT_EUR_PER_M")]
-        agent = Gemini(input_eur_per_million=rates[0], output_eur_per_million=rates[1], finalize_lookup=final_after_lookup())
+        agent = Gemini(model=os.getenv("GRADE_MODEL", "gemini-3.5-flash-lite"), input_eur_per_million=rates[0], output_eur_per_million=rates[1], finalize_lookup=final_after_lookup())
     approved = {file_sha256(EXAMPLE)}
     approved.update(os.getenv("GRADE_APPROVED_HASHES", "").lower().split())
     return index, agent, frozenset(approved)
@@ -61,7 +61,7 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
         agent = agent.for_evaluation(evaluation_cache)
     elif evaluation_cache is not None and evaluation_cache.read_only:
         from exam_grader.gemini import Gemini
-        agent = Gemini(frozen_cache=evaluation_cache, finalize_lookup=final_after_lookup())
+        agent = Gemini(model=os.getenv("GRADE_MODEL", "gemini-3.5-flash-lite"), frozen_cache=evaluation_cache, finalize_lookup=final_after_lookup())
     if path.suffix.lower() == ".json":
         reader, version, input_type = read_export, "ocr-json-replay-v1", "ocr_export"
     elif path.suffix.lower() == ".pdf":

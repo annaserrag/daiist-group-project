@@ -1,5 +1,6 @@
 """Question-level decisions. All numeric marks are proposals for teacher sign-off."""
 import math
+import re
 import time
 from dataclasses import dataclass, asdict
 from hashlib import sha256
@@ -37,6 +38,17 @@ def row(q, reason, mark=None, *, feedback="", citation=None, score=None, searche
     return dict(question_id=q, max_mark=1 if q <= 20 else 2, mark=mark,
                 status="review" if mark is None else "proposed", reason=reason,
                 feedback=feedback, citation=citation, retrieval_score=score, searches=searches)
+
+# The teaching collection is open-ended. Absence from its examples cannot justify a deduction.
+_SOURCE_GAP = re.compile(
+    r"\b(?:not|never|neither)\s+(?:(?:explicitly|specifically|directly|clearly)\s+)?"
+    r"(?:covered|established|mentioned|listed|included|supported|discussed|found|illustrated)\b"
+    r".{0,115}?\b(?:course|material|source|excerpt|passage|reference|answer key)\b"
+    r"|\b(?:course material|sources?|excerpts?|passages?|answer key)\b.{0,60}?"
+    r"\b(?:does not|do not|doesn't|don't|never)\s+(?:cover|establish|mention|list|include|support|discuss)\b",
+    re.I,
+)
+
 
 def checked_mark(q, response, hits, searches, *, guide=None):
     score = hits[0]["score"]
@@ -135,6 +147,10 @@ def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
         details = " ".join(f"{c}: {guide[c][1]}" for c in missing)
         decision = row(q, "insufficient_evidence", score=hits[0]["score"], searches=searches,
                        feedback="Teacher review. The passages do not fully support these rubric points. " + details)
+    elif decision["mark"] is not None and any(_SOURCE_GAP.search(d["reason"]) for d in decision["deductions"]):
+        decision = row(q, "unsupported_deduction", score=hits[0]["score"], searches=searches,
+                       feedback="Teacher review. A deduction relied on what the course excerpts omit. "
+                                "Check whether the student's example satisfies the criterion.")
     elif decision["mark"] is not None and "independent_mark" in response:
         second = response["independent_mark"]
         if (type(second) not in (int, float) or second not in (0, .5, 1, 1.5, 2)

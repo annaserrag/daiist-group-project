@@ -76,6 +76,21 @@ class WrittenTransfer(unittest.TestCase):
         self.assertEqual(grade(1.5)["mark"], 2)
         self.assertIsNone(grade(2, entries[:1])["mark"])
 
+    def test_missing_source_example_cannot_justify_a_deduction(self):
+        from exam_grader.grading import checked
+        quote = "Sales forecasting predicts future demand from past purchases."
+        hit = dict(id="p", text=quote, title="Sales", heading="Demand", url="", score=.9)
+        response = dict(mark=1, needs_review=False, feedback="Gives one application.", passage_id="p",
+                        quote=quote, independent_mark=1,
+                        deductions=[dict(criterion="second", points=1,
+                                         reason="This example is not listed in the course materials.")],
+                        criterion_evidence=[dict(criterion=c, coverage="full", passage_id="p", quote=quote)
+                                            for c in ("first", "second")])
+        decision = checked(25, response, [hit], 1)
+        self.assertEqual((decision["mark"], decision["reason"]), (None,"unsupported_deduction"))
+        response["deductions"][0]["reason"] = "The response names a sector but gives no concrete task."
+        self.assertEqual(checked(25, response, [hit], 1)["mark"], 1)
+
     def test_figure_and_numbers_do_not_inherit_builtin_special_cases(self):
         from exam_grader.grading import grade_exam
         exam = WrittenExam.load(DATA / "waves-exam.json")
