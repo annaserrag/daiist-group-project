@@ -175,14 +175,27 @@ def confirmed_text_score(text, first_scores, second_lines):
     return min(max(a, b) for a, b in zip(first_scores, second_scores, strict=True))
 
 
-def verify_crop_words(text, first_scores, page_text, crops):
+def course_term_words(words):
+    """Case variants of these full course terms carry the same meaning. Keep symbols and variables exact."""
+    normalized = list(words)
+    for i, word in enumerate(words):
+        if word.lower() == "k-means":
+            normalized[i] = "k-means"
+        elif word.lower() == "supervised" and i+1 < len(words) and words[i+1].lower() == "learning":
+            normalized[i:i+2] = ["supervised", "learning"]
+    return normalized
+
+
+def verify_crop_words(text, first_scores, page_text, crops, *, course_terms=False):
     """Credit a reread only for an exact, unique multiword span on this page."""
     words = text.split()
     if len(words) != len(first_scores) or not words:
         return None
+    normalize = course_term_words if course_terms else list
+    words, page_text = normalize(words), normalize(page_text)
     scores = list(first_scores)
     for lines in crops:
-        span = [word for line, _ in lines for word in line.split()]
+        span = normalize([word for line, _ in lines for word in line.split()])
         if len(span) < 3 or "[?]" in span:
             continue
         n = len(span)
@@ -322,6 +335,7 @@ def read_exam(path):
     scope_pages = []
     recovered = {}
     local_by_page = {}
+    unresolved_cells = []
     originals = reader.load_pages(path)
     ink_pixels = 0.0
     total_pixels = 0
@@ -337,6 +351,27 @@ def read_exam(path):
             scale = min(1.0, reader.VLM_PAGE_WIDTH / w)
             image = Image.fromarray(cv2.resize(page, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)).convert("RGB")
             lines = page_lines(image, reader, prompt=reader.VLM_PAGE_PROMPT, limit=1024)
+            if "+" in reader.PAGE_READER:
+                from .choice_columns import columns, verify
+                from .vision_finetune import _ANSWER_SHEET_HEADER
+                geometry = columns(page)
+                if geometry:
+                    def read(im, prompt, limit):
+                        return page_lines(im, reader, prompt=prompt, limit=limit)
+                    heading, cells = geometry
+                    title = read(heading, "Transcribe the printed heading exactly.", 64)
+                    if len(title) == 1 and " ".join(title[0][0].lower().split()) == _ANSWER_SHEET_HEADER:
+                        verified = verify(cells, read)
+                        if verified and any(number for number, _, _, _ in verified):
+                            lines = []
+                            scores = []
+                            for number, score, choice, confidence in verified:
+                                if number is None:
+                                    unresolved_cells.append({"page": len(pages)+1, "text": choice, "ocr_conf": confidence})
+                                else:
+                                    lines.append((f"{number}. {choice}", [score]*(len(number)+2) + [confidence]))
+                                    scores.append(score)
+                            recovered[len(pages)+1] = scores
             if "+" in reader.PAGE_READER and any(s.strip() for s, _ in lines) and not any(
                     reader.LEADING_NUMBER.match(s.strip()) for s, _ in lines):
                 layout = page_lines(image, reader, prompt=_LAYOUT_PROMPT, limit=1024)
@@ -374,6 +409,8 @@ def read_exam(path):
         scope_pages.append(scope_lines if scope_lines is not None else lines)
         images.append(image)
     result = assemble(pages, reader, started)
+    result["unassigned"].extend(unresolved_cells)
+    result["stats"]["lines"] += len(unresolved_cells)
     for page_no, scores in recovered.items():
         rows = [row for row in result["questions"] if row["page"] == page_no]
         for row, confidence in zip(rows, scores, strict=True):
@@ -465,8 +502,11 @@ def read_exam(path):
             # A failed optional inference leaves the original reading available for review.
             continue
         score = confirmed_text_score(row["text"], first_scores, lines)
-        if (page_no in recovered and score is not None and score < _TEXT_CHECK_THRESHOLD
-                and reader.has_detectors()):
+        second_words = [word for line, _ in lines for word in line.split()]
+        same_terms = ("+" in reader.PAGE_READER and "[?]" not in row["text"] and "\ufffd" not in row["text"]
+                      and course_term_words(row["text"].split()) == course_term_words(second_words))
+        if ((page_no in recovered and score is not None or same_terms)
+                and (score is None or score < _TEXT_CHECK_THRESHOLD) and reader.has_detectors()):
             if page_no not in crop_reads:
                 page = originals[page_no - 1]
                 crop_reads[page_no] = []
@@ -475,12 +515,18 @@ def read_exam(path):
                     crop.thumbnail((1400, 550))
                     try:
                         crop_reads[page_no].append(page_lines(crop, reader, prompt=reader.VLM_PAGE_PROMPT, limit=94))
+                        if same_terms and crop.width > 5*crop.height:
+                            # The leading phrase alone can preserve small distinctions lost on a resized line.
+                            prefix = crop.crop((0, 0, round(.60*crop.width), crop.height))
+                            crop_reads[page_no].append(page_lines(prefix, reader, prompt=reader.VLM_PAGE_PROMPT, limit=64))
+                            wider = reader.crop(page, box, pad=22)
+                            crop_reads[page_no].append(page_lines(wider, reader, prompt=reader.VLM_PAGE_PROMPT, limit=94))
                     except (OSError, RuntimeError):
                         continue
             page_words = [word for line, _ in pages[page_no - 1][0] for word in line.split()]
-            crop_score = verify_crop_words(row["text"], first_scores, page_words, crop_reads[page_no])
+            crop_score = verify_crop_words(row["text"], first_scores, page_words, crop_reads[page_no], course_terms=same_terms)
             if crop_score is not None:
-                score = max(score, crop_score)
+                score = max(score or 0, crop_score)
         if score is not None and score >= _TEXT_CHECK_THRESHOLD:
             row["confirmed_answer_conf"] = score
     result["stats"]["seconds"] = round(time.perf_counter() - started, 1)

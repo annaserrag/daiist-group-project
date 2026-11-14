@@ -8,7 +8,7 @@ from pathlib import Path
 from .catalog import OPTIONS, OPTION_TEXTS, QUESTIONS
 from .handoff import VisionExam
 
-VERSION = "vision-finetune/reader-v3/page-lora-12e3a113/bridge-v7"
+VERSION = "vision-finetune/reader-v3/page-lora-12e3a113/bridge-v8"
 _ANSWER_SHEET_HEADER = "data science examination | answer sheet"
 _BARE_CHOICE = re.compile(r"([1-9][0-9]?)\s+([A-Da-d])")
 _CHOICE_WITH_TEXT = re.compile(r"([A-Da-d])(?:\s*[,.:)]\s*|\s+)(.+)", re.DOTALL)
@@ -119,3 +119,45 @@ def read_exam(path):
     result = subprocess.run([str(python), "-X", "utf8", "-c", _WORKER, str(pdf), str(Path(__file__).resolve().parents[1])],
                             cwd=checkout, stdout=subprocess.PIPE, check=True)
     return adapt(json.loads(result.stdout))
+
+
+def assign_unresolved(payload, assignments):
+    """Apply explicit, one-based teacher assignments to a copy. Preserve duplicate detections."""
+    from copy import deepcopy
+    checked = deepcopy(payload)
+    for position, number in assignments:
+        if position < 1 or position > len(checked["answers"]) or number not in QUESTIONS:
+            raise ValueError("Observation or question number is outside the allowed range.")
+        answer = checked["answers"][position-1]
+        if answer["question_id"] is not None:
+            raise ValueError("Only an unresolved observation can be assigned.")
+        answer.update(question_id=number, id_confidence=1.0)
+    VisionExam.model_validate(checked)
+    return checked
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Export a local reader handoff, or assign an unresolved observation after checking the scan.")
+    parser.add_argument("input", type=Path, help="Source PDF or a previously saved JSON handoff")
+    parser.add_argument("--output", type=Path, required=True, help="New private JSON file")
+    parser.add_argument("--assign", type=int, nargs=2, action="append", default=[], metavar=("OBSERVATION", "QUESTION"),
+                        help="One-based observation and visually checked question ID; preserves the answer confidence")
+    args = parser.parse_args()
+    try:
+        if args.input.suffix.lower() == ".json":
+            payload = json.loads(args.input.read_bytes())
+        elif args.input.suffix.lower() == ".pdf":
+            import env
+            env.load_env()
+            payload = read_exam(args.input)
+        else:
+            parser.error("Choose a source PDF or JSON handoff.")
+        checked = assign_unresolved(payload, args.assign)
+        with args.output.open("x", encoding="utf-8") as stream:
+            json.dump(checked, stream, ensure_ascii=False, indent=2)
+        for i, observation in enumerate(checked["answers"], 1):
+            if observation["question_id"] is None:
+                print(f"Observation {i} needs its question number checked.")
+    except (OSError, ValueError) as exc:
+        parser.exit(2, f"{exc}\n")

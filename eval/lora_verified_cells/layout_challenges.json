@@ -1,0 +1,166 @@
+{
+  "reader": "vision-finetune/reader-v3/page-lora-12e3a113/bridge-v8",
+  "source": "New typeset layout challenges. No student handwriting.",
+  "cases": {
+    "nonconsecutive": [
+      {
+        "id": 3,
+        "readings": [
+          "C"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      },
+      {
+        "id": 5,
+        "readings": [
+          "D"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      },
+      {
+        "id": 8,
+        "readings": [
+          "A"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      },
+      {
+        "id": 12,
+        "readings": [
+          "C"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 16,
+        "readings": [
+          "D"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      },
+      {
+        "id": 19,
+        "readings": [
+          "B"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      }
+    ],
+    "duplicate": [
+      {
+        "id": 4,
+        "readings": [
+          "C"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 7,
+        "readings": [
+          "A",
+          "B"
+        ],
+        "mark": null,
+        "reason": "duplicate_detection",
+        "safe": true
+      },
+      {
+        "id": 10,
+        "readings": [
+          "B"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 13,
+        "readings": [
+          "B"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 15,
+        "readings": [
+          "C"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      }
+    ],
+    "edited_choice": [
+      {
+        "id": 2,
+        "readings": [
+          "C"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 3,
+        "readings": [
+          "?"
+        ],
+        "mark": null,
+        "reason": "low_read_confidence",
+        "safe": true
+      },
+      {
+        "id": 6,
+        "readings": [
+          "A"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 13,
+        "readings": [
+          "D"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      },
+      {
+        "id": 16,
+        "readings": [
+          "C"
+        ],
+        "mark": 1,
+        "reason": "matches_key",
+        "safe": true
+      },
+      {
+        "id": 18,
+        "readings": [
+          "A"
+        ],
+        "mark": 0,
+        "reason": "differs_from_key",
+        "safe": true
+      }
+    ]
+  }
+}

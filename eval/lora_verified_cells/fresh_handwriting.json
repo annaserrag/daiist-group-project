@@ -1,0 +1,98 @@
+{
+  "reader": "Qwen/Qwen3-VL-2B-Instruct+weights/page_reader_lora",
+  "adapter_sha256": "12e3a113ff186a494aaaa41192a12cbbddba28814e3386b6d57c0c6112289fc4",
+  "source": "Handwritten ASAP-SAS, prompt 3, public transcriptions",
+  "source_url": "https://zenodo.org/records/8088866",
+  "selection": "First 12 unique eligible SHA-256 values in sorted order. Excludes development filenames, image hashes and normalized reference texts.",
+  "eligible_images": 135,
+  "images": [
+    {
+      "image": "SAS_3_6869.png",
+      "sha256": "00326069edde254116ce27b28279e9536f01e55466abbfeb46f026367df499af",
+      "chars": 309,
+      "edits": 9,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6985.png",
+      "sha256": "04a30cb756546b7604da9d93d0137b05666f4fec964f6a995a0525c234d9b5c4",
+      "chars": 175,
+      "edits": 7,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6883.png",
+      "sha256": "05884977136e2ac90bf9fb56aaa8b0cf514a74f8d38ca4eb1fcef79b40cd9aad",
+      "chars": 333,
+      "edits": 5,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6949.png",
+      "sha256": "08738380a5700d70eba6ee600b5d87281a613a5b9a542db28b4c11c221aac81f",
+      "chars": 308,
+      "edits": 0,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_7184.png",
+      "sha256": "0875b018cb691ae771f2f42990607accb4ed8ff9b067ed4e65a122db77cfd1b2",
+      "chars": 404,
+      "edits": 10,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_7048.png",
+      "sha256": "0c92aadc726d4ee90853a201b2a041cb6386a6d6c43d2e74405666744637ac72",
+      "chars": 337,
+      "edits": 0,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6988.png",
+      "sha256": "0d70c0d240a0a69f84a2a10ce9901ee071264fb269dc2be5fa83cd39d8c71e9f",
+      "chars": 269,
+      "edits": 3,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6847.png",
+      "sha256": "0e52e84214b307b6639652b2b262d14813877e3f70d24c682b856db241b2ccd8",
+      "chars": 423,
+      "edits": 13,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6951.png",
+      "sha256": "0ecafe40bd6af3a3c3601f905d632e957c435c78060e4262c15bbc492ba6b8c6",
+      "chars": 237,
+      "edits": 8,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_6878.png",
+      "sha256": "0eced29d1086dcb0e454b3a8178f9aa65cf1a45ef0530bbb37b84c5863b925fb",
+      "chars": 240,
+      "edits": 5,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_7164.png",
+      "sha256": "1186a2fd2a6cc9f085961e719c723f4c554f41e90844894eab8037c7608ffd95",
+      "chars": 351,
+      "edits": 5,
+      "unexpected_question_ids": []
+    },
+    {
+      "image": "SAS_3_7012.png",
+      "sha256": "13c014af0699e02feba4f566fcfe49732f58acc8448da3ee3b83ec8e8b73f559",
+      "chars": 325,
+      "edits": 6,
+      "unexpected_question_ids": []
+    }
+  ],
+  "reference_characters": 3711,
+  "character_edits": 71,
+  "pooled_character_error_rate": 0.019132309350579357,
+  "exact_transcriptions": 2
+}

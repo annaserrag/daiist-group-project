@@ -1,0 +1,74 @@
+{
+  "normal": {
+    "n": 12,
+    "features": [
+      {
+        "feature": "mean_read_confidence",
+        "psi": 0.254,
+        "threshold": 0.933,
+        "alert": false
+      },
+      {
+        "feature": "reading_count",
+        "psi": 0.588,
+        "threshold": 0.933,
+        "alert": false
+      },
+      {
+        "feature": "unassigned_answers",
+        "psi": 0.094,
+        "threshold": 0.933,
+        "alert": false
+      },
+      {
+        "feature": "ink_density",
+        "psi": 0.359,
+        "threshold": 0.933,
+        "alert": false
+      },
+      {
+        "feature": "line_count",
+        "psi": 0.062,
+        "threshold": 0.933,
+        "alert": false
+      }
+    ],
+    "alert": false
+  },
+  "shifted": {
+    "n": 10,
+    "features": [
+      {
+        "feature": "mean_read_confidence",
+        "psi": 1.561,
+        "threshold": 1.067,
+        "alert": true
+      },
+      {
+        "feature": "reading_count",
+        "psi": 1.675,
+        "threshold": 1.067,
+        "alert": true
+      },
+      {
+        "feature": "unassigned_answers",
+        "psi": 0.265,
+        "threshold": 1.067,
+        "alert": false
+      },
+      {
+        "feature": "ink_density",
+        "psi": 1.948,
+        "threshold": 1.067,
+        "alert": true
+      },
+      {
+        "feature": "line_count",
+        "psi": 2.066,
+        "threshold": 1.067,
+        "alert": true
+      }
+    ],
+    "alert": true
+  }
+}

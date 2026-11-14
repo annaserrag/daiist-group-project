@@ -1,0 +1,81 @@
+{
+  "run_id": "12bc75a383574d90a415fbd46198abbf",
+  "prior_run_id": "2ac23920a97243f0a5f4373923b490e4",
+  "counts": {
+    "correct_status": 30,
+    "old_mcq_proposed": 50,
+    "old_mcq_review": 30,
+    "new_mcq_proposed": 50,
+    "new_mcq_review": 30,
+    "old_written_proposed": 1,
+    "old_written_review": 24,
+    "new_written_proposed": 2,
+    "new_written_review": 23
+  },
+  "changed_target_decisions": [
+    [
+      "c07",
+      "21",
+      null,
+      "low_read_confidence",
+      2.0,
+      "grounded_proposal"
+    ],
+    [
+      "c11",
+      "31",
+      null,
+      "low_read_confidence",
+      null,
+      "insufficient_evidence"
+    ]
+  ],
+  "previous_proposals_changed_or_lost": [],
+  "target_review_reasons": {
+    "uncertain_question_id": 6,
+    "low_read_confidence": 11,
+    "insufficient_evidence": 1,
+    "invalid_choice": 2,
+    "unassigned_answer": 20,
+    "missing_detection": 7,
+    "written_mark_review": 1,
+    "context_check": 2,
+    "duplicate_detection": 1,
+    "unreadable": 1,
+    "single_hyperparameter_review": 1
+  },
+  "c13_checked_replay": {
+    "observation": 20,
+    "visually_confirmed_id": 11,
+    "scope": "assisted replay; excluded from the automatic packet totals",
+    "marks": {
+      "1": 0,
+      "2": null,
+      "3": null,
+      "4": 1,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 1,
+      "9": 1,
+      "10": 1,
+      "11": 1,
+      "12": 1,
+      "13": 1,
+      "14": 1,
+      "15": null,
+      "16": 1,
+      "17": 0,
+      "18": null,
+      "19": 1,
+      "20": 0
+    },
+    "review_reasons": {
+      "2": "low_read_confidence",
+      "3": "low_read_confidence",
+      "15": "uncertain_question_id",
+      "18": "uncertain_question_id"
+    },
+    "exact_proposals": 16
+  }
+}
