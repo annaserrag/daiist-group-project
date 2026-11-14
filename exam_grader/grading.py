@@ -339,6 +339,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
         if custom:
             item["max_mark"] = 2
         item["readings"] = [a["text"][:4000] for a in buckets.get(q, []) if isinstance(a.get("text"), str)]
+        item["reading_states"] = [a.get("state") for a in buckets.get(q, []) if isinstance(a.get("text"), str)]
     reviewed = sum(r["mark"] is None for r in out)
     subtotal = sum(r["mark"] for r in out if r["mark"] is not None)
     total = subtotal if not reviewed else None

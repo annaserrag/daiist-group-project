@@ -78,12 +78,18 @@ def match_expected(text, teacher):
     return all(checks)
 
 def evaluate(cases, out_dir, *, links=None, reference=None, teacher_dir=None, policy=None,
-             training_ids=None, evaluation_cache=None):
+             training_ids=None, evaluation_cache=None, case_references=None):
     if not cases:
         raise ValueError("Add team-authored cases before evaluating.")
     ids=[c["id"] for c in cases]
     if len(set(ids)) != len(ids) or any(not re.fullmatch(r"[a-zA-Z0-9_-]+",i) for i in ids):
         raise ValueError("Supply unique short case IDs made of letters, digits, hyphens or underscores.")
+    if case_references is not None:
+        if set(ids) != set(case_references):
+            raise ValueError("The case references must cover exactly the supplied case IDs.")
+        for case in cases:
+            if file_sha256(case["input"]) != case_references[case["id"]]["sha256"]:
+                raise ValueError(f"PDF does not match the checked reference for {case['id']}.")
     if links is not None:
         if reference is None or set(links)-set(ids) or set(links.values())-set(reference):
             raise ValueError("Check the case IDs and anonymous source IDs in the links CSV.")
@@ -123,6 +129,21 @@ def evaluate(cases, out_dir, *, links=None, reference=None, teacher_dir=None, po
                         "input_type":b["input_type"],"vision_version":record["versions"]["component_a"],
                         "grader_version":record["versions"]["component_b"],"index":record["versions"]["retrieval"],
                         "policy":record["versions"]["policy"]})
+        if case_references is not None:
+            reference_case = case_references[case["id"]]
+            outcome = compare_case(teacher, record, reference_case)
+            results[-1].update(outcome)
+            # Wrong or invented question assignments cannot pass a routing/mark check by coincidence.
+            results[-1]["correct"] = bool(results[-1]["correct"] and outcome["reader_structure_ok"])
+            # An ideal reader with a simple, optimistic marking rule is an explicit comparator.
+            # It gives every visible response full credit, and recognizes the true document status.
+            naive = [{"question_id":q, "mark":(1 if q <= 20 else 2) if str(q) in reference_case["readings"] else None,
+                      "reason":"full_credit" if str(q) in reference_case["readings"] else "missing_detection",
+                      "status":"proposed" if str(q) in reference_case["readings"] else "review"}
+                     for q in range(1,36)]
+            results[-1]["baseline_case_correct"] = match_expected(case["expected"], {
+                "answers":naive, "exam_status":reference_case["exam_status"],
+                "proposed_total":sum(r["mark"] for r in naive) if all(r["mark"] is not None for r in naive) else None})
         if links and case["id"] in links:
             gold = reference[links[case["id"]]]
             for answer in teacher["answers"]:
@@ -144,6 +165,11 @@ def evaluate(cases, out_dir, *, links=None, reference=None, teacher_dir=None, po
                "mean_review_questions":mean(r["review_questions"] for r in results),
                "mean_exam_latency_s":mean(r["latency_s"] for r in results),
                "known_cost_exams":len(costs),"mean_known_cost_eur":mean(costs) if costs else None}
+    if case_references is not None:
+        summary["pdf_packet"] = {field:sum(r[field] for r in results) for field in (
+            "baseline_case_correct", "reader_structure_ok", "reader_exact_cases", "expected_question_slots", "exact_reading_slots",
+            "numeric_references", "comparable_proposals", "exact_marks", "large_mark_errors",
+            "full_credit_baseline_exact_on_proposals", "full_credit_baseline_exact_on_all")}
     if pairs:
         write_csv(out_dir/"paired_marks.csv",pairs,list(pairs[0]))
         summary["mcq_vs_published_key_on_recorded_letters"]=grading([r for r in pairs if r["question_id"]<=20])
@@ -155,6 +181,40 @@ def evaluate(cases, out_dir, *, links=None, reference=None, teacher_dir=None, po
     temp_summary.write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
     temp_summary.replace(out_dir/"summary.json")
     return summary
+
+def compare_case(teacher, record, reference):
+    """Score the very same PDF read that produced the marks. Emit counts and question IDs only."""
+    rows_by_id = {str(r["question_id"]): r for r in teacher["answers"]}
+    expected = reference["readings"]
+    seen = {q for q,r in rows_by_id.items() if r["readings"]}
+    shared = seen & expected.keys()
+    def normalized(text):
+        return " ".join(text.casefold().split())
+    wrong_states = set()
+    wrong_text = set()
+    for q in shared:
+        row = rows_by_id[q]
+        if sorted(row["reading_states"], key=str) != [reference["states"][q]] * len(expected[q]):
+            wrong_states.add(q)
+        if sorted(map(normalized,row["readings"])) != sorted(map(normalized,expected[q])):
+            wrong_text.add(q)
+    missing, extra = expected.keys() - seen, seen - expected.keys()
+    structure = (not teacher.get("reader_failed") and teacher.get("input_type") == "pdf"
+                 and teacher["exam_status"] == reference["exam_status"]
+                 and not (missing or extra or wrong_states or record["features"]["unassigned_answers"]))
+    marks = {q:m for q,m in reference["reference_marks"].items() if m is not None}
+    paired = {q:rows_by_id[q]["mark"] for q in marks if rows_by_id[q]["mark"] is not None}
+    def ids(values):
+        return "|".join(map(str, sorted(map(int,values))))
+    return dict(reader_structure_ok=bool(structure), reader_exact_cases=bool(structure and not wrong_text),
+                expected_question_slots=len(expected), exact_reading_slots=len(shared - wrong_states - wrong_text),
+                reader_missing_ids=ids(missing), reader_unexpected_ids=ids(extra),
+                reader_state_or_count_mismatches=ids(wrong_states), reader_text_mismatches=ids(wrong_text),
+                numeric_references=len(marks), comparable_proposals=len(paired),
+                exact_marks=sum(m==marks[q] for q,m in paired.items()),
+                large_mark_errors=sum(abs(m-marks[q])>=1 for q,m in paired.items()),
+                full_credit_baseline_exact_on_proposals=sum(marks[q]==rows_by_id[q]["max_mark"] for q in paired),
+                full_credit_baseline_exact_on_all=sum(m==rows_by_id[q]["max_mark"] for q,m in marks.items()))
 
 def component_evidence(base, cases_path):
     """Reproduce the component evidence present in this checkout. Never invent missing labels."""
@@ -188,6 +248,7 @@ if __name__ == "__main__":
     p.add_argument("--cache",type=Path,help="Private SQLite file outside the repo for repeat Gemini evaluations.")
     p.add_argument("--policy",type=Path,help="JSON object containing Policy fields for this evaluation run.")
     p.add_argument("--teacher-csv",help="Optional local version 1 source for use with --links.")
+    p.add_argument("--case-references",type=Path,help="PDF fingerprints, transcriptions and marks for the case packet.")
     p.add_argument("--private-exports",type=Path,metavar="DIR",help="Keep teacher views outside the deployable repo for judge calibration.")
     args=p.parse_args()
     if not args.cases.exists():
@@ -195,11 +256,14 @@ if __name__ == "__main__":
     if args.private_exports and args.private_exports.resolve().is_relative_to(Path(__file__).resolve().parent):
         raise SystemExit("Choose a private export folder outside this repo. The course deployer uploads repository files.")
     base=args.cases.parent
+    if (args.case_references is None and args.cases.name == "cases.csv"
+            and (base/"case_references.json").is_file()):
+        args.case_references = base/"case_references.json"
     for attr,filename in (("links","case_links.csv"),("baseline_train","train_sources.csv"),("policy","grade_policy.json")):
         if getattr(args,attr) is None and (base/filename).is_file():
             setattr(args,attr,base/filename)
     components=component_evidence(base,args.cases)
-    for optional in (args.links,args.baseline_train,args.policy):
+    for optional in (args.links,args.baseline_train,args.policy,args.case_references):
         if optional:
             components["input_sha256"][optional.name]=file_sha256(optional)
     links = None
@@ -209,6 +273,7 @@ if __name__ == "__main__":
         if len(links)!=len(link_rows):
             raise ValueError("Duplicate case ID in links.")
     result = evaluate(rows(args.cases),args.out,links=links,reference=teacher_data(args.teacher_csv) if links else None,
+                      case_references=json.loads(args.case_references.read_bytes()) if args.case_references else None,
                       teacher_dir=args.private_exports,
                       policy=Policy(**json.loads(args.policy.read_text(encoding="utf-8-sig"))) if args.policy else None,
                       training_ids=[r["source_id"].strip() for r in rows(args.baseline_train)] if args.baseline_train else None,

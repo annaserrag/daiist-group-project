@@ -1,0 +1,1012 @@
+{
+  "c01": {
+    "sha256": "99eb159f72de405ff0912ce154cc1d97f8d668c66e4cb664261cf3efe3dfce00",
+    "source": "Student_6",
+    "source_regions": [
+      [
+        3,
+        0,
+        178
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "D"
+      ],
+      "2": [
+        "C"
+      ],
+      "3": [
+        "C"
+      ],
+      "4": [
+        "C"
+      ],
+      "5": [
+        "B"
+      ]
+    },
+    "reference_marks": {
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 1,
+      "5": 1
+    },
+    "states": {
+      "1": "read",
+      "2": "read",
+      "3": "read",
+      "4": "read",
+      "5": "read"
+    }
+  },
+  "c02": {
+    "sha256": "fdf37989dd956e68dbeb68de76ab056b30acbea6c51044b910712a2364dcec4f",
+    "source": "Student_11",
+    "source_regions": [
+      [
+        1,
+        358,
+        611
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "6": [
+        "B"
+      ],
+      "7": [
+        "B"
+      ],
+      "8": [
+        "D"
+      ],
+      "9": [
+        "D"
+      ],
+      "10": [
+        "B"
+      ]
+    },
+    "reference_marks": {
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 1
+    },
+    "states": {
+      "6": "read",
+      "7": "read",
+      "8": "read",
+      "9": "read",
+      "10": "read"
+    }
+  },
+  "c03": {
+    "sha256": "3701da529d71cd7fc746d98bd9e393378329d029d9e147d6f2f56760bf84ee6e",
+    "source": "Student_12",
+    "source_regions": [
+      [
+        1,
+        557,
+        777
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "11": [
+        "B"
+      ],
+      "12": [
+        "C"
+      ],
+      "13": [
+        "B"
+      ],
+      "14": [
+        "C"
+      ],
+      "15": [
+        "B"
+      ],
+      "16": [
+        "C"
+      ]
+    },
+    "reference_marks": {
+      "11": 1,
+      "12": 1,
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1
+    },
+    "states": {
+      "11": "read",
+      "12": "read",
+      "13": "read",
+      "14": "read",
+      "15": "read",
+      "16": "read"
+    }
+  },
+  "c04": {
+    "sha256": "beff4e94725b53edb81030237a3323d9d5c794007deaa8ca420b4d688b29c962",
+    "source": "Student_21",
+    "source_regions": [
+      [
+        1,
+        763,
+        936
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "17": [
+        "A"
+      ],
+      "18": [
+        "C"
+      ],
+      "19": [
+        "B"
+      ],
+      "20": [
+        "D"
+      ]
+    },
+    "reference_marks": {
+      "17": 0,
+      "18": 1,
+      "19": 1,
+      "20": 0
+    },
+    "states": {
+      "17": "read",
+      "18": "read",
+      "19": "read",
+      "20": "read"
+    }
+  },
+  "c05": {
+    "sha256": "f73b3370430476a6e7fb3b8cb27c21c686ec433cafda5aa9e00f1773559ae0e3",
+    "source": "Student_14",
+    "source_regions": [
+      [
+        2,
+        151,
+        240
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "31": [
+        "K in K means algorithm represent number of clusters."
+      ]
+    },
+    "reference_marks": {
+      "31": 2.0
+    },
+    "states": {
+      "31": "read"
+    }
+  },
+  "c06": {
+    "sha256": "ff35ee20848842d1d4e76031eceb282582cb30a217d21c9e654f18b360caeb73",
+    "source": "Student_11",
+    "source_regions": [
+      [
+        2,
+        111,
+        383
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "18": [
+        "C"
+      ],
+      "19": [
+        "A"
+      ],
+      "20": [
+        "B"
+      ],
+      "21": [
+        "Supervised Learning is a type of machine learning that are used to train and predict data that are labeled."
+      ]
+    },
+    "reference_marks": {
+      "18": 1,
+      "19": 0,
+      "20": 1,
+      "21": 2.0
+    },
+    "states": {
+      "18": "read",
+      "19": "read",
+      "20": "read",
+      "21": "read"
+    }
+  },
+  "c07": {
+    "sha256": "cf4104f7c2d5f603a0e11e69a4bcfdba1268abbd2171032fcfe0a1daf04abdd1",
+    "source": "Student_21",
+    "source_regions": [
+      [
+        2,
+        84,
+        181
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "21": [
+        "Supervised Learning is a type of machine learning that using label data to predict the output."
+      ]
+    },
+    "reference_marks": {
+      "21": 2.0
+    },
+    "states": {
+      "21": "read"
+    }
+  },
+  "c08": {
+    "sha256": "744576e89385e190a85ece21013547f2cb5b6d4d2ce79ac11b75d215a74def7f",
+    "source": "Student_14",
+    "source_regions": [
+      [
+        1,
+        796,
+        938
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "25": [
+        "List out any two major applications of data science: Real Estate price prediction Medical sector: Heart disease detection/analysis."
+      ]
+    },
+    "reference_marks": {
+      "25": 2.0
+    },
+    "states": {
+      "25": "read"
+    }
+  },
+  "c09": {
+    "sha256": "1b5dd7d7c26772f725da49d3458e0ca60ee712fad6d7b479d4611cbcea3758c0",
+    "source": "Student_10",
+    "source_regions": [
+      [
+        2,
+        103,
+        282
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "23": [
+        "Regression analysis is Statistic method that model Relationship between dependent Variable and independent Variable. In data science, we use regression analysis to predict the numberical of Value best on theire Variable."
+      ]
+    },
+    "reference_marks": {
+      "23": 2.0
+    },
+    "states": {
+      "23": "read"
+    }
+  },
+  "c10": {
+    "sha256": "3e8cd9ba882079f9766c124537cba0f3e91b1d94df86bb3a83ac1d52f27ff6b0",
+    "source": "Student_12",
+    "source_regions": [
+      [
+        2,
+        774,
+        947
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "25": [
+        "Two major applications of data science: House price prediction chatbot language detection"
+      ]
+    },
+    "reference_marks": {
+      "25": 2.0
+    },
+    "states": {
+      "25": "read"
+    }
+  },
+  "c11": {
+    "sha256": "9a516cd135edca600e6a09ebd03a2c298f3e12aec44f4f56fa7a7a194c7c9d58",
+    "source": "Student_11",
+    "source_regions": [
+      [
+        4,
+        112,
+        290
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "31": [
+        "K in K-means algorithms refers to the number of clusters that we will use to divide the dataset into when fitting the model."
+      ]
+    },
+    "reference_marks": {
+      "31": 2.0
+    },
+    "states": {
+      "31": "read"
+    }
+  },
+  "c12": {
+    "sha256": "cee045662611b5eaeb3a9ce9d0751cdf31075c379e8a8fdb409ac7ae29cea836",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "B"
+      ],
+      "2": [
+        ""
+      ]
+    },
+    "reference_marks": {
+      "1": 1,
+      "2": 0
+    },
+    "states": {
+      "1": "read",
+      "2": "confirmed_blank"
+    }
+  },
+  "c13": {
+    "sha256": "844c19e12354f9981192cf31b41adeb55760dd63b839941176505fd0c79914f4",
+    "source": "Student_14",
+    "source_regions": [
+      [
+        1,
+        183,
+        648
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "C"
+      ],
+      "2": [
+        "D"
+      ],
+      "3": [
+        "D"
+      ],
+      "4": [
+        "C"
+      ],
+      "5": [
+        "A"
+      ],
+      "6": [
+        "C"
+      ],
+      "7": [
+        "B"
+      ],
+      "8": [
+        "C"
+      ],
+      "9": [
+        "A"
+      ],
+      "10": [
+        "B"
+      ],
+      "11": [
+        "B"
+      ],
+      "12": [
+        "C"
+      ],
+      "13": [
+        "B"
+      ],
+      "14": [
+        "C"
+      ],
+      "15": [
+        "D"
+      ],
+      "16": [
+        "C"
+      ],
+      "17": [
+        "A"
+      ],
+      "18": [
+        "C"
+      ],
+      "19": [
+        "B"
+      ],
+      "20": [
+        "C"
+      ]
+    },
+    "reference_marks": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 1,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 1,
+      "9": 1,
+      "10": 1,
+      "11": 1,
+      "12": 1,
+      "13": 1,
+      "14": 1,
+      "15": 0,
+      "16": 1,
+      "17": 0,
+      "18": 1,
+      "19": 1,
+      "20": 0
+    },
+    "states": {
+      "1": "read",
+      "2": "read",
+      "3": "read",
+      "4": "read",
+      "5": "read",
+      "6": "read",
+      "7": "read",
+      "8": "read",
+      "9": "read",
+      "10": "read",
+      "11": "read",
+      "12": "read",
+      "13": "read",
+      "14": "read",
+      "15": "read",
+      "16": "read",
+      "17": "read",
+      "18": "read",
+      "19": "read",
+      "20": "read"
+    }
+  },
+  "c14": {
+    "sha256": "27e00da90b0db44f02bdc1d730e2c97704631bfaab8839563deea986397790d3",
+    "source": "Student_24",
+    "source_regions": [
+      [
+        1,
+        608,
+        751
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "16": [
+        "C"
+      ],
+      "17": [
+        "B"
+      ],
+      "18": [
+        "C"
+      ],
+      "19": [
+        "B"
+      ],
+      "20": [
+        "A"
+      ]
+    },
+    "reference_marks": {
+      "16": 1,
+      "17": 1,
+      "18": 1,
+      "19": 1,
+      "20": 0
+    },
+    "states": {
+      "16": "read",
+      "17": "read",
+      "18": "read",
+      "19": "read",
+      "20": "read"
+    }
+  },
+  "c15": {
+    "sha256": "044c964d06a24aec6654e6e432023aa2b3e19bfca5017f6e6a0ff2402fa8a282",
+    "source": "Student_9",
+    "source_regions": [
+      [
+        1,
+        175,
+        412
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "D"
+      ],
+      "2": [
+        "B"
+      ],
+      "3": [
+        "D"
+      ],
+      "4": [
+        "B"
+      ]
+    },
+    "reference_marks": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0
+    },
+    "states": {
+      "1": "read",
+      "2": "read",
+      "3": "read",
+      "4": "read"
+    }
+  },
+  "c16": {
+    "sha256": "e81acad48ac21671bd51bf7fcc3de5725c71f81fb5f44097cebe66522d983914",
+    "source": "Student_21",
+    "source_regions": [
+      [
+        1,
+        84,
+        937
+      ],
+      [
+        2,
+        84,
+        932
+      ],
+      [
+        3,
+        86,
+        933
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "D"
+      ],
+      "2": [
+        "A"
+      ],
+      "3": [
+        "D"
+      ],
+      "4": [
+        "A"
+      ],
+      "5": [
+        "B"
+      ],
+      "6": [
+        "B"
+      ],
+      "7": [
+        "B"
+      ],
+      "8": [
+        "C"
+      ],
+      "9": [
+        "A"
+      ],
+      "10": [
+        "B"
+      ],
+      "11": [
+        "B"
+      ],
+      "12": [
+        "C"
+      ],
+      "13": [
+        "B"
+      ],
+      "14": [
+        "C"
+      ],
+      "15": [
+        "B"
+      ],
+      "16": [
+        "C"
+      ],
+      "17": [
+        "A"
+      ],
+      "18": [
+        "C"
+      ],
+      "19": [
+        "B"
+      ],
+      "20": [
+        "D"
+      ],
+      "21": [
+        "Supervised Learning is a type of machine learning that using label data to predict the output."
+      ],
+      "26": [
+        "Structured data is a data that a machine can easily understand. Mostly it's in a spreadsheet form. Semi-structured data is a data that a machine and human can both understand. Mostly it's in XML, HTML form."
+      ],
+      "27": [
+        "In order to find an outlier in the data we need to set a range of data, so if any data lies an abnormal distance from that range. It will be outlier."
+      ],
+      "28": [
+        "Data pre-processing is a method which take raw data and transform it into a meaningful data so that machine can understand and analyze."
+      ],
+      "29": [
+        "Data normalization is required in K-NN because we need to scale huge data so that it can be presented in a smaller range."
+      ],
+      "31": [
+        "K in k-mean algorithm represent the number of clusters or subgroups."
+      ],
+      "34": [
+        "1. In the first graph: good classification good distance between the lines 2. In the second graph: bad classification good distance between the lines 3. In the third graph: good classification bad distance between the lines."
+      ],
+      "22": [
+        "Model M1 give only 30% accuracy for testing dataset, It's a really low accuracy so it's a bad model."
+      ],
+      "25": [
+        "2 major applications of data science: predict the stock price health checking system"
+      ],
+      "24": [
+        "2 Challenges of Machine Learning: Collecting the dataset that are correct Data pre-processing"
+      ],
+      "23": [
+        "Regression analysis is a method to evaluate the performance as metrics such as: R-squared, mean absolute error and root mean square error."
+      ]
+    },
+    "reference_marks": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 1,
+      "6": 0,
+      "7": 0,
+      "8": 1,
+      "9": 1,
+      "10": 1,
+      "11": 1,
+      "12": 1,
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
+      "17": 0,
+      "18": 1,
+      "19": 1,
+      "20": 0,
+      "21": 2.0,
+      "26": 2.0,
+      "27": 2.0,
+      "28": null,
+      "29": 2.0,
+      "31": 2.0,
+      "34": 2.0,
+      "22": 1.0,
+      "25": 2.0,
+      "24": 2.0,
+      "23": 1.0
+    },
+    "states": {
+      "1": "read",
+      "2": "read",
+      "3": "read",
+      "4": "read",
+      "5": "read",
+      "6": "read",
+      "7": "read",
+      "8": "read",
+      "9": "read",
+      "10": "read",
+      "11": "read",
+      "12": "read",
+      "13": "read",
+      "14": "read",
+      "15": "read",
+      "16": "read",
+      "17": "read",
+      "18": "read",
+      "19": "read",
+      "20": "read",
+      "21": "read",
+      "26": "read",
+      "27": "read",
+      "28": "read",
+      "29": "read",
+      "31": "read",
+      "34": "read",
+      "22": "read",
+      "25": "read",
+      "24": "read",
+      "23": "read"
+    }
+  },
+  "c17": {
+    "sha256": "4f4ef590be5c20758e40200547f5411b7608599b23c8949af9135b7f83814c2c",
+    "source": "Student_10",
+    "source_regions": [
+      [
+        3,
+        44,
+        160
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "31": [
+        "K is numerical of cluster."
+      ]
+    },
+    "reference_marks": {
+      "31": 2.0
+    },
+    "states": {
+      "31": "read"
+    }
+  },
+  "c18": {
+    "sha256": "8a02554864f53159279225f85f0b71a79700640c1fa4a17915e740bd5b3e732e",
+    "source": "Student_14",
+    "source_regions": [
+      [
+        3,
+        285,
+        429
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "23": [
+        "Regression analysis is a technique to identify the the relationship between features and to output the continous value prediction."
+      ]
+    },
+    "reference_marks": {
+      "23": 2.0
+    },
+    "states": {
+      "23": "read"
+    }
+  },
+  "c19": {
+    "sha256": "3b4c23f0e44f1491bf13660a189bff1440da59184104f89115304745c7eb0e15",
+    "source": "Student_12",
+    "source_regions": [
+      [
+        3,
+        803,
+        945
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "28": [
+        "Data pre-processing is the process of cleaning data and make the dataset ready to use by machine learning."
+      ]
+    },
+    "reference_marks": {
+      "28": 1.5
+    },
+    "states": {
+      "28": "read"
+    }
+  },
+  "c20": {
+    "sha256": "35b09971eb20e4a65ea6bf3d63ba936227cd2afffa09562ad4a716bb68277042",
+    "source": "Student_11",
+    "source_regions": [
+      [
+        5,
+        732,
+        904
+      ],
+      [
+        6,
+        104,
+        245
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "24": [
+        "2 challenges of Machine Learning: Data: This is a major problem, even with the best ML Algorithms with bad data the output would also be bad. Uncertainties: Despite having enough data to train the model, this still could not determine the performance. Since uncertainties may occur, it may effect it's performance."
+      ]
+    },
+    "reference_marks": {
+      "24": 2.0
+    },
+    "states": {
+      "24": "read"
+    }
+  },
+  "c21": {
+    "sha256": "2e221828e40aeed722b3efcb42571ab780b47f8241c77902baaf56558a1861f6",
+    "source": "Student_21",
+    "source_regions": [
+      [
+        3,
+        86,
+        409
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "34": [
+        "1. In the first graph: good classification good distance between the lines 2. In the second graph: bad classification good distance between the lines 3. In the third graph: good classification bad distance between the lines."
+      ]
+    },
+    "reference_marks": {
+      "34": 2.0
+    },
+    "states": {
+      "34": "read"
+    }
+  },
+  "c22": {
+    "sha256": "7d14a6126408d99573470919041d3a1a47f45b205ce5ba09e245b64fc84b1918",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "B"
+      ],
+      "17": [
+        "D"
+      ]
+    },
+    "reference_marks": {
+      "1": 1
+    },
+    "states": {
+      "1": "read",
+      "17": "read"
+    }
+  },
+  "c23": {
+    "sha256": "7ef6ca48e2eb6ac1ef5f051a59005a13f0a1bc615b836d6ab999869e3b4a08ac",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "in_scope",
+    "readings": {
+      "2": [
+        "C"
+      ],
+      "3": [
+        "A",
+        "D"
+      ]
+    },
+    "reference_marks": {
+      "2": 1
+    },
+    "states": {
+      "2": "read",
+      "3": "read"
+    }
+  },
+  "c24": {
+    "sha256": "0c8dfc743f316da9ce13d3f8537e1d81e59d81940f47563d6017f1d46fa7e402",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "in_scope",
+    "readings": {
+      "1": [
+        "B"
+      ],
+      "2": [
+        ""
+      ]
+    },
+    "reference_marks": {
+      "1": 1
+    },
+    "states": {
+      "1": "read",
+      "2": "unreadable"
+    }
+  },
+  "c25": {
+    "sha256": "51deff1a9c448508b41d1ccd0d8d116745f29f57930afa520fe84c987ff2ede7",
+    "source": "Student_21",
+    "source_regions": [
+      [
+        3,
+        411,
+        508
+      ]
+    ],
+    "exam_status": "in_scope",
+    "readings": {
+      "22": [
+        "Model M1 give only 30% accuracy for testing dataset, It's a really low accuracy so it's a bad model."
+      ]
+    },
+    "reference_marks": {
+      "22": 1.0
+    },
+    "states": {
+      "22": "read"
+    }
+  },
+  "c26": {
+    "sha256": "4323d997d380717673e23359d2abc992d625531d35538db6a43975a5e5ffcdd9",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "in_scope",
+    "readings": {
+      "32": [
+        "Learning rate"
+      ]
+    },
+    "reference_marks": {},
+    "states": {
+      "32": "read"
+    }
+  },
+  "c27": {
+    "sha256": "40a38648eb6376b0872a636ba2bfb2ce5e337e5fab9a590573bfaf0d2a0e83f1",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "unreadable",
+    "readings": {},
+    "reference_marks": {},
+    "states": {}
+  },
+  "c28": {
+    "sha256": "f3cd984c8bbfc56ed5fca1b89af62bf0bfb86c37af0de918aa78be37fbab2de2",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "out_of_scope",
+    "readings": {},
+    "reference_marks": {},
+    "states": {}
+  },
+  "c29": {
+    "sha256": "354af2bc6eec5cfe36cac31e827b7c041e30bdda8fc6dbd2bd4c4bff34036a15",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "out_of_scope",
+    "readings": {},
+    "reference_marks": {},
+    "states": {}
+  },
+  "c30": {
+    "sha256": "2db8c1b8809d2dcbbed90f45a4800b8907ab63167b7a68d86253e49a61eac1d5",
+    "source": "constructed",
+    "source_regions": [],
+    "exam_status": "out_of_scope",
+    "readings": {},
+    "reference_marks": {},
+    "states": {}
+  }
+}
