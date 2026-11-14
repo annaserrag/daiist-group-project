@@ -1,0 +1,45 @@
+{
+  "title": "2024 AP United States Government and Politics, Set 1: Environmental regulation",
+  "booklet_question": 1,
+  "questions": [
+    {
+      "question_id": 1,
+      "paper_label": "A",
+      "question": "Which discretionary power did the environmental agency exercise?",
+      "reference_answer": "Describe regulatory discretion, such as interpreting or implementing statutes.",
+      "criteria": [
+        {
+          "id": "credit",
+          "points": 2,
+          "description": "Award full credit for the substantive requirement in the reference answer. This original part is binary: credit or no credit."
+        }
+      ]
+    },
+    {
+      "question_id": 2,
+      "paper_label": "B",
+      "question": "How can a president affect this exercise of bureaucratic authority?",
+      "reference_answer": "Explain how presidential direction, appointments or executive orders affect the exercise of agency discretion.",
+      "criteria": [
+        {
+          "id": "credit",
+          "points": 2,
+          "description": "Award full credit for the substantive requirement in the reference answer. This original part is binary: credit or no credit."
+        }
+      ]
+    },
+    {
+      "question_id": 3,
+      "paper_label": "C",
+      "question": "How could Congress influence the environmental agency's actions?",
+      "reference_answer": "Explain a legislative, funding or oversight mechanism and how it would influence agency action.",
+      "criteria": [
+        {
+          "id": "credit",
+          "points": 2,
+          "description": "Award full credit for the substantive requirement in the reference answer. This original part is binary: credit or no credit."
+        }
+      ]
+    }
+  ]
+}

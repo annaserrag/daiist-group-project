@@ -1,0 +1,18 @@
+{
+  "frozen_commit": "01b5463ce61d2e47b601648ee8dc19d32ddf6c47",
+  "before": "3a3a2d15a1194d6d8f5ce04197dc5a40",
+  "after": "412191e2b54f4b8892d762dd35ae4f94",
+  "cases": 30,
+  "totals": {
+    "all_slots": 1050,
+    "target_slots": 105,
+    "review": 39,
+    "proposed": 66,
+    "comparable": 65,
+    "exact": 65
+  },
+  "changed_teacher_rows": [],
+  "changed_case_outcomes": [],
+  "changed_exam_statuses": [],
+  "changed_component_versions": []
+}
