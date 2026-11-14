@@ -1,9 +1,8 @@
 """
 Monitoring: quality signals over time, drift against the reference set, alerts.
 
-The thresholds below are PLACEHOLDERS. Choose yours and justify them in
-REPORT.md: how many false alarms on normal inputs you accept, and how big a
-shift has to be before it matters for your product.
+The input alert uses five-bin PSI and half-count smoothing for small samples.
+See eval/monitoring_mcq_replay.json for the prior estimator comparison.
 """
 
 from pathlib import Path
@@ -15,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 REFERENCE_FILE = ROOT / "monitoring" / "reference_features.csv"
 
 PSI_BINS = 5           # quantile bins of the reference; few, because samples are small
-PSI_ALERT = 0.25       # PLACEHOLDER: alert when a feature's PSI exceeds this...
+PSI_ALERT = 0.25       # floor for a substantial shift
 NOISE_MULTIPLE = 2     # ...and this many times the PSI expected by chance (psi_noise)
 WINDOW = 100           # the drift check looks at the last WINDOW requests...
 INPUT_SIGNALS = {"mean_read_confidence","reading_count","unassigned_answers","ink_density","line_count"}
@@ -80,7 +79,7 @@ def load_reference() -> pd.DataFrame | None:
     return pd.read_csv(REFERENCE_FILE) if REFERENCE_FILE.is_file() else None
 
 
-def drift(reference: pd.DataFrame, current: pd.DataFrame, min_current: int=2, *, pseudocount: float=0) -> pd.DataFrame:
+def drift(reference: pd.DataFrame, current: pd.DataFrame, min_current: int=2, *, pseudocount: float=0.5) -> pd.DataFrame:
     """PSI per feature, and whether it alerts. Both frames have one column per feature (no `f_` prefix).
 
     The rule: alert when PSI exceeds PSI_ALERT *and* NOISE_MULTIPLE times what

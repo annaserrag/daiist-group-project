@@ -110,13 +110,21 @@ Include at least 5 `hard`, 5 `review` and 3 `out_of_scope` cases, and some `norm
 
 If you use an LLM judge: your own labels for 20+ cases (`id`, `label`, `comment`). Compute your agreement with the judge in code.
 
-## `reference.csv`: what normal inputs look like
+## Reference and shifted scans for monitoring
 
-30 or more normal inputs (one `input` column), **not** the ones in `cases.csv`: for example, a sample of the data your components were built or tested on. `uv run python main.py reference` turns them into `monitoring/reference_features.csv`, which the Monitoring tab and the drift demo compare live inputs against. Commit both.
+`reference.csv` lists 30 one-page image-only PDFs, one answer-region crop per source paper. The first 30 numbered papers outside the eight source papers in the existing integration packet were selected. The crops include handwritten multiple-choice and written responses and omit student headers. Each uses the same answer-sheet heading and page layout as the normal packet. The manifest records the original file hash, page, vertical crop bounds in thousandths of page height, and final file hash. These extracts are adapted from Dinesh K P’s Mendeley Data release (v1, CC BY 4.0). [Source dataset](https://doi.org/10.17632/sf3kvjwknt.1) · [Licence](https://creativecommons.org/licenses/by/4.0/)
 
-## `shifted.csv`: the drift demo
+`shifted.csv` pairs each of ten synthetic faded scans with its unchanged original, c01 through c10. Each complete parent page was rasterised at 1.5 pixels per PDF point and placed back at the original size. For each grayscale pixel the output is `round(255 - retained_contrast * (255 - pixel))`. Fractions 0.12, 0.18, 0.24, 0.30 and 0.36 were applied twice in case order. The official normal window uses all 12 existing normal cases, including the two additional originals c11 and c12. All 40 new PDFs and the computed reference features are bundled.
 
-10 or more inputs that you shifted on purpose (one `input` column): darker photos, another language, another customer segment… `uv run python main.py drift-demo` checks that your alert fires on these and stays quiet on the `normal` cases.
+From the integrated checkout, run:
+
+```sh
+uv run --locked --no-dev python main.py reference
+uv run --locked --no-dev python main.py drift-demo
+uv run --locked --no-dev python check.py
+```
+
+The shared drift function uses PSI (population stability index), with bin boundaries derived from the reference and half an observation added per bin. Each input signal is compared with the larger of 0.25 and twice the expected sampling noise for the two window sizes. The reference was generated with the integrated page reader on Windows/CUDA, with remote grading disabled. Only reader input features participate in the alert. Reference latency and grading fields are outside this calculation. A zero-ink reading is a valid measurement. The app requires 20 recent requests before it assesses live drift; the course demo evaluates the supplied smaller windows. [Measured results](../REPORT.md#operations)
 
 ## Held-out written grading pilot
 

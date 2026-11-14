@@ -92,8 +92,11 @@ def adapt(raw):
     payload = {"schema_version": "vision.exam.v1", "exam_id": "mendeley-sf3kvjwknt-v1",
                "exam_status": "in_scope" if readable else "unreadable",
                "answers": answers, "usage": {"cost_eur": 0.0}}
-    if "lines" in raw.get("stats", {}):
-        payload["features"] = {"line_count": raw["stats"]["lines"]}
+    stats = raw.get("stats", {})
+    features = {field: stats[key] for key, field in (("lines", "line_count"), ("ink_density", "ink_density"))
+                if key in stats}
+    if features:
+        payload["features"] = features
     VisionExam.model_validate(payload)
     return payload
 

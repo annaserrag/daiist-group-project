@@ -31,7 +31,8 @@ def replay(exams):
     ref = pd.DataFrame(observed[name] for name in reference)
     def assess(shifted):
         batch = pd.DataFrame((degraded if shifted else observed)[name] for name in heldout)
-        checks = monitor.drift(ref, batch, min_current=monitor.MIN_WINDOW)
+        # Reproduce the archived unsmoothed arm even after the live default changes.
+        checks = monitor.drift(ref, batch, min_current=monitor.MIN_WINDOW, pseudocount=0)
         candidate = monitor.drift(ref, batch, min_current=monitor.MIN_WINDOW, pseudocount=0.5)
         return {"exam_count":len(batch), "mean_observed_mcqs":float(batch.reading_count.mean()),
                 "signals":json.loads(checks.to_json(orient="records")),

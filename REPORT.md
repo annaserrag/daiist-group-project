@@ -133,7 +133,20 @@ The direct-PDF baseline sent the existing generated printed sheet, question cata
 
 *What you log. The quality signal and the drift check you monitor, the reference set, and the alert threshold with its justification. The drift demo: what you shifted, and the result with the alert firing (screenshot or numbers). The rate of false alarms on normal inputs.*
 
-A Component 2 engineering replay used 30 published MCQ sheets for reference and 20 held back. Removing Q16–20 detections triggered the reading-count alert. The existing estimator also fired on the unaltered comparison window. Across 100 overlapping repartitions of the same 50 papers, it alerted on 54 ordinary windows and all 100 shifted windows. Adding half an observation per bin gave 1 ordinary alert and 100 shifted alerts at the same threshold. These repeated splits use the same papers. The team's final drift rule, independent reference inputs and end-to-end drift demonstration remain open. [Replay and estimator comparison](eval/monitoring_mcq_replay.json)
+A Component 2 engineering replay used 30 published MCQ sheets for reference and 20 held back. Removing Q16–20 detections triggered the reading-count alert. The unsmoothed estimator also fired on the unaltered comparison window. Across 100 overlapping repartitions of the same 50 papers, it alerted on 54 ordinary windows and all 100 shifted windows. Adding half an observation per bin gave 1 ordinary alert and 100 shifted alerts at the same threshold. These repeated splits use the same papers. The integrated app and drift demo now use half-count smoothing. This choice was made from the earlier replay before measuring the scan windows below. [Replay and estimator comparison](eval/monitoring_mcq_replay.json)
+
+The integrated PDF reader was run on 30 reference crops from different source papers, 12 pre-existing normal scans and 10 deliberately faded versions of c01–c10. The reference papers are disjoint from the normal-case sources. The decision is made once per window: the normal window was quiet and the faded window alerted. The table gives the population stability index (PSI) for each signal; larger values indicate a larger distribution change.
+
+| Signal | Normal PSI (threshold 0.933) | Faded PSI (threshold 1.067) |
+|---|---:|---:|
+| Mean reading confidence | 0.254 | **1.561** |
+| Number of readings | 0.035 | **2.185** |
+| Unassigned answers | 0.023 | 0.027 |
+| Ink density | 0.359 | **1.948** |
+| Number of lines | 0.138 | **3.490** |
+
+Ink density is the fraction of rendered pixels at least approximately 60 gray levels darker than their page background, weighted by page size. The median of the ten unchanged parents was 0.588% compared with 0.00193% in their faded versions. Eight faded scans fell below the reader’s low-ink gate; none of their paired parents did. This test covers severe contrast loss on single-page extracts. One normal and one degraded window cannot establish field false-alarm or detection rates. The live Monitoring tab requires 20 recent requests. [Inputs and reproduction commands](eval/README.md#reference-and-shifted-scans-for-monitoring) · [Reference features](monitoring/reference_features.csv)
+
 
 ## Failures
 

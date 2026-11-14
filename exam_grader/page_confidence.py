@@ -137,17 +137,24 @@ def read_exam(path):
     pages = []
     images = []
     originals = reader.load_pages(path)
+    ink_pixels = 0.0
+    total_pixels = 0
     for page in originals:
         h, w = page.shape
         lines = []
         image = None
-        if reader.ink(page) >= reader.BLANK_INK:
+        ink_share = reader.ink(page)
+        ink_pixels += ink_share * page.size
+        total_pixels += page.size
+        if ink_share >= reader.BLANK_INK:
             scale = min(1.0, reader.VLM_PAGE_WIDTH / w)
             image = Image.fromarray(cv2.resize(page, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)).convert("RGB")
             lines = page_lines(image, reader, prompt=reader.VLM_PAGE_PROMPT, limit=1024)
         pages.append((lines, [0, 0, w, h]))
         images.append(image)
     result = assemble(pages, reader, started)
+    if total_pixels:
+        result["stats"]["ink_density"] = ink_pixels / total_pixels
     for page_no, image in enumerate(images, start=1):
         rows = [r for r in result["questions"] if r["page"] == page_no]
         if not any(r["number_conf"] < _ID_CHECK_THRESHOLD <= r["number_token_conf"] for r in rows):
