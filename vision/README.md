@@ -106,13 +106,14 @@ uv run python -m vision.evaluate_reader            # all four modes on the 50 Me
 
 ## Every try, and why the product uses a pretrained vision-language model
 
-The vision component started as two trained detectors plus TrOCR. It ended as a pretrained vision-language model (Qwen3-VL-2B, the kind of model Session 10 uses) that reads whole pages. `artifacts/vision/tries.csv` records all 17 tries in order: what each used, what it found, and what was decided. The column `uses_mendeley` marks the three tries that looked at Mendeley exams before the rule that they are evaluation-only. Those tries were superseded and are not reported as evaluation. In short:
+The vision component started as two trained detectors plus TrOCR. It ended as a pretrained vision-language model (Qwen3-VL-2B, the kind of model Session 10 uses) that reads whole pages. `artifacts/vision/tries.csv` records all 20 tries in order: what each used, what it found, and what was decided. The column `uses_mendeley` marks the three tries that looked at Mendeley exams before the rule that they are evaluation-only. Those tries were superseded and are not reported as evaluation. In short:
 
 1. **Training works on its own data.** The fine-tuned detectors beat the rules and COCO zero-shot by a wide margin on their test splits (AP50 0.79 for question numbers, 0.88 for lines).
 2. **The question-number detector does not transfer.** It learnt one source of answer sheets and found 11% of the questions on the Mendeley exams. No public dataset with handwritten question numbers exists to retrain it on (step 5), and fine-tuning a reader on the same narrow source would repeat the problem (step 9).
 3. **Reading is the bottleneck, and a pretrained page reader solves it.** On public development data, character error falls from 27.6% (TrOCR on the detected lines) to 7.3% (Qwen3-VL-2B on the page), and the question numbers found rise from 23% to 89%.
 4. **It needs safeguards.** It invents text in a loop on almost empty pages until a repetition penalty stops it, its confidence does not flag its mistakes, and it is slow on a CPU. The grading agent's review rule has to take this into account.
 5. **The trained line detector still plays a part.** It is the reading front end of the `ocr` mode, the baseline the page reader is compared against.
+6. **Fine-tuning the page reader did not pay off where it matters.** A LoRA adapter trained on public handwriting and synthetic exam pages (steps 18 to 20) read characters slightly better on the development set but found fewer question numbers on answer sheets, so the product keeps the pretrained reader.
 
 Every try's output is in `artifacts/vision/reads/`:
 
@@ -130,9 +131,9 @@ Download, and extract each into its own folder under `~/.cache/daiist-vision/dev
 
 `devset.py` adds the Roboflow answer-sheet pages of the detectors' test booklet (question-number boxes, no text), real pages whitened below their second line, and blank pages. These parts check reading, question numbers, and invented text. Handwritten lists are rare in public data: SMHD has 21 pages with numbered lists, and School Notebooks 2. No public dataset has whole exam pages with numbered answers and a key besides Mendeley, so handwritten multiple-choice lists like "7). B" are not in the development set. A set of handwritten a/b/c/d answers exists on IEEE DataPort (CC BY 4.0, <https://ieee-dataport.org/documents/handwritten-text-dataset>) but needs a subscription.
 
-## Fine-tuning the page reader (in progress)
+## Fine-tuning the page reader (tried, not adopted)
 
-The next try is to fine-tune the page reader (Qwen3-VL-2B, LoRA) on exam-like handwriting. `finetune_data.py` builds its training data, with nothing from the Mendeley exams or the development set, so the development set can judge the fine-tuned reader against the pretrained one and Mendeley stays a clean evaluation. `finetune_reader.py` trains the adapter. The full run has not been done yet.
+This try fine-tunes the page reader (Qwen3-VL-2B, LoRA) on exam-like handwriting. `finetune_data.py` builds its training data, with nothing from the Mendeley exams or the development set, so the development set can judge the fine-tuned reader against the pretrained one and Mendeley stays a clean evaluation. `finetune_reader.py` trains the adapter. The adapter trained well, and it reads characters slightly better on the development set. But it finds fewer question numbers on answer sheets, so the product keeps the pretrained reader (see Result below).
 
 Download into `~/.cache/daiist-vision/finetune/` (about 2 GB), then run `uv run --group train python -m vision.finetune_data`:
 
@@ -163,6 +164,32 @@ Run `caffeinate -i uv run --group train python -m vision.finetune_reader` (`caff
 - **Loss before training.** The pretrained reader's validation loss is 1.03 on GNHK and 0.24 on the synthetic pages. It already reads the synthetic pages almost perfectly, so most of what the adapter can learn is on the real GNHK pages.
 
 **How it is judged.** `reader.py` loads a model named `model+folder` as that model with the adapter merged in, so reading is as fast as before. When `weights/page_reader_lora/` exists, `develop_reader.py` adds "Qwen3-VL-2B + LoRA, page" to its comparison of readers. Whether the product switches is decided there, on the development set. Mendeley is read only after that choice is made.
+
+### Result
+
+**Training.** The full run was done on an NVIDIA RTX 5080 with the script unchanged: 127 steps in 19 minutes (the `peak_gb` column of the log is 0 there, as it measures Apple GPU memory only). The training loss fell from 0.53 (mean of the first 10 steps) to 0.40 (last 20 steps). The validation loss on the same 60 pages fell on both kinds of page:
+
+| validation pages | before | after |
+|---|---|---|
+| GNHK, real photos | 1.03 | 0.62 |
+| synthetic exam pages | 0.28 | 0.15 |
+
+**Development set** (`artifacts/vision/dev_lora_comparison.json`, `vision/compare_lora.py` on the integration branch). The same 126 images and scoring as `develop_reader.py`, with the same pinned base model in both arms:
+
+| | pretrained | LoRA |
+|---|---|---|
+| character error, SMHD | 7.2% | 6.7% |
+| character error, ASAP | 1.65% | 1.57% |
+| character error, notebooks | 4.9% | 4.5% |
+| question numbers found, SMHD | 85% | 88% |
+| question numbers found, notebooks | 100% | 100% |
+| question numbers found, answer sheets | **43%** | **39%** |
+| numbers read that are not on the page, per page | 0.20 | 0.07 |
+| invented lines | 12 | 10 |
+
+**Decision: keep the pretrained reader.** The adapter learnt what it was shown: GNHK's notes and clean synthetic pages, so it transcribes about half a point better and invents far fewer question numbers. But on the answer sheets, the pages closest to the exams the product grades, it finds fewer question numbers, and a missed number sends the answer to the teacher however well it is spelled. The answer-sheet set is small (21 pages), so the drop may be partly noise, but the fine-tuned reader shows no gain where the product needs one. The pretrained reader is also simpler (no adapter file to ship and check). The adapter is kept, and `reader.py` can still load it by name (`Qwen/Qwen3-VL-2B-Instruct+weights/page_reader_lora`).
+
+The integration team also ran both readers through the grading pipeline on the 30 Mendeley PDFs. There, the pretrained reader also did better, but that comparison is not used for this decision: the bridge between reader and grader was built around the pretrained reader's output, and its LoRA-specific fixes were developed on those same PDFs.
 
 ## Evaluate it on the Mendeley exams
 
@@ -216,5 +243,7 @@ The page reader's confidence barely separates right from wrong letters (median 1
 | `artifacts/vision/dev_readers.csv`, `dev_line_boxes.csv`, `dev_number_rule.csv`, `dev_decoding.csv`, `dev_choices.json` | the reader's design choices on the development set |
 | `artifacts/vision/reader_eval_summary.csv`, `reader_eval_questions.csv` | the frozen reader on the 50 Mendeley exams: rules vs detectors vs ocr vs page with 2B and 4B (the reported result) |
 | `artifacts/vision/finetune_data.json`, `finetune_samples/` | the fine-tuning data: pages and lines per source and split, and three synthetic pages with their text |
+| `artifacts/vision/finetune_log.csv`, `finetune_result.json` | the LoRA run: loss and learning rate per step, and the settings and validation losses before and after |
+| `artifacts/vision/dev_lora_comparison.json` | pretrained against LoRA reader on the development set: scores, and the question numbers each found on every page |
 | `artifacts/vision/reader_eval_summary_v1_all50.csv`, `reader_eval_questions_v1_all50.csv` | the first run, rules vs detectors, which showed the detectors do not transfer |
 | `weights/question_no_detector.pt`, `weights/text_line_detector.pt` | the chosen models |
