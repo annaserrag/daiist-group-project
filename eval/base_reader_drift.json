@@ -1,0 +1,102 @@
+{
+  "reader": "Qwen/Qwen3-VL-2B-Instruct",
+  "reader_revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+  "bridge": "vision-finetune/reader-v3/page/bridge-v11",
+  "reference_inputs": 30,
+  "reference_manifest": "eval/reference.csv",
+  "previous_reference_commit": "13059615677861883cc164bb55ac4fdaa4e80c30",
+  "windows": "eval/base_reader_drift_windows.csv",
+  "method": "Both references were scored on the same readings of the 12 normal and 10 faded PDFs. The 30 original reference PDFs were reread with the default base reader. The alert rule and input manifests were unchanged.",
+  "results": {
+    "normal": {
+      "count": 12,
+      "signals": [
+        {
+          "feature": "mean_read_confidence",
+          "threshold": 0.933,
+          "old_psi": 1.421,
+          "new_psi": 0.753,
+          "alert_before": true,
+          "alert_after": false
+        },
+        {
+          "feature": "reading_count",
+          "threshold": 0.933,
+          "old_psi": 0.588,
+          "new_psi": 0.035,
+          "alert_before": false,
+          "alert_after": false
+        },
+        {
+          "feature": "unassigned_answers",
+          "threshold": 0.933,
+          "old_psi": 0.094,
+          "new_psi": 0.023,
+          "alert_before": false,
+          "alert_after": false
+        },
+        {
+          "feature": "ink_density",
+          "threshold": 0.933,
+          "old_psi": 0.359,
+          "new_psi": 0.359,
+          "alert_before": false,
+          "alert_after": false
+        },
+        {
+          "feature": "line_count",
+          "threshold": 0.933,
+          "old_psi": 0.207,
+          "new_psi": 0.138,
+          "alert_before": false,
+          "alert_after": false
+        }
+      ]
+    },
+    "shifted": {
+      "count": 10,
+      "signals": [
+        {
+          "feature": "mean_read_confidence",
+          "threshold": 1.067,
+          "old_psi": 1.36,
+          "new_psi": 1.561,
+          "alert_before": true,
+          "alert_after": true
+        },
+        {
+          "feature": "reading_count",
+          "threshold": 1.067,
+          "old_psi": 1.299,
+          "new_psi": 2.185,
+          "alert_before": true,
+          "alert_after": true
+        },
+        {
+          "feature": "unassigned_answers",
+          "threshold": 1.067,
+          "old_psi": 0.076,
+          "new_psi": 0.027,
+          "alert_before": false,
+          "alert_after": false
+        },
+        {
+          "feature": "ink_density",
+          "threshold": 1.067,
+          "old_psi": 1.948,
+          "new_psi": 1.948,
+          "alert_before": true,
+          "alert_after": true
+        },
+        {
+          "feature": "line_count",
+          "threshold": 1.067,
+          "old_psi": 2.066,
+          "new_psi": 3.49,
+          "alert_before": true,
+          "alert_after": true
+        }
+      ]
+    }
+  }
+}

@@ -271,6 +271,24 @@ class AppFlow(unittest.TestCase):
         self.assertAlmostEqual(report["extra_reviews_per_day"],330)
         self.assertIsNone(report["estimated_total_eur_per_1000"])
 
+    def test_deployed_reference_on_recorded_base_reader_windows(self):
+        import monitor
+        import pandas as pd
+        from main import CASES, SHIFTED_INPUTS, read_inputs
+
+        reference = monitor.load_reference()
+        windows = pd.read_csv(CASES.with_name("base_reader_drift_windows.csv"))
+        self.assertEqual(len(reference), 30)
+        for name, inputs, expected_alert in [
+            ("normal", read_inputs(CASES, "normal"), False),
+            ("shifted", read_inputs(SHIFTED_INPUTS), True),
+        ]:
+            window = windows.loc[windows.window == name]
+            self.assertEqual(window.input.tolist(), inputs)
+            report = monitor.drift(reference, window)
+            self.assertEqual(set(report.feature), monitor.INPUT_SIGNALS)
+            self.assertEqual(bool(report.alert.any()), expected_alert)
+
     def test_drift_rule_on_controlled_engineering_inputs(self):
         import pandas as pd
         import monitor
