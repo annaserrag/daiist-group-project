@@ -1,0 +1,90 @@
+{
+  "runs": {
+    "base": {
+      "run_id": "08797fa1e8d3495b85744a76d354f09c",
+      "tags": {
+        "vision_version": [
+          "vision-finetune/reader-v3/page/bridge-v8"
+        ],
+        "grader_version": [
+          "gemini-3.1-flash-lite:prompt-699fe758c73c:rubric-683efac0520a:final-after-lookup-v1:preview-1200:evidence-89b9544aa0f5"
+        ],
+        "index": [
+          "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v2:notes-08ab46803eee"
+        ],
+        "policy": [
+          "ce1460a2be75"
+        ]
+      },
+      "by_type": {
+        "test": {
+          "targets": 80,
+          "numeric_reference": 77,
+          "proposed": 54,
+          "review": 26,
+          "comparable": 54,
+          "exact": 54
+        },
+        "desarrollo": {
+          "targets": 25,
+          "numeric_reference": 23,
+          "proposed": 6,
+          "review": 19,
+          "comparable": 5,
+          "exact": 5
+        }
+      },
+      "status_correct": 30,
+      "spurious_marks": 0,
+      "failures": 0
+    },
+    "lora": {
+      "run_id": "12bc75a383574d90a415fbd46198abbf",
+      "tags": {
+        "vision_version": [
+          "vision-finetune/reader-v3/page-lora-12e3a113/bridge-v8"
+        ],
+        "grader_version": [
+          "gemini-3.1-flash-lite:prompt-699fe758c73c:rubric-683efac0520a:final-after-lookup-v1:preview-1200:evidence-89b9544aa0f5"
+        ],
+        "index": [
+          "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v2:notes-08ab46803eee"
+        ],
+        "policy": [
+          "ce1460a2be75"
+        ]
+      },
+      "by_type": {
+        "test": {
+          "targets": 80,
+          "numeric_reference": 77,
+          "proposed": 50,
+          "review": 30,
+          "comparable": 50,
+          "exact": 50
+        },
+        "desarrollo": {
+          "targets": 25,
+          "numeric_reference": 23,
+          "proposed": 2,
+          "review": 23,
+          "comparable": 2,
+          "exact": 2
+        }
+      },
+      "status_correct": 30,
+      "spurious_marks": 0,
+      "failures": 0
+    }
+  },
+  "transitions": {
+    "only_base": 8,
+    "both_same": 52,
+    "both_review": 45
+  },
+  "mark_mismatches": [],
+  "marks_outside_reference_slots": [],
+  "reference_sha256": "db90e3d4ecf63d6603195bbe6ee752c505ac264dc81e0e8bec6d78471f1aca8b",
+  "base_commit": "f3e23d883b22c9b25701076e84af9d832c72ab38",
+  "lora_commit": "13059615677861883cc164bb55ac4fdaa4e80c30"
+}
