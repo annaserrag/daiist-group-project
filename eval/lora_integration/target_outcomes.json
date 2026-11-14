@@ -1,0 +1,33 @@
+{
+  "run_id": "2ac23920a97243f0a5f4373923b490e4",
+  "per_target": {
+    "mcq": {
+      "target": 80,
+      "review": 30,
+      "proposed": 50,
+      "comparable": 50,
+      "matches": 50
+    },
+    "written": {
+      "target": 25,
+      "review": 24,
+      "proposed": 1,
+      "comparable": 1,
+      "matches": 1
+    }
+  },
+  "review_reasons": {
+    "uncertain_question_id": 6,
+    "low_read_confidence": 13,
+    "invalid_choice": 2,
+    "unassigned_answer": 20,
+    "missing_detection": 7,
+    "context_check": 2,
+    "written_mark_review": 1,
+    "duplicate_detection": 1,
+    "unreadable": 1,
+    "single_hyperparameter_review": 1
+  },
+  "statuses_correct": 30,
+  "whole_cases_passed": 12
+}
