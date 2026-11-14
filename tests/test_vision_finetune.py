@@ -1,8 +1,9 @@
 import unittest
+from unittest.mock import patch
 
 from exam_grader.grading import grade_exam
 from exam_grader.handoff import inspect_export
-from exam_grader.page_confidence import confirmed_text_score, confirm_numbers, scored_lines
+from exam_grader.page_confidence import confirmed_text_score, confirm_numbers, confirms_other_document, scored_lines
 from exam_grader.vision_finetune import adapt
 
 
@@ -16,6 +17,34 @@ def convert(*rows, loose=None):
 
 
 class VisionFinetuneTests(unittest.TestCase):
+    def test_wrong_document_needs_a_title_and_matching_confident_image_read(self):
+        def line(text, confidence=1.0):
+            return text, [confidence] * len(text)
+
+        with patch("exam_grader.page_confidence.page_lines") as classify:
+            classify.return_value = [line("A")]
+            self.assertTrue(confirms_other_document(None, None, [line("Supplier invoice"), line("Total due 200")]))
+            classify.return_value = [line("B")]
+            self.assertTrue(confirms_other_document(None, None, [line("History quiz"), line("1. Rome")]))
+            for heading in ("Supplier invoice", "Data Science quiz", "1. Test accuracy", "My answer"):
+                self.assertFalse(confirms_other_document(None, None, [line(heading), line("Supporting text")]))
+            self.assertFalse(confirms_other_document(None, None, [line("History quiz")]))
+            self.assertFalse(confirms_other_document(None, None, [line("History quiz", .5), line("1. Rome")]))
+            for reply in ([line("C")], [line("B", .6)], [line("B or C")], []):
+                classify.return_value = reply
+                self.assertFalse(confirms_other_document(None, None, [line("History quiz"), line("1. Rome")]))
+            classify.side_effect = RuntimeError("optional image check unavailable")
+            self.assertFalse(confirms_other_document(None, None, [line("History quiz"), line("1. Rome")]))
+
+    def test_rejected_document_has_no_exam_identity_or_gradeable_answers(self):
+        raw = {"questions": [row("1", "A")], "unassigned": [], "confirmed_other_document": True,
+               "stats": {"lines": 2, "ink_density": .01}}
+        rejected = adapt(raw)
+        self.assertEqual((rejected["exam_status"], rejected["exam_id"], rejected["answers"]),
+                         ("out_of_scope", None, []))
+        self.assertEqual(rejected["features"], {"line_count": 2, "ink_density": .01})
+        self.assertTrue(inspect_export(rejected)["valid"])
+
     def test_written_reread_aligns_whole_words_across_line_wraps(self):
         lines = [(" labeled", [.1] + [.96] * 7), ("data.", [.5] * 5)]
         self.assertEqual(confirmed_text_score("labeled data.", [.59, .99], lines), .96)

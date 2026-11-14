@@ -8,7 +8,7 @@ from pathlib import Path
 from .catalog import OPTIONS, OPTION_TEXTS, QUESTIONS
 from .handoff import VisionExam
 
-VERSION = "vision-finetune/reader-v3/page/bridge-v5"
+VERSION = "vision-finetune/reader-v3/page/bridge-v6"
 _ANSWER_SHEET_HEADER = "data science examination | answer sheet"
 _BARE_CHOICE = re.compile(r"([1-9][0-9]?)\s+([A-Da-d])")
 _CHOICE_WITH_TEXT = re.compile(r"([A-Da-d])(?:\s*[,.:)]\s*|\s+)(.+)", re.DOTALL)
@@ -92,6 +92,8 @@ def adapt(raw):
     payload = {"schema_version": "vision.exam.v1", "exam_id": "mendeley-sf3kvjwknt-v1",
                "exam_status": "in_scope" if readable else "unreadable",
                "answers": answers, "usage": {"cost_eur": 0.0}}
+    if raw.get("confirmed_other_document") is True:
+        payload.update(exam_status="out_of_scope", exam_id=None, answers=[])
     stats = raw.get("stats", {})
     features = {field: stats[key] for key, field in (("lines", "line_count"), ("ink_density", "ink_density"))
                 if key in stats}

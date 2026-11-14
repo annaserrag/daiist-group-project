@@ -32,6 +32,14 @@ _CROP_PROMPT = ("Transcribe only the handwritten question label in this crop. "
                 "Preserve the digits exactly. If unclear return ?.")
 _ID_CHECK_THRESHOLD = 0.85  # The bundled grader's default ID review threshold.
 _TEXT_CHECK_THRESHOLD = 0.80
+_SCOPE_PROMPT = (
+    "Classify this page using both its heading and body. A = record of a booking, stock, transaction, "
+    "or other administrative business. B = worksheet or exam explicitly labelled as a different subject "
+    "from data science. C = a data science answer sheet, an answer fragment, a blank, or uncertain. "
+    "Reply with only the letter A, B or C."
+)
+_ADMIN_TITLE = re.compile(r"\b(?:inventory|stock count|reservation|booking|invoice|receipt|purchase order|manifest)\b")
+_EXAM_TITLE = re.compile(r"\b(?:exam(?:ination)?|worksheet|quiz|assessment|test)\b")
 _ANSWER_PROMPT = ("Read only the student's handwritten answer labeled {number} on this page. "
                   "Copy the answer verbatim, including all words, spelling and punctuation. "
                   "Omit the question number and printed page headings. Do not solve, correct or paraphrase. "
@@ -129,6 +137,36 @@ def assemble(pages, reader, started):
     return result
 
 
+def _title_text(text):
+    return " ".join(re.findall(r"\w+", text.casefold()))
+
+
+def confirms_other_document(image, reader, lines):
+    """Only a title-like first line and a corroborating page classification can veto grading."""
+    nonempty = [(text, scores) for text, scores in lines if text.strip()]
+    if len(nonempty) < 2:
+        return False
+    line, scores = nonempty[0]
+    title = _title_text(line)
+    if (not line.lstrip()[0].isalpha() or not 2 <= len(title.split()) <= 12
+            or "data science" in title or span_score(line, scores) < _TEXT_CHECK_THRESHOLD):
+        return False
+    if _EXAM_TITLE.search(title):
+        expected_label = "B"
+    elif _ADMIN_TITLE.search(title):
+        expected_label = "A"
+    else:
+        return False
+    try:
+        reply = page_lines(image, reader, prompt=_SCOPE_PROMPT, limit=9)
+    except (OSError, RuntimeError):
+        return False
+    if len(reply) != 1:
+        return False
+    text, scores = reply[0]
+    return text.strip() == expected_label and span_score(text, scores) >= 0.90
+
+
 def read_exam(path):
     from vision import reader
     from PIL import Image
@@ -155,6 +193,12 @@ def read_exam(path):
     result = assemble(pages, reader, started)
     if total_pixels:
         result["stats"]["ink_density"] = ink_pixels / total_pixels
+    # A cover or annex alone cannot disqualify a multi-page submission.
+    if images and all(image is not None and confirms_other_document(image, reader, lines)
+                      for image, (lines, _) in zip(images, pages, strict=True)):
+        result["confirmed_other_document"] = True
+        result["stats"]["seconds"] = round(time.perf_counter() - started, 1)
+        return result
     for page_no, image in enumerate(images, start=1):
         rows = [r for r in result["questions"] if r["page"] == page_no]
         if not any(r["number_conf"] < _ID_CHECK_THRESHOLD <= r["number_token_conf"] for r in rows):
