@@ -17,6 +17,60 @@ def convert(*rows, loose=None):
 
 
 class VisionFinetuneTests(unittest.TestCase):
+    def test_faint_number_requires_agreement_on_body_and_label_crop(self):
+        import numpy as np
+        from vision import reader
+        from exam_grader.page_confidence import enhance_faint_label
+
+        page = np.full((540, 500), 255, dtype=np.uint8)
+        page[20:30, 12:250] = 40
+        page[100:120, 20:440] = 195
+        def lines(text):
+            return [(text, [.97] * len(text))]
+        for body, label, confirmed in [
+            ("32) Names two settings", "32.)", True),
+            ("32) Names two settings", "32.7)", False),
+            ("32) Names two settings", "23.", False),
+            ("32) Names three settings", "32.", False),
+        ]:
+            reading = row("32", "Names two settings", number_conf=.55, number_token_conf=.96)
+            with patch("exam_grader.page_confidence.page_lines", side_effect=[lines(body), lines(label)]):
+                enhance_faint_label(reading, page, reader)
+            self.assertEqual("confirmed_number_conf" in reading, confirmed)
+
+    def test_weaker_label_reread_preserves_local_confirmation(self):
+        reading = row("33", "A written answer", number_conf=.4, number_token_conf=.96,
+                      confirmed_number_conf=.95)
+        confirm_numbers([reading], [("33.", [.7, .7, 1])])
+        self.assertEqual(reading["confirmed_number_conf"], .95)
+
+    def test_margin_regions_require_order_and_boundaries(self):
+        import numpy as np
+        from vision import reader
+        from exam_grader.page_confidence import gutter_regions
+        page = np.full((420, 500), 255, dtype=np.uint8)
+        for y in (70, 160, 260):
+            page[y:y+15, 20:45] = 20
+        rows = [row(n, "answer", number_token_conf=.99) for n in ("25", "32", "21")]
+        reads = [[(s, [.98]*len(s))] for s in ("25.", "23.", "21.")]
+        with patch("exam_grader.page_confidence.page_lines", side_effect=reads):
+            regions = gutter_regions(page, rows, reader)
+        self.assertEqual(set(regions), {"21"})
+        self.assertNotIn("confirmed_number_conf", rows[1])
+        self.assertEqual(rows[0]["confirmed_number_conf"], .98)
+
+    def test_page_transition_removes_only_the_known_heading(self):
+        from vision import reader
+        from exam_grader.page_confidence import assemble
+        def page(texts):
+            return ([(s, [.98] * len(s)) for s in texts], [0, 0, 100, 100])
+        pages = [page(["23. Original answer"]), page(["Data Science Examination | Answer sheet",
+                                                       "actual continuation", "25. Next answer"])]
+        reading = assemble(pages, reader, 0)["questions"][0]
+        self.assertEqual(reading["text"], "Original answer actual continuation")
+        self.assertEqual(reading["_last_page"], 2)
+        self.assertEqual(len(reading["_word_scores"]), 4)
+
     def test_page_body_keeps_unknown_headers_and_rejects_a_second_label(self):
         from vision import reader
         from exam_grader.page_confidence import page_body, is_sheet_header

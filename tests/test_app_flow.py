@@ -22,6 +22,25 @@ class AppFlow(unittest.TestCase):
         offline.start()
         cls.addClassCleanup(offline.stop)
 
+    def test_custom_low_confidence_question_uses_its_own_materials_for_review(self):
+        from unittest.mock import Mock
+        from exam_grader.written_exam import WrittenExam
+        exam = WrittenExam.model_validate({"title": "Ecology", "questions": [
+            {"question_id": 3, "question": "What does a decomposer do?", "reference_answer": "Recycles nutrients.",
+             "criteria": [{"id": "role", "points": 2, "description": "Explains nutrient recycling."}]}]})
+        item = dict(question_id=3, question=exam.questions[0].question, readings=["recycles nutrients"],
+                    reason="low_read_confidence", citation=None, mark=None, max_mark=2, feedback="")
+        view = dict(answers=[item], exam_status="in_scope", review_count=1, input_type="ocr_export",
+                    near_pass_boundary=False)
+        library_index = Mock()
+        scoped = library_index.for_questions.return_value
+        scoped.search.return_value = [dict(title="Ecology notes", page=5, text="Nutrients are recycled.")]
+        with patch.object(app, "process_once", return_value=(view, {"id": "fixture"})):
+            _, _, marks, context, _ = app.display("ex.json", {"Ecology": library_index}, "Ecology", (exam, None))
+        library_index.for_questions.assert_called_once_with({3: item["question"]}, None, exam.exam_id)
+        self.assertEqual(marks, [[3, None]])
+        self.assertIn("Ecology notes, p. 5", app.referral_details(context, 3)[2])
+
     def test_grade_correct_sign_and_log_feedback(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(logbook,"LOG_DIR",Path(directory)), patch.object(logbook,"ARCHIVE_DIR",Path(directory)/"archive"):
             status,evidence,marks,context,signed = app.display(pipeline.EXAMPLE)

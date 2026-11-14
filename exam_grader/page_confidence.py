@@ -74,7 +74,8 @@ def confirm_numbers(rows, lines):
     for row, (line, scores) in zip(rows, labels, strict=True):
         label = re.fullmatch(r"\s*([0-9]{1,3})[.),]?\s*", line)
         if label and not row["part"] and label[1] == row["number"]:
-            row["confirmed_number_conf"] = min(row["number_token_conf"], span_score(line, scores, *label.span(1)))
+            read_score = min(row["number_token_conf"], span_score(line, scores, *label.span(1)))
+            row["confirmed_number_conf"] = max(row.get("confirmed_number_conf", 0), read_score)
 
 
 def headed_choices(layout, verification):
@@ -357,13 +358,104 @@ def local_labels(page, reader):
     return labels
 
 
+def enhance_faint_label(row, page, reader):
+    """On faint ink, match a contrast-enhanced body and its label crop to the original."""
+    import numpy as np
+    from PIL import ImageOps
+    if (row["part"] or row["number_token_conf"] < _ID_CHECK_THRESHOLD
+            or row["number_conf"] >= _ID_CHECK_THRESHOLD):
+        return
+    width = page.shape[1]
+    ink = page < 240
+    ys = np.flatnonzero(ink.sum(axis=1) > max(4, width // 400))
+    gaps = np.flatnonzero(np.diff(ys) > .026 * width)
+    if not len(gaps):
+        return
+    heading, body = ys[:gaps[0]+1], ys[gaps[0]+1:]
+    if heading[-1]-heading[0] > .045*width or not len(body):
+        return
+    lo, hi = body[0], body[-1]
+    area = page[lo:hi+1]
+    light = area[area < 240]
+    if not len(light) or np.percentile(light, 10) < 140:
+        return
+    xs = np.flatnonzero(ink[lo:hi+1].sum(axis=0) > 2)
+    if not len(xs):
+        return
+    crop = ImageOps.autocontrast(reader.crop(page, [xs[0], lo, xs[-1], hi], pad=18).convert("L")).convert("RGB")
+    lines = page_lines(crop, reader, prompt=_LAYOUT_PROMPT, limit=768)
+    if not lines:
+        return
+    text, scores = lines[0]
+    label = re.match(r"^([0-9]{1,3})[.):,]+\s+", text)
+    if not label or label[1] != row["number"]:
+        return
+    words = (text[label.end():] + " " + " ".join(s for s, _ in lines[1:])).split()
+    if words != row["text"].split():
+        return
+    prefix = crop.crop((0, 0, min(crop.width, round(width*.10)), min(crop.height, round(width*.10))))
+    isolated = page_lines(prefix, reader, prompt=_CROP_PROMPT, limit=16)
+    if len(isolated) == 1:
+        line, values = isolated[0]
+        ident = re.fullmatch(r"\s*([0-9]{1,3})[.):,]*\s*", line)
+        if ident and ident[1] == label[1]:
+            confidence = min(span_score(line, values, *ident.span(1)),
+                             span_score(text, scores, *label.span(1)), row["number_token_conf"])
+            if confidence >= _ID_CHECK_THRESHOLD:
+                row["confirmed_number_conf"] = confidence
+
+
+def gutter_regions(page, rows, reader):
+    """Match left-margin ink bands by physical order on a multi-answer written page."""
+    import numpy as np
+    if len(rows) < 2 or any(r["part"] or not r["number"].isdecimal() or int(r["number"]) <= 20 for r in rows):
+        return {}
+    width = page.shape[1]
+    ink = page[:, :round(width*.12)] < 180
+    ys = np.flatnonzero(ink.sum(axis=1) > 3)
+    bands = [b for b in np.split(ys, np.flatnonzero(np.diff(ys) > width*.014)+1) if len(b) >= 10]
+    if len(bands) == len(rows)+1:
+        # A printed page heading is allowed only when separately identified.
+        header = reader.crop(page, [0, bands[0][0], width, bands[0][-1]], pad=12)
+        lines = page_lines(header, reader, prompt=_LAYOUT_PROMPT, limit=64)
+        if len(lines) != 1 or not is_sheet_header(lines[0][0]):
+            return {}
+        bands = bands[1:]
+    if len(bands) != len(rows):
+        return {}
+    verified = []
+    for row, band in zip(rows, bands, strict=True):
+        top, bottom = band[0], band[-1]
+        xs = np.flatnonzero(ink[top:bottom+1].sum(axis=0) > 1)
+        if not len(xs):
+            return {}
+        digit = reader.crop(page, [xs[0], top, xs[-1], bottom], pad=14)
+        reads = page_lines(digit, reader, prompt=_CROP_PROMPT, limit=16)
+        confidence = 0
+        if len(reads) == 1:
+            line, values = reads[0]
+            label = re.fullmatch(r"\s*([0-9]{1,3})[.):,]*\s*", line)
+            if label and label[1] == row["number"]:
+                confidence = min(row["number_token_conf"], span_score(line, values, *label.span(1)))
+        verified.append(confidence >= _ID_CHECK_THRESHOLD)
+        if verified[-1]:
+            row["confirmed_number_conf"] = max(row.get("confirmed_number_conf", 0), confidence)
+    return {row["number"]: (max(0, band[0]-round(.035*width)),
+                            bands[i+1][0]-round(.035*width) if i+1 < len(bands) else page.shape[0])
+            for i, (row, band) in enumerate(zip(rows, bands, strict=True))
+            if verified[i] and (i+1 == len(bands) or verified[i+1])}
+
+
 def assemble(pages, reader, started):
     """Let Anna assign every line. Attach scores for the exact spans her parser used."""
     original = []
     field_scores = []
     for page_no, (lines, box) in enumerate(pages, start=1):
         normal = []
-        for line, scores in lines:
+        for i, (line, scores) in enumerate(lines):
+            # A printed heading on a new page is outside the preceding answer.
+            if page_no > 1 and i == 0 and is_sheet_header(line):
+                continue
             text = line.strip()
             if not text:
                 normal.append(("", round(min(scores, default=0.0), 3), box))
@@ -544,9 +636,18 @@ def read_exam(path):
         result["stats"]["seconds"] = round(time.perf_counter() - started, 1)
         return result
     crop_verified_pages = set()
+    regions = {}
     only_headers = all(is_sheet_header(item["text"]) for item in result["unassigned"])
     for page_no, image in enumerate(images, start=1):
         rows = [r for r in result["questions"] if r["page"] == page_no]
+        if reader.PAGE_READER == reader.BASE_PAGE_READER and only_headers and rows:
+            try:
+                if len(images) == len(rows) == 1 and rows[0]["number"].isdecimal() and int(rows[0]["number"]) > 20:
+                    enhance_faint_label(rows[0], originals[page_no-1], reader)
+                elif any(min(r["number_conf"], r.get("answer_token_conf", 1)) < _ID_CHECK_THRESHOLD for r in rows):
+                    regions[page_no] = gutter_regions(originals[page_no-1], rows, reader)
+            except (OSError, RuntimeError):
+                pass
         if ("+" in reader.PAGE_READER and rows and not any(r["part"] for r in rows)
                 and any(max(r["number_conf"], r.get("confirmed_number_conf", 0)) < _ID_CHECK_THRESHOLD for r in rows)):
             labels = local_by_page.get(page_no)
@@ -630,6 +731,19 @@ def read_exam(path):
                 continue
         if continued:
             continue
+        bounds = regions.get(page_no, {}).get(number)
+        if bounds:
+            lo, hi = bounds
+            region = originals[page_no-1][lo:hi]
+            try:
+                crop = Image.fromarray(region).convert("RGB")
+                reread = page_body(page_lines(crop, reader, prompt=_LAYOUT_PROMPT, limit=768), number, reader)
+                score = confirmed_text_score(row["text"], first_scores, reread)
+                if score is not None and score >= _TEXT_CHECK_THRESHOLD:
+                    row["confirmed_answer_conf"] = score
+                    continue
+            except (OSError, RuntimeError):
+                pass
         if page_no not in verification_images:
             detail = Image.fromarray(originals[page_no - 1]).convert("RGB")
             detail.thumbnail((1750, 2200))

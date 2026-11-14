@@ -26,7 +26,7 @@ REVIEW_ACTIONS = {
     "empty_transcription": "Check the answer area and confirm whether it was left blank.",
     "unverified_blank": "Inspect the answer area before assigning zero for a blank.",
     "invalid_choice": "Check the marked option against the choices printed on the exam.",
-    "context_check": "Consult the original question and its accompanying context before marking.",
+    "context_check": "Open the figure referenced by the question and compare it with the answer before assigning credit.",
     "weak_retrieval": "Use the official key and check a teaching passage that supports this answer.",
     "no_index": "Open the official key or load the course index before grading.",
     "provider_disabled": "Grade from the key, or run the written grader on an approved input.",
@@ -104,6 +104,7 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
     if not raw_input:
         raise gr.Error("Choose an OCR export or a PDF first.")
     teacher, record = process_once(raw_input, selected_index(library, course), exam_state)
+    review_index = None
     evidence, marks = [], []
     referrals = {}
     custom = {q.question_id: q for q in exam_state[0].questions} if exam_state else {}
@@ -130,12 +131,17 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
                 sources.append(f"{name} ({cite['coverage']}) · {location} · {cite['quote']}")
             passages = []
             review_hits = item.get("review_passages", [])
-            if (not custom and q in (24, 25) and len(item["readings"]) == 1
+            if (guide and len(item["readings"]) == 1
                     and item["reason"] in {"uncertain_question_id", "low_read_confidence"}):
                 # Local search for the reviewer only. The unverified OCR cannot authorize a mark.
-                index = selected_index(library, course) or pipeline.resources()[0]
+                if review_index is None:
+                    review_index = selected_index(library, course) or pipeline.resources()[0]
+                    if exam_state:
+                        exam, queries = exam_state
+                        review_index = review_index.for_questions(
+                            {entry.question_id: entry.question for entry in exam.questions}, queries, exam.exam_id)
                 review_hits = [dict(hit, excerpt=hit["text"][:1200])
-                               for hit in index.search(q, item["readings"][0])]
+                               for hit in review_index.search(q, item["readings"][0])]
             for hit in review_hits:
                 location = hit["title"] + (f", p. {hit['page']}" if "page" in hit else "")
                 if hit.get("url"):

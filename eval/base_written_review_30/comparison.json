@@ -1,0 +1,336 @@
+{
+  "baseline_run": "a67e48862236415d8b4a88098e883f60",
+  "run_id": "3a3a2d15a1194d6d8f5ce04197dc5a40",
+  "scope": "Repeated ML packet, same 30 PDFs; engineering regression, not an unseen exam.",
+  "totals": {
+    "before": {
+      "written": {
+        "targets": 25,
+        "review": 15,
+        "proposed": 10,
+        "comparable": 9,
+        "exact": 9
+      },
+      "mcq": {
+        "targets": 80,
+        "review": 26,
+        "proposed": 54,
+        "comparable": 54,
+        "exact": 54
+      }
+    },
+    "after": {
+      "written": {
+        "targets": 25,
+        "review": 14,
+        "proposed": 11,
+        "comparable": 10,
+        "exact": 10
+      },
+      "mcq": {
+        "targets": 80,
+        "review": 25,
+        "proposed": 55,
+        "comparable": 55,
+        "exact": 55
+      }
+    }
+  },
+  "review_audit": [
+    {
+      "case": "c16",
+      "question": 22,
+      "before": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 1.0,
+      "assessment": "Page and gutter disagree on the handwritten ID (22 vs 29)."
+    },
+    {
+      "case": "c16",
+      "question": 23,
+      "before": {
+        "reason": "written_mark_review",
+        "mark": null
+      },
+      "after": {
+        "reason": "written_mark_review",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": 1.0,
+      "assessment": "The answer names evaluation metrics. The proposed deduction would give 0; the teacher awarded 1."
+    },
+    {
+      "case": "c16",
+      "question": 24,
+      "before": {
+        "reason": "written_mark_review",
+        "mark": null
+      },
+      "after": {
+        "reason": "written_mark_review",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": 2.0,
+      "assessment": "The response lists two challenges; the rubric requests explanations. Candidate 1, teacher 2."
+    },
+    {
+      "case": "c16",
+      "question": 25,
+      "before": {
+        "reason": "mark_disagreement",
+        "mark": null
+      },
+      "after": {
+        "reason": "mark_disagreement",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": 2.0,
+      "assessment": "Stock prediction is concrete; the second health application is underspecified. The two assessments disagree."
+    },
+    {
+      "case": "c16",
+      "question": 26,
+      "before": {
+        "reason": "mark_disagreement",
+        "mark": null
+      },
+      "after": {
+        "reason": "mark_disagreement",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": 2.0,
+      "assessment": "Examples are recognizable but structural definitions are unclear. The two assessments disagree."
+    },
+    {
+      "case": "c16",
+      "question": 27,
+      "before": {
+        "reason": "written_mark_review",
+        "mark": null
+      },
+      "after": {
+        "reason": "written_mark_review",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": 2.0,
+      "assessment": "Describes detecting an outlier without a treatment. Candidate 1, teacher 2."
+    },
+    {
+      "case": "c16",
+      "question": 29,
+      "before": {
+        "reason": "low_read_confidence",
+        "mark": null
+      },
+      "after": {
+        "reason": "low_read_confidence",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 2.0,
+      "assessment": "The identifier k-NN is weak even in repeated region readings. The answer also omits how scaling changes distances."
+    },
+    {
+      "case": "c16",
+      "question": 31,
+      "before": {
+        "reason": "low_read_confidence",
+        "mark": null
+      },
+      "after": {
+        "reason": "grounded_proposal",
+        "mark": 2.0
+      },
+      "initial_stage": "reader",
+      "reference": 2.0,
+      "assessment": "A page heading had been attached to the answer. A spatially bounded reread confirms the words."
+    },
+    {
+      "case": "c16",
+      "question": 34,
+      "before": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "reason": "context_check",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 2.0,
+      "assessment": "Check the digit in the margin and refer the response for the figure required by the rubric."
+    },
+    {
+      "case": "c17",
+      "question": 31,
+      "before": {
+        "reason": "missing_detection",
+        "mark": null
+      },
+      "after": {
+        "reason": "missing_detection",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 2.0,
+      "assessment": "The full page reads 34, a localized crop reads 31; the body rereads also vary on the first word."
+    },
+    {
+      "case": "c18",
+      "question": 23,
+      "before": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "reason": "insufficient_evidence",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 2.0,
+      "assessment": "Contrast-enhanced label and body agree on 23. The evidence assessment returns partial coverage for the relationship criterion."
+    },
+    {
+      "case": "c19",
+      "question": 28,
+      "before": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 1.5,
+      "assessment": "The page digit is low confidence. A blind checked-text diagnostic proposed 2 whereas the historical teacher mark was 1.5."
+    },
+    {
+      "case": "c21",
+      "question": 34,
+      "before": {
+        "reason": "context_check",
+        "mark": null
+      },
+      "after": {
+        "reason": "context_check",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": 2.0,
+      "assessment": "The response depends on a figure; the accompanying figure is missing from the supplied scan."
+    },
+    {
+      "case": "c25",
+      "question": 22,
+      "before": {
+        "reason": "missing_detection",
+        "mark": null
+      },
+      "after": {
+        "reason": "missing_detection",
+        "mark": null
+      },
+      "initial_stage": "reader",
+      "reference": 1.0,
+      "assessment": "The label appears as 22, 26 or 29 across views. The rubric also calls for teacher review of an incomplete diagnosis."
+    },
+    {
+      "case": "c26",
+      "question": 32,
+      "before": {
+        "reason": "single_hyperparameter_review",
+        "mark": null
+      },
+      "after": {
+        "reason": "single_hyperparameter_review",
+        "mark": null
+      },
+      "initial_stage": "grader",
+      "reference": null,
+      "assessment": "Exactly one clear hyperparameter; existing review policy. No numeric teacher reference in the packet."
+    }
+  ],
+  "changed_targets": [
+    {
+      "case": "c16",
+      "question": 20,
+      "before": {
+        "reason": "low_read_confidence",
+        "mark": null
+      },
+      "after": {
+        "reason": "differs_from_key",
+        "mark": 0
+      },
+      "reference": 0
+    },
+    {
+      "case": "c16",
+      "question": 31,
+      "before": {
+        "reason": "low_read_confidence",
+        "mark": null
+      },
+      "after": {
+        "reason": "grounded_proposal",
+        "mark": 2.0
+      },
+      "reference": 2.0
+    },
+    {
+      "case": "c16",
+      "question": 34,
+      "before": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "reason": "context_check",
+        "mark": null
+      },
+      "reference": 2.0
+    },
+    {
+      "case": "c18",
+      "question": 23,
+      "before": {
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "reason": "insufficient_evidence",
+        "mark": null
+      },
+      "reference": 2.0
+    }
+  ],
+  "changed_other_decisions": [],
+  "regressed_prior_marks": [],
+  "changed_case_outcomes": [
+    [
+      "c16",
+      "False",
+      "True"
+    ]
+  ],
+  "changed_exam_statuses": [],
+  "proposals_without_teacher_reference": [
+    [
+      "c16",
+      28
+    ]
+  ]
+}
