@@ -6,6 +6,19 @@ from decimal import Decimal
 # These questions ask for an equivalent definition or an application of a rule.
 # The source supplies the rule; the student's words and numbers supply the application.
 EVIDENCE_GUIDANCE = {
+    24: (
+        "Identify the two distinct difficulties the student describes. A short phrase can explain a "
+        "challenge by specifying the work it requires, an obstacle it creates, or competing risks "
+        "the practitioner must avoid. A topic or operation named alone earns only the rubric's "
+        "half point. Do not invent an explanation, count synonyms twice, or require the source to "
+        "use the student's wording. Match each challenge to its own supporting body text."
+    ),
+    27: (
+        "Assess detection and handling separately. A detection method or fence formula shows how "
+        "to flag an observation. Credit handling only for a stated action on a flagged value. "
+        "If the student only explains detection, cite the course treatment for the handling "
+        "deduction and explain what was missing. Copy short contiguous quotes without ellipses."
+    ),
     23: (
         "For 2 points the response must connect an outcome to the predictors used to model it. "
         "Accept response/explanatory variables or equivalent language. For 1 point accept an explicit "

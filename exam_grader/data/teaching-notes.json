@@ -1,5 +1,12 @@
 [
   {
+    "source": "dataset-preparation",
+    "title": "Component 2 study note · Building a training dataset",
+    "heading": "Adapted from Google Machine Learning Crash Course",
+    "url": "https://developers.google.com/machine-learning/crash-course/overfitting",
+    "text": "Constructing a training dataset and transforming raw features into usable inputs can take much of a machine learning project's time. The quality of those inputs affects how well the model can predict."
+  },
+  {
     "source": "structured-records",
     "title": "Component 2 study note · Structured and semi-structured data",
     "heading": "Adapted from AWS",

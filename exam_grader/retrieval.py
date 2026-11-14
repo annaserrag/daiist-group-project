@@ -18,14 +18,39 @@ TREATMENT = re.compile(r"\b(?:clipping|capping|trimming|winsori[sz]\w*|retain\w*
 
 
 def covers_treatment(hit):
-    return any(OUTLIER.search(sentence) and TREATMENT.search(sentence)
-               for sentence in re.split(r"[.!?]\s+", hit["text"]))
+    body = hit["text"]
+    if not OUTLIER.search(body):
+        return False
+    return (any(OUTLIER.search(sentence) and TREATMENT.search(sentence)
+                for sentence in re.split(r"[.!?]\s+", body))
+            or bool(re.search(r"\b(?:correct|remove|discard)\b.{0,40}\b(?:error|observation)s?\b", body, re.I)))
 
 # The teaching notes use names for the concepts behind these broader exam prompts.
 # Expand only the published question so student wording cannot select a topic.
 ML = re.compile(r"\b(?:machine[\s-]+learning|ml)\b", re.I)
 CHALLENGE = re.compile(r"\b(?:challenges?|difficulties|obstacles?|pitfalls?)\b", re.I)
 DISCRETIZATION = re.compile(r"\bdiscreti[sz](?:e[ds]?|ing|ation)\b", re.I)
+
+# In an open question, use the concepts the student actually discusses to diversify
+# the evidence window. A match nominates a passage; the grader still verifies the quote.
+CHALLENGE_FACETS = [
+    (r"\b(?:over|under)[ -]?fit", r"\b(?:over|under)[ -]?fit\w*\b.{0,140}\b(?:training|new data|generaliz)"),
+    (r"\b(?:find\w*|collect\w*|gather\w*)\s+(?:a\s+|the\s+)?data|\bdata\s+collection",
+     r"\b(?:collect|construct|gather)\w*\b.{0,150}\b(?:time|cost|effort)\b"),
+    (r"\bmissing\b", r"\b(?:missing|incomplete)\b.{0,180}\b(?:fix|eliminate|imput|discard)"),
+    (r"\boutliers?\b", r"\boutliers?\b.{0,180}\b(?:error|investigat|detect|flag)"),
+]
+
+def challenge_evidence(ranked, answer):
+    selected = []
+    for cue, standard in CHALLENGE_FACETS:
+        if re.search(cue, answer, re.I):
+            hit = next((r for r in ranked[:30] if re.search(standard, r["text"], re.I)), None)
+            if hit and hit not in selected:
+                selected.append(hit)
+    # Preserve the leading relevance score used for the retrieval threshold.
+    front = [ranked[0], *[r for r in selected if r != ranked[0]][:2]]
+    return front + [r for r in ranked if r not in front]
 
 def query_expansion(question):
     if ML.search(question) and CHALLENGE.search(question):
@@ -61,7 +86,7 @@ class Index:
                 raise ValueError("Rebuild index: manifest does not match")
             self.version = f"{design}:{digest(raw)[:12]}:{MODEL}:hybrid-v3"
         if multipart:
-            self.version += ":multipart-v1"
+            self.version += ":multipart-v2"
         if teaching_notes:
             raw_notes = (DATA / "teaching-notes.json").read_bytes()
             notes = chunks(json.loads(raw_notes), "paragraph")
@@ -122,6 +147,8 @@ class Index:
                 score = (0.8*sem + 0.2*lex) if answer else sem
             results.append(dict(row,score=score))
         ranked = sorted(results,key=lambda r:(-r["score"],r["id"]))
+        if self.multipart and ranked and answer and ML.search(question) and CHALLENGE.search(question):
+            ranked = challenge_evidence(ranked, answer)
         if (self.multipart and OUTLIER.search(question) and re.search(r"\b(?:detect|identif|find)\w*", question, re.I)
                 and re.search(r"\b(?:handl|treat|manag)\w*", question, re.I)
                 and not any(covers_treatment(hit) for hit in ranked[:3])):

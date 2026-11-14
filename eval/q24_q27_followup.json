@@ -1,0 +1,671 @@
+{
+  "base_commit": "5355a1586d97b41192c285ee8a867eb618e590a5",
+  "model": "gemini-3.1-flash-lite",
+  "input_hashes": {
+    "30": "cbcc3136ce6339535514b87c2fc2d99359cc8e2563f654e5a34b0cc8fb48192b",
+    "44": "cb38b90fc66e5cf2f187680c81884186b50af5629afc52b94bc901b4e44b2c71",
+    "29": "e18b79101f8f1f99da7a9e1862b953ab5f044e4db35b69af12c91ca99bab9d50"
+  },
+  "teacher_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "files_sha256": {
+    "exam_grader/grading.py": "65e7f229e5f48593bc21ea407abb52285f90837c67a47e7452b05f82e8e4edc3",
+    "exam_grader/retrieval.py": "d2245f84e91a92073f610e60bd95da7d5deb299433124acb8def7926ca5ece50",
+    "exam_grader/rubric.py": "f2288c2c0d86d5b9bc631d52dc13124d582cd4d4f18e55dc71a8417fdc1d1318",
+    "exam_grader/data/teaching-notes.json": "08ab46803eeeb29a143420bda6c7b1c92fa8a3895eeeb8273587bd4f71370e5e",
+    "exam_grader/data/teaching-vectors.json": "11b84d88f6d78263131fe12b5b120c072e21b600531c471c9dd96ec63d0b1be5"
+  },
+  "completed_utc": "2026-11-14T08:54:22.546643+00:00",
+  "index": "section:46c52674828b:gemini-embedding-2:hybrid-v3:multipart-v2:notes-08ab46803eee",
+  "design": "Same 15 previously diagnosed answers. Baseline is the frozen current arm. Revised grader used an initially empty cache for Gemini, then replayed exact requests through the final citation validator. Control replays baseline replies only for identical model requests. Missing frozen response means unavailable control.",
+  "thresholds": {
+    "min_similarity": 0.4,
+    "written_review_at_or_below": 1
+  },
+  "pairs": [
+    {
+      "paper": 30,
+      "question": 24,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "first",
+          "second"
+        ],
+        "evidence_ids": {
+          "first": "quality-12aa1645af38"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "Teacher review. The passages do not fully support these rubric points. first: First distinct, valid ML challenge plus what makes it a challenge. A name alone earns 0.5. second: Another distinct ML challenge with explanation. Accept valid alternatives to the sample key.",
+        "criterion_evidence": {
+          "first": {
+            "id": "quality-c2bcd723de2c",
+            "title": "Data quality",
+            "heading": "Complete vs. incomplete examples",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+            "quote": "real-world examples are often incomplete, meaning that at least one feature value is missing. Don't train a model on incomplete examples. Instead, fix or eliminate incomplete examples",
+            "coverage": "partial"
+          },
+          "second": {
+            "id": "outliers-22e3d70a835d",
+            "title": "Outlier detection",
+            "heading": "Outlier detection",
+            "url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
+            "quote": "Outlier detection estimators thus try to fit the regions where the training data is the most concentrated, ignoring the deviant observations.",
+            "coverage": "partial"
+          }
+        },
+        "criteria_needing_evidence": [
+          "first",
+          "second"
+        ]
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 30,
+      "question": 25,
+      "teacher": 0.0,
+      "baseline": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "candidate_mark": 0.0,
+        "execution_issue": null,
+        "feedback": "Teacher check requested for the suggested 0/2. The student provided names of software tools used for data science rather than real-world applications or use cases of the field. −1: The student listed software tools (colab, Jupyter) rather than real-world applications of data science. −1: The student listed software tools (colab, Jupyter) rather than real-world applications of data science.",
+        "criterion_evidence": {
+          "first": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In healthcare, models can use medical images or patient records to help identify disease.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In finance, transaction data can be used to detect fraud.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "written_mark_review"
+      }
+    },
+    {
+      "paper": 30,
+      "question": 26,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "semi-629606030c4a"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "",
+        "criterion_evidence": {
+          "structured": {
+            "id": "structured-records-55d6702ce00d",
+            "title": "Component 2 study note · Structured and semi-structured data",
+            "heading": "Adapted from AWS",
+            "url": "https://aws.amazon.com/what-is/structured-data/",
+            "quote": "In a table, each row represents a record and the columns identify its fields.",
+            "coverage": "full"
+          },
+          "semi_structured": {
+            "id": "semi-629606030c4a",
+            "title": "Semi-structured data",
+            "heading": "Machine-generated sources",
+            "url": "https://en.wikipedia.org/wiki/Semi-structured_data",
+            "quote": "Machine-generated semi-structured data sources are automated systems and devices that output information organized with tags, keys, or markers rather than rigid tabular schemas.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "mark_disagreement"
+      }
+    },
+    {
+      "paper": 30,
+      "question": 27,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "handling"
+        ],
+        "evidence_ids": {
+          "detection": "statistics-fd7cc124cdcf"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "Teacher review. The passages do not fully support these rubric points. handling: Describes a valid treatment, such as trimming, capping, replacing, or justified retention.",
+        "criterion_evidence": {
+          "detection": {
+            "id": "statistics-fd7cc124cdcf",
+            "title": "Statistical outliers and their effects",
+            "heading": "Tukey's fences",
+            "url": "https://en.wikipedia.org/wiki/Outlier",
+            "quote": "if Q1 and Q3 are the lower and upper quartiles respectively, then one could define an outlier to be any observation outside the range: for some nonnegative constant k. John Tukey proposed this test, where k=1.5 indicates an \"outlier\"",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": [
+          "handling"
+        ]
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 30,
+      "question": 30,
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid",
+        "criteria_needing_evidence": null,
+        "evidence_ids": {}
+      },
+      "revised": {
+        "mark": null,
+        "reason": "provider_failure",
+        "candidate_mark": null,
+        "execution_issue": "structured_response_invalid",
+        "feedback": "",
+        "criterion_evidence": null,
+        "criteria_needing_evidence": null
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 44,
+      "question": 24,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid",
+        "criteria_needing_evidence": null,
+        "evidence_ids": {}
+      },
+      "revised": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "Teacher review. The passages do not fully support these rubric points. second: Another distinct ML challenge with explanation. Accept valid alternatives to the sample key.",
+        "criterion_evidence": {
+          "first": {
+            "id": "quality-12aa1645af38",
+            "title": "Data quality",
+            "heading": "Page Summary",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+            "quote": "Maintaining data quality involves addressing issues like label errors, noisy features, and proper filtering to ensure the reliability of the dataset for accurate predictions.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "dataset-preparation-0210bc6121e1",
+            "title": "Component 2 study note · Building a training dataset",
+            "heading": "Adapted from Google Machine Learning Crash Course",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting",
+            "quote": "Constructing a training dataset and transforming raw features into usable inputs can take much of a machine learning project's time.",
+            "coverage": "partial"
+          }
+        },
+        "criteria_needing_evidence": [
+          "second"
+        ]
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 44,
+      "question": 25,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      },
+      "revised": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "The student correctly identified two major fields where data science is applied.",
+        "criterion_evidence": {
+          "first": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In healthcare, models can use medical images or patient records to help identify disease.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In finance, transaction data can be used to detect fraud.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": 2.0,
+        "reason": "grounded_proposal"
+      }
+    },
+    {
+      "paper": 44,
+      "question": 26,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "structured-records-55d6702ce00d"
+        }
+      },
+      "revised": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "The student correctly identifies the characteristics and examples of both structured and semi-structured data, meeting the requirements of the marking guide.",
+        "criterion_evidence": {
+          "structured": {
+            "id": "structured-records-55d6702ce00d",
+            "title": "Component 2 study note · Structured and semi-structured data",
+            "heading": "Adapted from AWS",
+            "url": "https://aws.amazon.com/what-is/structured-data/",
+            "quote": "Structured data uses a schema specified in advance. In a table, each row represents a record and the columns identify its fields.",
+            "coverage": "full"
+          },
+          "semi_structured": {
+            "id": "structured-records-55d6702ce00d",
+            "title": "Component 2 study note · Structured and semi-structured data",
+            "heading": "Adapted from AWS",
+            "url": "https://aws.amazon.com/what-is/structured-data/",
+            "quote": "Semi-structured data can organize records using tags, nesting or other markers while allowing fields to vary between records.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": 2.0,
+        "reason": "grounded_proposal"
+      }
+    },
+    {
+      "paper": 44,
+      "question": 27,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-313806e76776",
+          "handling": "outlier-handling-b04f0fc134a5"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "candidate_mark": 1.0,
+        "execution_issue": null,
+        "feedback": "Teacher check requested for the suggested 1/2. The student correctly identified a method for detecting outliers (box plots), but failed to provide any information on how to handle them once detected. −1: The student did not describe any methods for handling outliers after they are detected.",
+        "criterion_evidence": {
+          "detection": {
+            "id": "statistics-313806e76776",
+            "title": "Statistical outliers and their effects",
+            "heading": "Definitions and detection",
+            "url": "https://en.wikipedia.org/wiki/Outlier",
+            "quote": "Box plots are a hybrid.",
+            "coverage": "full"
+          },
+          "handling": {
+            "id": "outlier-handling-b04f0fc134a5",
+            "title": "Component 2 study note · Detecting and handling outliers",
+            "heading": "Adapted from NIST",
+            "url": "https://itl.nist.gov/div898/handbook/eda/section3/eda35h.htm",
+            "quote": "Correct a verified error when possible or remove it from the analysis.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 44,
+      "question": 30,
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "example"
+        ],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "Teacher review. The passages do not fully support these rubric points. example: Gives a concrete illustration with a variable and a grouping or boundary.",
+        "criterion_evidence": {
+          "method": {
+            "id": "binning-cd62f9ad3af1",
+            "title": "Binning",
+            "heading": "Page Summary",
+            "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+            "quote": "Binning is a feature engineering technique used to group numerical data into categories (bins) to improve model performance when a linear relationship is weak or data is clustered.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": [
+          "example"
+        ]
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "insufficient_evidence"
+      }
+    },
+    {
+      "paper": 29,
+      "question": 24,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "second"
+        ],
+        "evidence_ids": {
+          "first": "quality-12aa1645af38"
+        }
+      },
+      "revised": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "The student correctly identified data collection/preparation and the challenge of balancing model fit (avoiding overfitting/underfitting) as two major challenges in machine learning, providing sufficient explanation for both.",
+        "criterion_evidence": {
+          "first": {
+            "id": "dataset-preparation-0210bc6121e1",
+            "title": "Component 2 study note · Building a training dataset",
+            "heading": "Adapted from Google Machine Learning Crash Course",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting",
+            "quote": "Constructing a training dataset and transforming raw features into usable inputs can take much of a machine learning project's time.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "overfit-dee22b9be49d",
+            "title": "Overfitting",
+            "heading": "Fitting, overfitting, and underfitting",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting/overfitting",
+            "quote": "an overfit model makes excellent predictions on the training set but poor predictions on new data. An underfit model doesn't even make good predictions on the training data.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 29,
+      "question": 25,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      },
+      "revised": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "The student correctly identified two distinct real-world applications of data science (healthcare/disease diagnosis and business/stock prediction).",
+        "criterion_evidence": {
+          "first": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In healthcare, models can use medical images or patient records to help identify disease.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note · Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In finance, transaction data can be used to detect fraud.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": 2.0,
+        "reason": "grounded_proposal"
+      }
+    },
+    {
+      "paper": 29,
+      "question": 26,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "structured-records-55d6702ce00d"
+        }
+      },
+      "revised": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "The student correctly identifies that structured data is organized in tables/records and that semi-structured data uses markers like JSON.",
+        "criterion_evidence": {
+          "structured": {
+            "id": "structured-records-55d6702ce00d",
+            "title": "Component 2 study note · Structured and semi-structured data",
+            "heading": "Adapted from AWS",
+            "url": "https://aws.amazon.com/what-is/structured-data/",
+            "quote": "In a table, each row represents a record and the columns identify its fields.",
+            "coverage": "full"
+          },
+          "semi_structured": {
+            "id": "structured-records-55d6702ce00d",
+            "title": "Component 2 study note · Structured and semi-structured data",
+            "heading": "Adapted from AWS",
+            "url": "https://aws.amazon.com/what-is/structured-data/",
+            "quote": "Semi-structured data can organize records using tags, nesting or other markers while allowing fields to vary between records.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": 2.0,
+        "reason": "grounded_proposal"
+      }
+    },
+    {
+      "paper": 29,
+      "question": 27,
+      "teacher": 2.0,
+      "baseline": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-313806e76776",
+          "handling": "outlier-handling-b04f0fc134a5"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "candidate_mark": 1.0,
+        "execution_issue": null,
+        "feedback": "Teacher check requested for the suggested 1/2. The student correctly identified multiple valid methods for detecting outliers but failed to provide any information on how to handle them once identified. −1: The student did not describe any methods for handling outliers after they are detected.",
+        "criterion_evidence": {
+          "detection": {
+            "id": "statistics-313806e76776",
+            "title": "Statistical outliers and their effects",
+            "heading": "Definitions and detection",
+            "url": "https://en.wikipedia.org/wiki/Outlier",
+            "quote": "Some are graphical such as normal probability plots. Others are model-based. Box plots are a hybrid. Model-based methods which are commonly used for identification assume that the data are from a normal distribution, and identify observations which are deemed \"unlikely\" based on mean and standard deviation",
+            "coverage": "full"
+          },
+          "handling": {
+            "id": "outlier-handling-b04f0fc134a5",
+            "title": "Component 2 study note · Detecting and handling outliers",
+            "heading": "Adapted from NIST",
+            "url": "https://itl.nist.gov/div898/handbook/eda/section3/eda35h.htm",
+            "quote": "Correct a verified error when possible or remove it from the analysis. For a genuine extreme observation, retaining it and using a robust statistical method can be appropriate.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "missing_frozen_response"
+      }
+    },
+    {
+      "paper": 29,
+      "question": 30,
+      "teacher": 1.0,
+      "baseline": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "example"
+        ],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1"
+        }
+      },
+      "revised": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "candidate_mark": null,
+        "execution_issue": null,
+        "feedback": "Teacher review. The passages do not fully support these rubric points. example: Gives a concrete illustration with a variable and a grouping or boundary.",
+        "criterion_evidence": {
+          "method": {
+            "id": "binning-cd62f9ad3af1",
+            "title": "Binning",
+            "heading": "Page Summary",
+            "url": "https://developers.google.com/machine-learning/crash-course/numerical-data/binning",
+            "quote": "Binning is a feature engineering technique used to group numerical data into categories (bins) to improve model performance when a linear relationship is weak or data is clustered.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": [
+          "example"
+        ]
+      },
+      "same_request_control": {
+        "mark": null,
+        "reason": "insufficient_evidence"
+      }
+    }
+  ]
+}

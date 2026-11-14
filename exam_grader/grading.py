@@ -50,6 +50,20 @@ _SOURCE_GAP = re.compile(
 )
 
 
+def source_quote(value, text):
+    """Return verbatim source text, allowing sentence-initial capitalization in a copied fragment."""
+    quote = value.strip() if isinstance(value, str) else ""
+    if len(quote) < 12:
+        return ""
+    if quote in text:
+        return quote
+    if re.match(r"^(?:A|An|The|This|These|Those)\s", quote):
+        original = quote[0].lower() + quote[1:]
+        if original in text:
+            return original
+    return ""
+
+
 def checked_mark(q, response, hits, searches, *, guide=None):
     score = hits[0]["score"]
     fields = dict(score=score,searches=searches)
@@ -89,8 +103,8 @@ def checked_mark(q, response, hits, searches, *, guide=None):
     if lost != 2 - m:
         return row(q, "unexplained_deduction", **fields)
     hit = next((r for r in hits if r["id"] == response.get("passage_id")),None)
-    quote = response.get("quote")
-    if not hit or not isinstance(quote,str) or len(quote.strip()) < 12 or quote.strip() not in hit["text"]:
+    quote = source_quote(response.get("quote"), hit["text"]) if hit else ""
+    if not quote:
         return row(q,"unverified_citation",**fields)
     cite = {"id":hit["id"],"title":hit["title"],"heading":hit["heading"],"url":hit["url"],"quote":quote.strip()}
     if "page" in hit:
@@ -119,8 +133,8 @@ def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
             continue
         e = matching[0]
         hit = sources.get(e["passage_id"]) if isinstance(e.get("passage_id"), str) else None
-        quote = e["quote"].strip() if isinstance(e.get("quote"), str) else ""
-        if not hit or e.get("coverage") not in ("full", "partial") or len(quote) < 12 or quote not in hit["text"]:
+        quote = source_quote(e.get("quote"), hit["text"]) if hit else ""
+        if not quote or e.get("coverage") not in ("full", "partial"):
             continue
         labels = [hit["title"], hit["heading"], *hit.get("labels", [])]
         if any(quote.casefold() in label.casefold() for label in labels):
@@ -151,7 +165,8 @@ def checked(q, response, hits, searches, student_text="", *, custom_guide=None):
             # The proposed credit must also agree with the actual interval assignments.
             citations.pop("example", None)
     missing = [c for c in guide if citations.get(c, {}).get("coverage") != "full"]
-    if (not missing and custom_guide is not None and decision["reason"] == "unverified_citation"
+    if (not missing and decision["reason"] == "unverified_citation"
+            and type(response.get("independent_mark")) in (int, float)
             and response.get("needs_review") is False):
         # A malformed summary quote can be replaced only by independently verified body
         # evidence from that SAME source, with full coverage of every teacher criterion.
@@ -357,7 +372,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
                         "latency_s":elapsed}},
               "versions":{"component_a":"UNSET-by-vision-owner","component_b":getattr(agent,"version","no-provider"),
                           "retrieval":getattr(index,"version","no-index"),"contract":"vision.exam.v1","q32_rule":hyperparameters.VERSION,
-                          "evidence_rule":"per-criterion-v5-zero-loss",
+                          "evidence_rule":"per-criterion-v6-verified-summary",
                           "policy":sha256(json.dumps(asdict(p),sort_keys=True).encode()).hexdigest()[:12]},
               "review":bool(reviewed or near_pass),"tokens":usage["tokens"],"cost_eur":usage["cost_eur"]}
     return {"teacher":teacher,"record":record}

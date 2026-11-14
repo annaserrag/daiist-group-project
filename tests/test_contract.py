@@ -270,6 +270,44 @@ class Contract(unittest.TestCase):
             for q in set(range(21,36)) - {27}:
                 self.assertEqual(original.search(q),revised.search(q))
 
+    def test_challenge_passages_cover_the_specific_student_claims(self):
+        index = Index("section", True, teaching_notes=True)
+        for answer, expected in [
+                ("Gathering data takes time and underfitting hurts predictions.",
+                 {"dataset-preparation", "overfit"}),
+                ("Missing values and outlier detection", {"quality", "outliers"})]:
+            hits = index.search(24, answer)
+            self.assertTrue(expected <= {hit["source"] for hit in hits})
+        hits = index.search(27, "quartiles and interquartile range")
+        self.assertTrue(any("Correct a verified error" in hit["text"] for hit in hits))
+
+    def test_summary_quote_repair_still_checks_the_mark_and_review_policy(self):
+        from exam_grader.grading import checked
+        detection = "Box plots can flag extreme values."
+        handling = "Correct a verified measurement error."
+        hit = dict(id="outliers", title="Notes", heading="Outliers", url="", score=.9,
+                   text=f"{detection} {handling}")
+        evidence = [dict(criterion=c, passage_id=hit["id"], quote=t, coverage="full")
+                    for c,t in (("detection", detection), ("handling", handling))]
+        proposal = dict(mark=1, independent_mark=1, needs_review=False, passage_id=hit["id"],
+                        quote="A paraphrase instead of an exact quote.", feedback="Identifies a box plot.",
+                        deductions=[dict(criterion="handling",points=1,reason="No treatment was described.")],
+                        criterion_evidence=evidence)
+        verified = checked(27, proposal, [hit], 1)
+        self.assertEqual((verified["mark"], verified["citation"]["quote"]), (1, detection))
+        for change in (dict(independent_mark=None), dict(independent_mark=2), dict(passage_id="other"),
+                       dict(criterion_evidence=evidence[:1]), dict(needs_review=True), dict(deductions=[])):
+            self.assertIsNone(checked(27, proposal | change, [hit], 1)["mark"])
+
+    def test_quote_recovers_original_case_only_for_the_initial_letter(self):
+        from exam_grader.grading import source_quote
+        body = "In practice, an overfit model performs poorly on new data."
+        original = "an overfit model performs poorly on new data."
+        self.assertEqual(source_quote(original.capitalize(), body), original)
+        self.assertFalse(source_quote("An overfit model performs WELL on new data.", body))
+        self.assertFalse(source_quote("An overfit model ... on new data.", body))
+        self.assertFalse(source_quote("M is measured in metres.", "m is measured in metres."))
+
     def test_top_three_explain_both_fitting_failures_and_illustrate_discretization(self):
         for design in ("paragraph","section"):
             index = Index(design)

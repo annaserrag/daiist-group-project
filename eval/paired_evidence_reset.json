@@ -1,0 +1,441 @@
+{
+  "tested_commit": "5355a1586d97b41192c285ee8a867eb618e590a5",
+  "model": "gemini-3.1-flash-lite",
+  "questions": [
+    24,
+    25,
+    26,
+    27,
+    30
+  ],
+  "papers": [
+    30,
+    44,
+    29
+  ],
+  "input_hashes": {
+    "30": "cbcc3136ce6339535514b87c2fc2d99359cc8e2563f654e5a34b0cc8fb48192b",
+    "44": "cb38b90fc66e5cf2f187680c81884186b50af5629afc52b94bc901b4e44b2c71",
+    "29": "e18b79101f8f1f99da7a9e1862b953ab5f044e4db35b69af12c91ca99bab9d50"
+  },
+  "prompt_adapter_hashes": {
+    "current": "1b272b7f1970874ad7ba8caa79e5d2f1a0f7def1ba7c34888015535f2c636968",
+    "new": "94eca2f740a152bbee103a91678d39391c4b127757269ac98431b19e099cd39f"
+  },
+  "teacher_sha256": "51e194a98970dddf738dd81bdbc51e2d7dea5637666ee1ff7402e7165154b017",
+  "fresh_cache": true,
+  "retry_policy": "Retry provider failures only, preserve all earlier completed decisions. Up to four attempts per paper and arm.",
+  "thresholds": {
+    "min_similarity": 0.4,
+    "written_review_at_or_below": 1
+  },
+  "gate": "Same rubric, threshold, model and passages. Compare named criterion fields and grounding instructions on new papers. Deploy only if proposals increase with no more errors >=1 and no loss of exact agreement count. Otherwise keep the baseline. Only readable responses enter grading rates.",
+  "completed_at_utc": "2026-11-14T08:35:52.883239+00:00",
+  "metrics": {
+    "current": {
+      "sample": "current",
+      "answers": 15,
+      "proposed": 4,
+      "review": 11,
+      "paired": 4,
+      "exact": 4,
+      "within_half": 4,
+      "differ_by_one_or_more": 0,
+      "mean_absolute_error": 0.0,
+      "always_full_mae_on_same_proposals": 0.0,
+      "execution_failures": 2
+    },
+    "new": {
+      "sample": "new",
+      "answers": 15,
+      "proposed": 3,
+      "review": 12,
+      "paired": 3,
+      "exact": 3,
+      "within_half": 3,
+      "differ_by_one_or_more": 0,
+      "mean_absolute_error": 0.0,
+      "always_full_mae_on_same_proposals": 0.0,
+      "execution_failures": 1
+    }
+  },
+  "passes_gate": false,
+  "interpretation": "incomplete due to operational failures",
+  "pairs": [
+    {
+      "paper": 30,
+      "question": 24,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "first",
+          "second"
+        ],
+        "evidence_ids": {
+          "first": "quality-12aa1645af38"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "first",
+          "second"
+        ],
+        "evidence_ids": {}
+      }
+    },
+    {
+      "paper": 30,
+      "question": 25,
+      "teacher": 0.0,
+      "current": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      }
+    },
+    {
+      "paper": 30,
+      "question": 26,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "semi-629606030c4a"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid",
+        "criteria_needing_evidence": null,
+        "evidence_ids": {}
+      }
+    },
+    {
+      "paper": 30,
+      "question": 27,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "handling"
+        ],
+        "evidence_ids": {
+          "detection": "statistics-fd7cc124cdcf"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-fd7cc124cdcf",
+          "handling": "statistics-05dba23f2c19"
+        }
+      }
+    },
+    {
+      "paper": 30,
+      "question": 30,
+      "teacher": 1.0,
+      "current": {
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid",
+        "criteria_needing_evidence": null,
+        "evidence_ids": {}
+      },
+      "new": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "example"
+        ],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1"
+        }
+      }
+    },
+    {
+      "paper": 44,
+      "question": 24,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "provider_failure",
+        "execution_issue": "structured_response_invalid",
+        "criteria_needing_evidence": null,
+        "evidence_ids": {}
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "quality-12aa1645af38",
+          "second": "supervised-3cf537b4ea95"
+        }
+      }
+    },
+    {
+      "paper": 44,
+      "question": 25,
+      "teacher": 2.0,
+      "current": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      },
+      "new": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      }
+    },
+    {
+      "paper": 44,
+      "question": 26,
+      "teacher": 2.0,
+      "current": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "structured-records-55d6702ce00d"
+        }
+      },
+      "new": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "structured-records-55d6702ce00d"
+        }
+      }
+    },
+    {
+      "paper": 44,
+      "question": 27,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-313806e76776",
+          "handling": "outlier-handling-b04f0fc134a5"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-313806e76776",
+          "handling": "outlier-handling-b04f0fc134a5"
+        }
+      }
+    },
+    {
+      "paper": 44,
+      "question": 30,
+      "teacher": 1.0,
+      "current": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "example"
+        ],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1",
+          "example": "binning-afab4428a516"
+        }
+      }
+    },
+    {
+      "paper": 29,
+      "question": 24,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "second"
+        ],
+        "evidence_ids": {
+          "first": "quality-12aa1645af38"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "first",
+          "second"
+        ],
+        "evidence_ids": {
+          "first": "quality-12aa1645af38"
+        }
+      }
+    },
+    {
+      "paper": 29,
+      "question": 25,
+      "teacher": 2.0,
+      "current": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      },
+      "new": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "first": "industry-applications-85b4a9b6041a",
+          "second": "industry-applications-85b4a9b6041a"
+        }
+      }
+    },
+    {
+      "paper": 29,
+      "question": 26,
+      "teacher": 2.0,
+      "current": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "structured-records-55d6702ce00d"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "mark_disagreement",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "structured": "structured-records-55d6702ce00d",
+          "semi_structured": "structured-records-55d6702ce00d"
+        }
+      }
+    },
+    {
+      "paper": 29,
+      "question": 27,
+      "teacher": 2.0,
+      "current": {
+        "mark": null,
+        "reason": "unverified_citation",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-313806e76776",
+          "handling": "outlier-handling-b04f0fc134a5"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "detection": "statistics-313806e76776",
+          "handling": "outlier-handling-b04f0fc134a5"
+        }
+      }
+    },
+    {
+      "paper": 29,
+      "question": 30,
+      "teacher": 1.0,
+      "current": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "execution_issue": null,
+        "criteria_needing_evidence": [
+          "example"
+        ],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1"
+        }
+      },
+      "new": {
+        "mark": null,
+        "reason": "written_mark_review",
+        "execution_issue": null,
+        "criteria_needing_evidence": [],
+        "evidence_ids": {
+          "method": "binning-cd62f9ad3af1",
+          "example": "binning-afab4428a516"
+        }
+      }
+    }
+  ]
+}
