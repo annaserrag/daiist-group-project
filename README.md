@@ -6,7 +6,7 @@ Follow [the integrated setup and two-PDF acceptance check](SETUP.md) to install 
 uv run --locked --no-dev python app.py
 ~~~
 
-Open the localhost address printed in the terminal. Choose **Try synthetic OCR example** to see proposals, the text Vision read, evidence and questions requiring teacher review. Q1 scores 1, Q23 is a confirmed blank worth 0, and Q17 stays empty because D is outside its two options. Complete the teacher marks and click **Sign off all 35 marks** to produce the approved sheet for this session. Monitoring shows request counts, hourly review share and feedback. The built-in example is a partial OCR export and needs no key.
+Open the localhost address printed in the terminal. Choose **Try a sample paper** to see proposals, the text Vision read, evidence and questions requiring teacher review. Q1 scores 1, Q23 is a confirmed blank worth 0, and Q17 stays empty because D is outside its two options. Complete the teacher marks and click **Sign off this paper** to produce the approved sheet for this session. Monitoring shows request counts, hourly review share and feedback. The built-in example is a partial OCR export and needs no key.
 
 To run the test suite or inspect Anna's exported JSON from the command line:
 
@@ -17,13 +17,13 @@ uv run --locked --no-dev python -m exam_grader
 
 ## Work through referred answers
 
-After grading, open **Review one question**. The list puts referrals with a transcription first. Each question shows the student’s reading, the selected exam’s reference answer and rubric, and any verified passages. If the grading service is unavailable, it also shows retrieved excerpts separately for the teacher to verify. Enter a teacher mark and choose **Record mark and show next referral**. Your entry goes into the existing teacher sheet. You can revisit a question or edit the sheet before signing off. Cases with a missing scan reading remain available for inspection.
+After grading, the results show the number of questions still missing a mark. The review card displays the student’s answer, the key and what to check. Open **See rubric and sources** for the marking guide and passages. Select a mark and choose **Save & continue** to move to the next unmarked question. Use **Mark sheet and paper details** to change earlier marks or inspect the grading evidence. **Sign off this paper** appears when every question has a valid mark.
 
 ## Try a course PDF
 
 Open **Materials**, enter a course name, upload a searchable PDF and click **Index PDF and select course**. The active course applies to both the passage preview and subsequent grading runs. Add more PDFs under the same name to search them together. The built-in references and each named course have their own index. Courses are scoped to the current browser session.
 
-To reproduce the page check, upload [the three-page ML handout](eval/ml-course-notes.pdf), choose Q21 and click **Find supporting passages**. The definition of supervised learning appears on PDF page 3. In **App**, click **Try synthetic OCR example** and inspect the Q21 row for its mark, source filename, PDF page and supporting quote. The live test returned 2/2 and cited the first sentence of the definition on page 3. Page numbers count from the first physical page, including covers and pages without text.
+To reproduce the page check, upload [the three-page ML handout](eval/ml-course-notes.pdf), choose Q21 and click **Find supporting passages**. The definition of supervised learning appears on PDF page 3. In **Grade exams**, click **Try a sample paper** and inspect the Q21 row for its mark, source filename, PDF page and supporting quote. The live test returned 2/2 and cited the first sentence of the definition on page 3. Page numbers count from the first physical page, including covers and pages without text.
 
 With the configured Gemini key and semantic index, the app embeds uploaded course passages once per session and reuses the bundled exam question vectors. Without a key, you can still index PDFs and preview lexical retrieval. Model-based written grading requires the configured key and an approved exam input. The optional exact full-credit rule on custom questions runs locally. Image-only course PDFs need OCR before uploading.
 
@@ -56,8 +56,8 @@ uv run --locked --no-dev python -m exam_grader.written_transfer
 
 ## Demonstrate the grading component
 
-1. Start the app and click **Try synthetic OCR example**. Show why Q1 is a valid proposal and why Q17 needs a teacher to inspect its selected option. With Gemini enabled, inspect the Q21 mark, citation and quoted text.
-2. Complete all 35 marks on this synthetic sheet and click **Sign off all 35 marks**. The signed sheet shows how many proposals the teacher accepted or changed, how many referrals they completed, and the elapsed time since the proposals appeared. Open Monitoring to check the single grading request.
+1. Start the app and click **Try a sample paper**. Show why Q1 is a valid proposal and why Q17 needs a teacher to inspect its selected option. With Gemini enabled, inspect the Q21 mark, citation and quoted text.
+2. Complete all 35 marks on this synthetic sheet and click **Sign off this paper**. The signed sheet shows how many proposals the teacher accepted or changed, how many referrals they completed, and the elapsed time since the proposals appeared. Open Monitoring to check the single grading request.
 3. Show the printed-PDF check and the independent written evaluation. One verifies that OCR can feed the grader. The other compares actual written proposals with published teacher marks, including the 13/28 referrals on the revised replay. For the final class demo, repeat the PDF path with Anna's reader and a vetted handwritten sample. [Printed check](HANDOFF.md) · [Written evidence](eval/written_independent_revised.json)
 
 For a time-saving claim, have the team time manual grading and assisted sign-off on comparable exams. Record question counts, whether a teacher had seen each paper, and any interruptions. The app's sign-off timer measures elapsed time. The business calculation separately needs the teacher's actual hourly rate and the team's intended volume. [Business assumptions](REPORT.md#business-case)

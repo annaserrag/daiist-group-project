@@ -25,7 +25,7 @@ Open the repository at the version you want to grade and run the commands below 
 
    The check uses the same PDF processing and request logger as the app, looks up expectations after grading and exits nonzero if either case fails. **c06** should propose Q18 = 1, Q19 = 0, Q20 = 1 and Q21 = 2 with a course citation. **c24** should propose Q1 = 1 and refer Q2 as unreadable. Both PDFs are excerpts, so neither should receive a final total. An unavailable written-grading provider or an unapproved c06 leaves Q21 for review.
 
-4. Start Gradio and open the local address it prints. In **App**, upload `eval/inputs/c06.pdf` and then `eval/inputs/c24.pdf`. The app also has **Materials** and **Monitoring** tabs.
+4. Start Gradio and open the local address it prints. In **Grade exams**, upload `eval/inputs/c06.pdf` and then `eval/inputs/c24.pdf`. The app also has **Materials** and **Monitoring** tabs.
 
    ```sh
    uv run --locked --no-dev python app.py

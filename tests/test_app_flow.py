@@ -22,6 +22,35 @@ class AppFlow(unittest.TestCase):
         offline.start()
         cls.addClassCleanup(offline.stop)
 
+    def test_review_controls_and_progress_follow_the_mark_sheet(self):
+        ctx = {"id": "paper", "in_scope": True, "limits": [(1, 1), (2, 2)],
+               "referrals": {1: {"reading": ""}, 2: {"reading": "words"}}}
+        def inspect(sheet, signed=None):
+            return app.results_view(ctx, sheet, None, signed, "")
+        _, summary, review, choice, _, approve, _ = inspect([[1, None], [2, None]])
+        self.assertIn("2 questions need a mark", summary)
+        self.assertTrue(review["visible"])
+        self.assertEqual(choice["value"], 2)
+        self.assertFalse(approve["visible"])
+        _, summary, _, choice, _, _, _ = inspect([[1, None], [2, 0]])
+        self.assertIn("1 of 2 marked", summary)
+        self.assertEqual(choice["choices"], [("Question 1", 1)])
+        complete = [[1, 1], [2, .5]]
+        ready = inspect(complete)
+        self.assertTrue(ready[5]["visible"])
+        self.assertFalse(ready[2]["visible"])
+        self.assertIn("1.5 / 3", ready[1])
+        signed = inspect(complete, app.sign_off(ctx, complete))
+        self.assertTrue(signed[6]["visible"])
+        self.assertFalse(signed[5]["visible"])
+        self.assertIn("Paper signed off", signed[1])
+        for invalid in ([[1, 0], [2, 1.2]], [[2, 1]], [[1, "no"], [2, 1]]):
+            self.assertFalse(inspect(invalid)[5]["visible"])
+        blocked = app.results_view(dict(ctx, in_scope=False), complete, None, None, "Wrong paper")
+        self.assertIn("Wrong paper", blocked[1])
+        self.assertFalse(any(blocked[i]["visible"] for i in (2, 4, 5, 6)))
+        self.assertFalse(app.results_view(None, [], None, None, "")[0]["visible"])
+
     def test_custom_low_confidence_question_uses_its_own_materials_for_review(self):
         from unittest.mock import Mock
         from exam_grader.written_exam import WrittenExam
@@ -39,7 +68,7 @@ class AppFlow(unittest.TestCase):
             _, _, marks, context, _ = app.display("ex.json", {"Ecology": library_index}, "Ecology", (exam, None))
         library_index.for_questions.assert_called_once_with({3: item["question"]}, None, exam.exam_id)
         self.assertEqual(marks, [[3, None]])
-        self.assertIn("Ecology notes, p. 5", app.referral_details(context, 3)[2])
+        self.assertIn("Ecology notes, p. 5", app.question_view(context, 3)[2])
 
     def test_review_crops_are_bound_to_the_graded_pdf_and_selected_referral(self):
         with tempfile.TemporaryDirectory() as directory, patch(
