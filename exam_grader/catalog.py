@@ -11,7 +11,8 @@ with (DATA / "answerkey.txt").open(encoding="utf-8-sig", newline="") as stream:
     KEY = {int(row["Question_Number"]): row["Correct_Answer"].strip() for row in csv.DictReader(stream)}
 if set(KEY) != set(QUESTIONS) or set(KEY) != set(range(1, 36)):
     raise RuntimeError("Incomplete question catalogue or published key.")
-OPTIONS = {int(i): set(re.findall(r"(?m)^([A-D])\. ", block))
-           for i, block in re.findall(r"(?ms)^(\d+)\. (.*?)(?=^\d+\. |\Z)", text) if int(i) <= 20}
+OPTION_TEXTS = {int(i): dict(re.findall(r"(?m)^([A-D])\. (.+)$", block))
+                for i, block in re.findall(r"(?ms)^(\d+)\. (.*?)(?=^\d+\. |\Z)", text) if int(i) <= 20}
+OPTIONS = {q: set(choices) for q, choices in OPTION_TEXTS.items()}
 if any(KEY[i] not in letters for i, letters in OPTIONS.items()):
     raise RuntimeError("Invalid published MCQ key.")

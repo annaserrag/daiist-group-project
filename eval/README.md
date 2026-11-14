@@ -73,12 +73,13 @@ The prepared packet contains 30 distinct image-only PDF requests across 33 pages
 
 The team packet was assembled with Codex. Transcriptions were checked against the images during preparation, independently of the reader and grader under test. The case notes specify each intended behavior. Handwritten MCQ targets use recorded letters and the published key. Handwritten numeric scores are from the published teacher CSV, including partial credit. Review targets reflect the operating policy; their historical teacher marks, where available, are retained separately. The files reuse source papers and some responses across situations, and earlier Component 2 work used this dataset. Report the results as a targeted integration test, not a held-out estimate on 30 independent students. [Checked readings, source page regions, marks and PDF hashes](case_references.json) · [Dinesh K P, Mendeley Data v1, CC BY 4.0](https://doi.org/10.17632/sf3kvjwknt.1) · [License](https://creativecommons.org/licenses/by/4.0/)
 
-#### Run when Anna's reader is available
+#### Run with Anna's reader
 
-From the combined checkout with the reader's dependencies installed and the grader's local key configured, set the module name to Anna's actual import path. Use the frozen PDF hashes below for this evaluation process. The PDFs contain no searchable answer layer. The evaluation runner keeps the reference readings and teacher marks separate from both components.
+From the grading checkout, configure the two environments and check the first PDF as described in [the handoff](../HANDOFF.md#connect-the-actual-vision-reader). For the full evaluation, configure the grader's local key and use the frozen PDF hashes below. The PDFs contain no searchable answer layer. The evaluation runner keeps the reference readings and teacher marks separate from both components.
 
 ```powershell
-$env:GRADE_VISION_MODULE = 'vision'
+$env:GRADE_VISION_MODULE = 'exam_grader.vision_finetune'
+$env:GRADE_VISION_ROOT = "$env:LOCALAPPDATA/daiist-component2/worktrees/vision-finetune"
 uv run --locked --no-dev python -c "import importlib,os; r=importlib.import_module(os.environ['GRADE_VISION_MODULE']); assert callable(r.read_exam) and r.VERSION; print(r.VERSION)"
 if ($LASTEXITCODE -ne 0) { throw 'Install the reader before running the packet.' }
 $packet = Get-Content -Raw eval/case_references.json | ConvertFrom-Json

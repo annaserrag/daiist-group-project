@@ -1,6 +1,6 @@
-# Anna ↔ Component 2: proposed handoff v1
+# Anna ↔ Component 2 handoff
 
-Component 2 lives on `component-2-grading` in a checkout of the team's fork. Anna's published `vision_model` branch and `main` both pointed to the starter commit on 11 November. Agree which branch receives the integration PR and supply one vetted PDF with a separately checked answer export. [Team fork](https://github.com/annaserrag/daiist-group-project)
+Component 2 lives on `component-2-grading`. Anna's `vision-finetune` branch provides the page reader. The branches can run together in separate local checkouts. [Team fork](https://github.com/annaserrag/daiist-group-project)
 
 ## Share the grading branch
 
@@ -57,17 +57,33 @@ uv run --no-dev python -m exam_grader.handoff exam_grader/data/vision-example.js
 
 ## Connect the actual vision reader
 
-The working pipeline accepts the example JSON now. For PDFs it imports the module named by GRADE_VISION_MODULE (default vision). Agree on this Python interface or add a small adapter to Anna's existing function.
+From the grading checkout, point the adapter at the local root of Anna's branch. The path below matches Javi's Windows worktree. On a new machine first install the reader environment with `uv sync --locked --no-dev` in Anna's checkout. The first nonblank page read downloads the pretrained model. On Windows, check that the reader's PyTorch build supports your GPU if you want CUDA acceleration.
 
-~~~python
-VERSION = "your-vision-model-and-weights-version"
+```powershell
+$env:GRADE_VISION_ROOT = "$env:LOCALAPPDATA/daiist-component2/worktrees/vision-finetune"
+$env:GRADE_VISION_MODULE = 'exam_grader.vision_finetune'
+uv run --locked --no-dev python -c "from pipeline import run_views; t=run_views('eval/inputs/c01.pdf')['teacher']; print('reader_failed', t['reader_failed']); print([(a['question_id'], a['readings'], a['mark'], a['reason']) for a in t['answers'][:5]])"
+```
 
-def read_exam(path):
-    # Read one PDF and return the agreed vision.exam.v1 dictionary.
-    ...
-~~~
+The same settings work for PDF uploads in the app. With both packages installed in one environment, omit `GRADE_VISION_ROOT`. Component 2 runs Anna's page model, prompt and line assignment, retaining the generated token scores for the question number and answer separately. When the original line score is below 0.85 and its digits clear that threshold, the bridge checks the label again. For a page with one detected label it requests a read of the question detector's crop. For a page with multiple labels it requests an ordered list and checks the count, position and digits. When confirmation is unavailable the original ID score applies. These checks never change the transcribed number. A validated multiple-choice response uses the letter score; written responses use the weakest token in the answer across its lines. Older native exports use their original confidence fields.
 
-The server passes a pathlib.Path. Convert it to str(path) inside the adapter if needed. Once the module is importable, the next PDF upload will use it. The /run endpoint processes the file once, records both component outputs in the course logbook, and shows proposals, teacher edits and sign-off in the app. The real OCR text and teacher feedback stay out of the log. The local HTTP test used the bundled synthetic export. The first test with Anna still needs a vetted PDF and her reader.
+For a low-confidence written answer with a confident, unique question ID and an answer confined to one page, the reader rereads that page at a different scale. Its prompt contains the question number only, alongside instructions for verbatim transcription. When both readings agree on every word in order, including case and punctuation, the bridge uses the higher of their two whole-word scores for each word and the lowest resulting score across the answer. The same 0.80 text threshold applies. A disagreement, failed reread or continuation on another page leaves the first score in place. [Paired evaluation on 30 PDFs](eval/vision_finetune_word_confidence_30.md)
+
+The adapter preserves written text, repeated question numbers and unassigned lines. Unknown numbers and subparts go to review. An empty transcription is unreadable. Local inference reports zero API cost and leaves unmeasured token usage unknown.
+
+Use PDFs from the bundled Mendeley exam. The reader extracts numbers and text but cannot authenticate which exam produced a sheet or positively identify a blank answer area. The grader's existing ID and OCR confidence thresholds still apply. The training dataset and LoRA smoke run are separate from PDF inference. The pretrained page reader can run before training.
+
+On 14 November the pretrained reader at `8086331` returned the five choices in `c01.pdf` as loose lines such as `1  D`. The adapter recognizes an isolated number and choice on a page carrying the printed exam header. It keeps the original line confidence and sends any additional ambiguous lines to review. All five letters and marks matched the checked references after this change. On the separate `c22.pdf` control, Q1 earned 1/1 and Q17's invalid D went to review.
+
+Two further checks used the same PDF entry point. The separate handwritten sheet `c02.pdf` matched all five readings and marks. In the constructed written-answer control `c26.pdf`, Q32 reached the grader as “Learning rate” and the one-hyperparameter rule sent it to review. Across these four sheets, all 13 target readings, 11 numerical marks and two referrals matched the checked references. The first sheet was used to develop the adapter.
+
+Javi's Windows reader environment uses the CUDA 13.0 wheels of PyTorch 2.14.1 and torchvision 0.29.1. The default locked installation on this machine supplied CPU-only wheels. To reproduce the GPU setup, run the following in the reader checkout after syncing its dependencies. The smoke run uses the prepared training data in the user's cache and discards its training updates.
+
+```powershell
+uv sync --locked --no-dev --group train
+uv pip install --python .venv/Scripts/python.exe --index https://download.pytorch.org/whl/cu130 torch==2.14.1+cu130 torchvision==0.29.1+cu130
+uv run --no-sync --group train python -m vision.finetune_reader --smoke
+```
 
 Coordinate changes to app.py, pipeline.py and evaluate.py when merging the component branch. Keep the professor's serve(raw_input), pipeline.run(raw_input) and /run endpoint in the shared app.
 
@@ -76,7 +92,7 @@ Coordinate changes to app.py, pipeline.py and evaluate.py when merging the compo
 From the combined checkout, run this command on one PDF and its independently verified reference. It uses the same connector as the app, with external grading disabled. The reader still runs its own configured vision backend. The output identifies missing, unexpected and differing question IDs without printing the readings. Exit 0 requires the expected exam status and an exact match on the reference states and readings after whitespace normalization. Compare confidence calibration and live grading separately.
 
 ```powershell
-uv run --locked --no-dev python -m exam_grader.check_reader "private/exam.pdf" "private/checked-export.json" --module vision
+uv run --locked --no-dev python -m exam_grader.check_reader "private/exam.pdf" "private/checked-export.json" --module exam_grader.vision_finetune
 ```
 
 ### Exercise the PDF route before the handwriting reader arrives
