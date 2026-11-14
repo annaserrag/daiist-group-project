@@ -17,10 +17,35 @@ _VERIFY = (
 )
 _LABEL = re.compile(r"^\s*(?:[Qq](?:uestion)?\s*)?\(?([1-9][0-9]?[A-Za-z]?|[A-Za-z])\s*[).:\-]\s*(.*)$")
 
+# An inline part must follow a completed sentence. A period in an initial or
+# title ("J. B. Smith", "Dr. B. Smith") does not end the preceding answer.
+_INLINE = re.compile(r"""(?P<end>[.!?])["'”’)]*\s+(?P<marker>\(?(?P<label>[A-Za-z])[.)])(?=\s+\S)""")
+_ABBREVIATION = re.compile(r"(?:\b[A-Za-z]|\b(?:Dr|Mr|Mrs|Ms|Prof|St|vs|etc|e\.g|i\.e))$", re.I)
+
+
+def part_lines(lines, identifiers):
+    """Split only configured, explicit letter labels, keeping their original character scores."""
+    active = False
+    for text, scores in lines:
+        head = _LABEL.fullmatch(text)
+        if head:
+            active = head[1].casefold() in identifiers
+        start = 0
+        if active:
+            for marker in _INLINE.finditer(text):
+                if marker["label"].casefold() not in identifiers:
+                    continue
+                if marker["end"] == "." and _ABBREVIATION.search(text[:marker.start("end")]):
+                    continue
+                stop = marker.start("marker")
+                yield text[start:stop], scores[start:stop]
+                start = stop
+        yield text[start:], scores[start:]
+
 
 def observations(lines, identifiers):
     rows = []
-    for text, scores in lines:
+    for text, scores in part_lines(lines, identifiers):
         if not text.strip():
             continue
         match = _LABEL.fullmatch(text)

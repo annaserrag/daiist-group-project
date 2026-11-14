@@ -1,0 +1,15 @@
+{
+  "baseline": "412191e2b54f4b8892d762dd35ae4f94",
+  "run_id": "d304c2cdf3284811bd309fa072e597a9",
+  "counts": {
+    "rows": 1050,
+    "targets": 105,
+    "proposed": 66,
+    "review": 39,
+    "comparable": 65,
+    "exact": 65
+  },
+  "changed_teacher_rows": [],
+  "changed_case_outcomes": [],
+  "changed_exam_statuses": []
+}

@@ -1,0 +1,262 @@
+{
+  "baseline": "eval/selected_exam_handwriting/results.json",
+  "scope": "Same three AP booklets; repeated regression test.",
+  "source": "https://apcentral.collegeboard.org/media/pdf/ap24-apc-us-go-po-q1-set-1.pdf",
+  "reader": "Qwen/Qwen3-VL-2B-Instruct",
+  "reader_file_sha256": "7ece0c635f1dfe17801c1ee1aca6e29d83ebeb3702412907347073cc1548f065",
+  "exam_id": "written-52ef2c355a766861d63b1774a3e218689e7fc607ac3fbfab616b65e8fd4f8bf7",
+  "scale": "Official binary parts mapped to 0 or 2.",
+  "samples": [
+    {
+      "sample": "1A",
+      "sha256": "15fa0bb2c49071d110dc6a7d7608ba1f907b18f1f728f6b02f61ea95ff8dbc9f",
+      "scope_before": "in_scope",
+      "scope_after": "in_scope",
+      "parts": [
+        {
+          "part": "A",
+          "reference": 2,
+          "before": {
+            "reason": "mark_disagreement",
+            "mark": null,
+            "detections": 1,
+            "words": 31
+          },
+          "after": {
+            "reason": "mark_disagreement",
+            "mark": null,
+            "detections": 1,
+            "words": 31,
+            "id_confidence": [
+              0.953
+            ],
+            "text_confidence": [
+              0.886
+            ]
+          },
+          "transcription_changed": false,
+          "feedback_or_evidence_changed": false
+        },
+        {
+          "part": "B",
+          "reference": 2,
+          "before": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 48
+          },
+          "after": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 48,
+            "id_confidence": [
+              1.0
+            ],
+            "text_confidence": [
+              0.0
+            ]
+          },
+          "transcription_changed": false,
+          "feedback_or_evidence_changed": false
+        },
+        {
+          "part": "C",
+          "reference": 2,
+          "before": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 52
+          },
+          "after": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 52,
+            "id_confidence": [
+              1.0
+            ],
+            "text_confidence": [
+              0.0
+            ]
+          },
+          "transcription_changed": false,
+          "feedback_or_evidence_changed": false
+        }
+      ]
+    },
+    {
+      "sample": "1B",
+      "sha256": "9b042de49b0ed94c8eb319ab530e81e53bab968696272c81764c9782c8611bed",
+      "scope_before": "in_scope",
+      "scope_after": "in_scope",
+      "parts": [
+        {
+          "part": "A",
+          "reference": 2,
+          "before": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 235
+          },
+          "after": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 37,
+            "id_confidence": [
+              0.982
+            ],
+            "text_confidence": [
+              0.0
+            ]
+          },
+          "transcription_changed": true,
+          "feedback_or_evidence_changed": false
+        },
+        {
+          "part": "B",
+          "reference": 0,
+          "before": {
+            "reason": "missing_detection",
+            "mark": null,
+            "detections": 0,
+            "words": 0
+          },
+          "after": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 92,
+            "id_confidence": [
+              0.989
+            ],
+            "text_confidence": [
+              0.0
+            ]
+          },
+          "transcription_changed": true,
+          "feedback_or_evidence_changed": false
+        },
+        {
+          "part": "C",
+          "reference": 2,
+          "before": {
+            "reason": "missing_detection",
+            "mark": null,
+            "detections": 0,
+            "words": 0
+          },
+          "after": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 104,
+            "id_confidence": [
+              1.0
+            ],
+            "text_confidence": [
+              0.0
+            ]
+          },
+          "transcription_changed": true,
+          "feedback_or_evidence_changed": false
+        }
+      ]
+    },
+    {
+      "sample": "1C",
+      "sha256": "c557e12ec934cab7238f49ae6f32c3c35b79bdcf7a0559fce0f513e66d77d9a1",
+      "scope_before": "in_scope",
+      "scope_after": "in_scope",
+      "parts": [
+        {
+          "part": "A",
+          "reference": 2,
+          "before": {
+            "reason": "mark_disagreement",
+            "mark": null,
+            "detections": 1,
+            "words": 27
+          },
+          "after": {
+            "reason": "mark_disagreement",
+            "mark": null,
+            "detections": 1,
+            "words": 27,
+            "id_confidence": [
+              1.0
+            ],
+            "text_confidence": [
+              0.992
+            ]
+          },
+          "transcription_changed": false,
+          "feedback_or_evidence_changed": false
+        },
+        {
+          "part": "B",
+          "reference": 0,
+          "before": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 28
+          },
+          "after": {
+            "reason": "low_read_confidence",
+            "mark": null,
+            "detections": 1,
+            "words": 28,
+            "id_confidence": [
+              1.0
+            ],
+            "text_confidence": [
+              0.0
+            ]
+          },
+          "transcription_changed": false,
+          "feedback_or_evidence_changed": false
+        },
+        {
+          "part": "C",
+          "reference": 0,
+          "before": {
+            "reason": "mark_disagreement",
+            "mark": null,
+            "detections": 1,
+            "words": 17
+          },
+          "after": {
+            "reason": "mark_disagreement",
+            "mark": null,
+            "detections": 1,
+            "words": 17,
+            "id_confidence": [
+              0.999
+            ],
+            "text_confidence": [
+              0.996
+            ]
+          },
+          "transcription_changed": false,
+          "feedback_or_evidence_changed": false
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "parts": 9,
+    "detected": 9,
+    "left_review": 0,
+    "matched": 0,
+    "proposed": 0,
+    "review_reasons": {
+      "mark_disagreement": 3,
+      "low_read_confidence": 6
+    }
+  }
+}

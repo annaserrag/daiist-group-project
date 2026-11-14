@@ -25,6 +25,31 @@ class SelectedPDF(unittest.TestCase):
         self.assertIsNone(compare_reads(lines("D. Other"), lines("D. Other"), ids)[0]["question_id"])
         self.assertEqual(len(compare_reads(lines("A. one", "A. two"), lines("A. one", "A. two"), ids)), 2)
 
+    def test_inline_parts_preserve_words_labels_and_original_confidence(self):
+        ids = {"d": 7, "e": 4, "f": 2}
+        text = "D. A first sentence. E. Next answer! (F) Last answer."
+        scores = [.98] * len(text)
+        scores[text.index("E.")] = .62
+        rows = compare_reads([(text, scores)], lines("D. A first sentence.", "E. Next answer!", "(F) Last answer."), ids)
+        self.assertEqual([(r["question_id"], r["text"]) for r in rows],
+                         [(7, "A first sentence."), (4, "Next answer!"), (2, "Last answer.")])
+        self.assertEqual(rows[1]["id_confidence"], .62)
+        self.assertTrue(all(r["confidence"] == .98 for r in rows))
+
+    def test_inline_initials_references_duplicates_and_unconfirmed_labels(self):
+        ids = {"a": 1, "b": 2, "c": 3}
+        for text in ("A. Dr. B. Smith mentioned vitamin B. It helps.",
+                     "A. J. B. Smith chose option (C) in May.",
+                     "A. See Appendix B. It has a table. X. Unknown."):
+            rows = compare_reads(lines(text), lines(text), ids)
+            self.assertEqual([r["text"] for r in rows], [text[3:]])
+        first = lines("A) Starting", "here. B) Next. B) Conflict.")
+        self.assertEqual([r["question_id"] for r in compare_reads(first, first, ids)], [1, 2, 2])
+        conflict = compare_reads(first, lines("A) Starting here. B) Next."), ids)
+        self.assertTrue(all(r["id_confidence"] == 0 for r in conflict))
+        loose = lines("Unassigned answer. B. More text.")
+        self.assertEqual([r["question_id"] for r in compare_reads(loose, loose, ids)], [None])
+
     def test_pdf_entry_point_uses_definition_and_fails_closed_on_another_exam(self):
         exam = WrittenExam.model_validate(dict(title="Chemistry", questions=[dict(
             question_id=3, paper_label="A", question="Name the gas.", reference_answer="secret reference",
