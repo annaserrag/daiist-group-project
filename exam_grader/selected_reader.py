@@ -3,7 +3,7 @@ import json
 import re
 
 from .handoff import VisionExam
-from .page_confidence import confirmed_text_score, page_lines, span_score, word_scores
+from .page_confidence import _TEXT_CHECK_THRESHOLD, confirmed_text_score, page_lines, span_score, word_scores
 
 _TRANSCRIBE = (
     "Transcribe the student's handwritten responses verbatim. Keep the visible question or part label "
@@ -62,10 +62,40 @@ def observations(lines, identifiers):
     return rows
 
 
-def compare_reads(first, second, identifiers):
+def prose_case_only(first, second):
+    """Allow a tie-break only on the initial letter of ordinary-looking prose words."""
+    if len(first) != len(second) or first == second:
+        return False
+    for a, b in zip(first, second, strict=True):
+        if a == b:
+            continue
+        if not (re.fullmatch(r"[A-Za-z][a-z]{3,}[.,;:?!]?", a)
+                and re.fullmatch(r"[A-Za-z][a-z]{3,}[.,;:?!]?", b) and a.lower() == b.lower()):
+            return False
+    return True
+
+
+def confirmed_case_read(first, second, witness):
+    """Use only scores for the exact word at the same position, including its case."""
+    if witness["id_confidence"] < .85:
+        return None
+    readings = [" ".join(s.strip() for s, _ in row["lines"]) for row in (first, second, witness)]
+    words = [text.split() for text in readings]
+    if words[2] not in words[:2] or "[?]" in readings[2] or "\ufffd" in readings[2]:
+        return None
+    scores = [[w for s, v in row["lines"] for w in word_scores(s, v)] for row in (first, second, witness)]
+    confidence = min(max(values[i] for values, tokens in zip(scores, words) if tokens[i] == word)
+                     for i, word in enumerate(words[2]))
+    if confidence >= _TEXT_CHECK_THRESHOLD:
+        return readings[2], confidence
+    return None
+
+
+def compare_reads(first, second, identifiers, *, reread=None, review_targets=None):
     rows, checks = [observations(lines, identifiers) for lines in (first, second)]
     same_labels = [r["label"] for r in rows] == [r["label"] for r in checks]
     answers = []
+    third_rows = None
     for i, row in enumerate(rows):
         parts = row["lines"]
         text = " ".join(s.strip() for s, _ in parts)
@@ -75,6 +105,29 @@ def compare_reads(first, second, identifiers):
             id_confidence = min(row["id_confidence"], check["id_confidence"])
             scores = [w for s, values in parts for w in word_scores(s, values)]
             confidence = confirmed_text_score(text, scores, check["lines"]) or 0.0
+            if not confidence and reread and id_confidence >= .85:
+                other_text = " ".join(s.strip() for s, _ in check["lines"])
+                if prose_case_only(text.split(), other_text.split()):
+                    if third_rows is None:
+                        try:
+                            witness_lines = reread()
+                        except (OSError, RuntimeError):
+                            witness_lines = []
+                        third_rows = ([] if witness_lines and witness_lines[-1] == ("[?]", [0.0] * 3)
+                                      else observations(witness_lines, identifiers))
+                    if [r["label"] for r in third_rows] == [r["label"] for r in rows]:
+                        confirmed = confirmed_case_read(row, check, third_rows[i])
+                        if confirmed:
+                            text, confidence = confirmed
+            if review_targets is not None and confidence < _TEXT_CHECK_THRESHOLD and id_confidence >= .85:
+                words = text.split()
+                other = [w for line, _ in check["lines"] for w in line.split()]
+                other_scores = [s for line, v in check["lines"] for s in word_scores(line, v)]
+                if len(words) == len(other):
+                    targets = {str(pos): other[pos] for pos, word in enumerate(words)
+                               if word != other[pos] or max(scores[pos], other_scores[pos]) < _TEXT_CHECK_THRESHOLD}
+                    if targets:
+                        review_targets.append(dict(question_id=row["question_id"], words=words, targets=targets))
         answers.append(dict(question_id=row["question_id"], text=text, confidence=confidence,
                             id_confidence=id_confidence, state="read" if text else "unreadable"))
     if not same_labels:
@@ -109,8 +162,8 @@ def read_pdf(path, definition):
     from vision import reader
 
     identifiers = {q["label"].casefold(): q["id"] for q in definition["questions"]}
-    answers, scopes = [], []
-    for page in reader.load_pages(path):
+    answers, scopes, review_pages = [], [], []
+    for page_number, page in enumerate(reader.load_pages(path), 1):
         if reader.ink(page) < reader.BLANK_INK:
             continue
         image = Image.fromarray(page).convert("RGB")
@@ -126,7 +179,19 @@ def read_pdf(path, definition):
         if any(lines and lines[-1] == ("[?]", [0.0] * 3) for lines in (first, second)):
             scopes.append("unknown")
         else:
-            answers.extend(compare_reads(first, second, identifiers))
+            def reread():
+                detail = Image.fromarray(page).convert("RGB")
+                return page_lines(detail, reader,
+                                  prompt="Copy the handwritten answers exactly as written, including capitalization, "
+                                         "punctuation and original part labels. Omit printed instructions. "
+                                         "Use [?] for any illegible words. Do not correct or solve.",
+                                  limit=1536, flag_truncation=True)
+            targets = []
+            answers.extend(compare_reads(first, second, identifiers, reread=reread, review_targets=targets))
+            if targets:
+                parts = [[word for line, _ in r["lines"] for word in line.split()]
+                         for r in observations(first, identifiers)]
+                review_pages.append(dict(page=page_number, parts=parts, answers=targets))
     status = "unreadable"
     if "different" in scopes:
         status = "out_of_scope"
@@ -136,4 +201,6 @@ def read_pdf(path, definition):
                    exam_id=definition["exam_id"] if status == "in_scope" else None,
                    answers=answers if status == "in_scope" else [], usage={"cost_eur": 0.0})
     VisionExam.model_validate(payload)
+    if status == "in_scope" and review_pages:
+        payload["_review_pages"] = review_pages
     return payload

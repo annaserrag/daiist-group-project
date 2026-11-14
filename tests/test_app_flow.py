@@ -41,6 +41,26 @@ class AppFlow(unittest.TestCase):
         self.assertEqual(marks, [[3, None]])
         self.assertIn("Ecology notes, p. 5", app.referral_details(context, 3)[2])
 
+    def test_review_crops_are_bound_to_the_graded_pdf_and_selected_referral(self):
+        with tempfile.TemporaryDirectory() as directory, patch(
+            "exam_grader.vision_finetune.read_review_lines", return_value=([], "word in context")
+        ) as read_lines:
+            pdf = Path(directory) / "scan.pdf"
+            pdf.write_bytes(b"original upload")
+            crop = {"page": 1}
+            context = {"crop_pdf": str(pdf), "crop_sha256": pipeline.file_sha256(pdf),
+                       "referrals": {1: {"crop": crop}, 2: {}}, "proposals": [None, None]}
+            self.assertEqual(app.show_review_lines(context, 2)[0], [])
+            read_lines.assert_not_called()
+            self.assertEqual(app.show_review_lines(context, 1), ([], "word in context"))
+            read_lines.assert_called_once_with(pdf, crop)
+            pdf.write_bytes(b"replacement upload")
+            self.assertIn("original upload", app.show_review_lines(context, 1)[1])
+            pdf.unlink()
+            self.assertIn("original upload", app.show_review_lines(context, 1)[1])
+            self.assertEqual(read_lines.call_count, 1)
+            self.assertEqual(context["proposals"], [None, None])
+
     def test_grade_correct_sign_and_log_feedback(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(logbook,"LOG_DIR",Path(directory)), patch.object(logbook,"ARCHIVE_DIR",Path(directory)/"archive"):
             status,evidence,marks,context,signed = app.display(pipeline.EXAMPLE)

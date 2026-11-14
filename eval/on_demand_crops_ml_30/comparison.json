@@ -1,0 +1,17 @@
+{
+  "before": "3c15036d05594813b1acf0a801fbc81a",
+  "after": "6298bee156a74009ab0883e5483e2a8a",
+  "cases": 30,
+  "totals": {
+    "all_slots": 1050,
+    "target_slots": 105,
+    "review": 39,
+    "proposed": 66,
+    "comparable": 65,
+    "exact": 65
+  },
+  "changed_teacher_rows": [],
+  "changed_case_outcomes": [],
+  "changed_exam_statuses": [],
+  "changed_component_versions": []
+}

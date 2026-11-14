@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import numpy as np
 
@@ -49,6 +49,53 @@ class SelectedPDF(unittest.TestCase):
         self.assertTrue(all(r["id_confidence"] == 0 for r in conflict))
         loose = lines("Unassigned answer. B. More text.")
         self.assertEqual([r["question_id"] for r in compare_reads(loose, loose, ids)], [None])
+
+    def test_case_tiebreak_keeps_verified_spelling_and_scores(self):
+        first = lines("A. The spring flows.", "B. Power belongs to Parliament.")
+        second = lines("A. The Spring flows.", "B. Power belongs to parliament.")
+        witness = Mock(return_value=lines("A. The Spring flows.", "B. Power belongs to Parliament."))
+        rows = compare_reads(first, second, {"a": 3, "b": 2}, reread=witness)
+        self.assertEqual([r["text"] for r in rows], ["The Spring flows.", "Power belongs to Parliament."])
+        self.assertEqual([r["confidence"] for r in rows], [.98, .98])
+        witness.assert_called_once_with()
+        for check in [lines("B. The spring flows."), lines("A. The spring froze."),
+                      lines("A. The spring flows.") + [("[?]", [0.] * 3)]]:
+            self.assertEqual(compare_reads(first[:1], second[:1], {"a": 3, "b": 2},
+                                           reread=lambda: check)[0]["confidence"], 0)
+        low = [("A. The spring flows.", [.4] * len("A. The spring flows."))]
+        # A weak first read plus a weak agreeing witness cannot borrow confidence from the dissent.
+        weak = [(s, [.98]*3 + scores[3:]) for s, scores in low]
+        unchanged = compare_reads(weak, second[:1], {"a": 3}, reread=lambda: weak)[0]
+        self.assertEqual((unchanged["text"], unchanged["confidence"]), ("The spring flows.", 0))
+        # The unchanged word can use the stronger second pass even though that pass dissents on case.
+        text = "A. The spring flows."
+        partial = [(text, [.98] * text.index("flows") + [.45] * len("flows."))]
+        self.assertEqual(compare_reads(partial, second[:1], {"a": 3}, reread=lambda: partial)[0]["confidence"], .98)
+
+    def test_case_tiebreak_does_not_run_on_symbols_or_substantive_differences(self):
+        reread = Mock(side_effect=AssertionError("unexpected tie-break"))
+        for a, b in [("CO", "Co"), ("mW", "MW"), ("x", "X"), ("NASA", "Nasa"),
+                     ("myVar", "myvar"), ("should", "shall"), ("laws.", "Laws!"),
+                     ("some laws", "Laws")]:
+            rows = compare_reads(lines("A. See " + a), lines("A. See " + b), {"a": 3}, reread=reread)
+            self.assertEqual(rows[0]["confidence"], 0)
+
+    def test_line_crops_need_unique_neighboring_words(self):
+        from exam_grader.selected_line_crops import crop_evidence
+        first = "these cells require Oxygen to survive".split()
+        self.assertEqual(crop_evidence(first, [first], [3], lines("require oxygen to survive"))[3], {"oxygen": .98})
+        for page in ([first, first], [first, "cells require water to survive".split()]):
+            self.assertFalse(crop_evidence(first, page, [3], lines("require oxygen to survive")))
+        self.assertFalse(crop_evidence(first, [first], [3], lines("oxygen survives")))
+
+    def test_collecting_crop_targets_keeps_the_same_proposal_inputs(self):
+        first, second = lines("A. The current powers apply."), lines("A. The Current powers apply.")
+        targets = []
+        before = compare_reads(first, second, {"a": 3})
+        after = compare_reads(first, second, {"a": 3}, review_targets=targets)
+        self.assertEqual(before, after)
+        self.assertEqual(targets[0]["targets"], {"1": "Current"})
+        self.assertEqual(targets[0]["question_id"], 3)
 
     def test_pdf_entry_point_uses_definition_and_fails_closed_on_another_exam(self):
         exam = WrittenExam.model_validate(dict(title="Chemistry", questions=[dict(

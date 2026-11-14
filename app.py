@@ -1,6 +1,8 @@
 """Local Component 2 workbench and course-compatible Gradio app."""
 import math
 import os
+from pathlib import Path
+from subprocess import SubprocessError
 from time import perf_counter
 
 import gradio as gr
@@ -169,6 +171,16 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
     context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
                "limits":[(r["question_id"],r["max_mark"]) for r in teacher["answers"]],
                "referrals":referrals, "review_started":perf_counter(), "proposals":[point for _,point in marks]}
+    eligible = {q for q, referral in referrals.items() if referral["reason"] == "low read confidence"}
+    for page in teacher.get("crop_pages", []):
+        for answer in page["answers"]:
+            q = answer["question_id"]
+            if q in eligible and q in custom:
+                referrals[q]["crop"] = dict(page=page["page"], parts=page["parts"], words=answer["words"],
+                                            targets=answer["targets"], label=custom[q].paper_label or str(q))
+    if any("crop" in referral for referral in referrals.values()):
+        context["crop_pdf"] = str(Path(raw_input).resolve())
+        context["crop_sha256"] = pipeline.file_sha256(raw_input)
     return status, evidence, marks, context, None
 
 def referral_options(context):
@@ -190,6 +202,21 @@ def referral_details(context, question):
     if item.get("passages"):
         support += "\n\nRetrieved passages for teacher inspection (unverified)\n" + "\n\n".join(item["passages"])
     return f"{item['question']}\n\n{reading}", guide, support
+
+
+def show_review_lines(context, question):
+    from exam_grader.vision_finetune import read_review_lines
+    item = (context or {}).get("referrals", {}).get(question, {})
+    if not item.get("crop") or not context.get("crop_pdf"):
+        return [], "No handwriting crop is available for this referral."
+    path = Path(context["crop_pdf"])
+    try:
+        if not path.is_file() or pipeline.file_sha256(path) != context["crop_sha256"]:
+            return [], "The graded PDF is no longer available. Grade the original upload again."
+        images, text = read_review_lines(path, item["crop"])
+    except (ImportError, OSError, RuntimeError, ValueError, IndexError, SubprocessError):
+        return [], "The scan lines could not be loaded. Inspect the original PDF."
+    return images, text or "No scan line could be matched to the disputed words."
 
 
 def apply_review_mark(context, question, point, marks):
@@ -286,6 +313,20 @@ def build_app():
                 reading = gr.Textbox(label="Question and student reading", interactive=False)
                 standard = gr.Textbox(label="Reference answer and marking guide", interactive=False)
                 support = gr.Textbox(label="Review reason and sources", interactive=False)
+                @gr.render(inputs=[ctx, review_q])
+                def crop_panel(context, question):
+                    item = (context or {}).get("referrals", {}).get(question, {})
+                    if "crop" not in item:
+                        return
+                    # A newly selected referral gets its own output components, including during a slow OCR call.
+                    key = f"{context['id']}-{question}"
+                    button = gr.Button("Show disputed handwriting", key=f"crop-button-{key}")
+                    crops = gr.Gallery(label="Original scan lines", columns=1, height="auto", format="png",
+                                       interactive=False, key=f"crop-gallery-{key}")
+                    wording = gr.Textbox(label="Disputed words in context", interactive=False, lines=4,
+                                         key=f"crop-text-{key}")
+                    button.click(show_review_lines, [ctx, review_q], [crops, wording], api_name=False)
+
                 review_point = gr.Number(label="Teacher mark for this question", value=None)
                 record_point = gr.Button("Record mark and show next referral")
             approve = gr.Button("Sign off all marks")

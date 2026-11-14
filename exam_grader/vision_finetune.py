@@ -20,7 +20,17 @@ with contextlib.redirect_stdout(sys.stderr):
     from vision import reader
     if getattr(reader, "PAGE_READER", None) != "Qwen/Qwen3-VL-2B-Instruct":
         raise RuntimeError("GRADE_VISION_ROOT must point to a checkout whose page reader is the pretrained Qwen3-VL-2B.")
-    if len(sys.argv) > 3:
+    if len(sys.argv) > 3 and sys.argv[3] == "review-lines":
+        from exam_grader.selected_line_crops import from_pdf
+        from base64 import b64encode
+        from io import BytesIO
+        images, detail = from_pdf(sys.argv[1], json.load(sys.stdin))
+        result = {"images": [], "detail": detail}
+        for image, label in images:
+            buf = BytesIO()
+            image.save(buf, format="PNG")
+            result["images"].append([b64encode(buf.getvalue()).decode("ascii"), label])
+    elif len(sys.argv) > 3:
         from exam_grader.selected_reader import read_pdf
         result = read_pdf(sys.argv[1], json.load(sys.stdin))
     else:
@@ -129,12 +139,25 @@ def read_selected_exam(path, *, definition):
     return read_pdf(pdf, definition)
 
 
-def _external_raw(pdf, root, definition=None):
+def read_review_lines(pdf, item):
+    root = os.getenv("GRADE_VISION_ROOT")
+    if not root:
+        from .selected_line_crops import from_pdf
+        return from_pdf(pdf, item)
+    from base64 import b64decode
+    from io import BytesIO
+    from PIL import Image
+    data = _external_raw(Path(pdf).resolve(strict=True), root, item, mode="review-lines")
+    return [(Image.open(BytesIO(b64decode(raw))).convert("RGB"), label)
+            for raw, label in data["images"]], data["detail"]
+
+
+def _external_raw(pdf, root, definition=None, *, mode="selected"):
     # The two branches can keep their own dependency locks and Python environments.
     checkout = Path(root).expanduser().resolve(strict=True)
     python = checkout / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     result = subprocess.run([str(python), "-X", "utf8", "-c", _WORKER, str(pdf), str(Path(__file__).resolve().parents[1]),
-                             *(["selected"] if definition is not None else [])],
+                             *([mode] if definition is not None else [])],
                             input=json.dumps(definition).encode() if definition is not None else None,
                             cwd=checkout, stdout=subprocess.PIPE, check=True)
     return json.loads(result.stdout)

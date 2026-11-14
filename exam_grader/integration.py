@@ -30,6 +30,9 @@ def connect(raw_input, *, read_exam, vision_version, index, agent=None,
         payload = {"schema_version":"vision.exam.v1","exam_status":"unreadable","answers":[]}
     vision_seconds = perf_counter() - started
     result = grade_exam(payload,index=index,agent=agent,policy=policy,allow_remote=approved, written_exam=written_exam)
+    if (written_exam and Path(raw_input).suffix.lower() == ".pdf" and isinstance(payload, dict)
+            and payload.get("_review_pages") and result["teacher"]["exam_status"] == "in_scope"):
+        result["teacher"]["crop_pages"] = payload["_review_pages"]
     record = result["record"]
     grader = record["outputs"]["component_b"]
     vision_usage = VisionUsage(tokens=0, cost_eur=0.0)
