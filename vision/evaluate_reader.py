@@ -40,7 +40,7 @@ CACHE = datasets.WORK / "reader_cache"
 # README; NM and "-" appear the same way. Anything else counts as an answer.
 NOT_MARKED = {"NC", "NM", "-", ""}
 # The page mode with each vision-language model compared on the development set (vision/develop_reader.py).
-PAGE_MODELS = {"page": reader.BASE_PAGE_READER, "page-lora": reader.PAGE_READER,
+PAGE_MODELS = {"page": reader.BASE_PAGE_READER, "page-lora": reader.LORA_PAGE_READER,
                "page-4b": "Qwen/Qwen3-VL-4B-Instruct"}
 
 

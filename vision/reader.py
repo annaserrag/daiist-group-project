@@ -48,7 +48,11 @@ WEIGHTS = ROOT / "weights"
 OCR_MODEL = "microsoft/trocr-base-handwritten"   # reads the crops in the 'detectors' and 'rules' modes
 LINE_READER = "microsoft/trocr-base-handwritten"  # reads each line in the 'ocr' mode (a TrOCR or a vision-language model)
 BASE_PAGE_READER = "Qwen/Qwen3-VL-2B-Instruct"
-PAGE_READER = BASE_PAGE_READER + "+weights/page_reader_lora"
+# The LoRA reader (vision/finetune_reader.py) read characters slightly better on the development set but found fewer
+# question numbers on answer sheets (0.39 against 0.43), the part grading depends on, so the default stays the
+# pretrained reader. The adapter is kept and can be selected by name (artifacts/vision/dev_lora_comparison.json).
+LORA_PAGE_READER = BASE_PAGE_READER + "+weights/page_reader_lora"
+PAGE_READER = BASE_PAGE_READER
 PAGE_ADAPTER_SHA256 = "12e3a113ff186a494aaaa41192a12cbbddba28814e3386b6d57c0c6112289fc4"
 PAGE_READER_REVISION = "89644892e4d85e24eaac8bacfd4f463576704203"  # evaluated public checkpoint
 PAGE_WIDTH = 2000   # pages are read at about this width; TrOCR resizes every crop to 384 px anyway
@@ -476,7 +480,7 @@ def versions(mode: str) -> dict:
     if mode == "page":
         detectors = {**detectors, "generate": VLM_GENERATE, "blank_ink": BLANK_INK}
     version = {"reader": READER_VERSION, "mode": mode, "ocr": ocr, "detectors": detectors}
-    if mode == "page" and ocr == BASE_PAGE_READER + "+weights/page_reader_lora":
+    if mode == "page" and ocr == LORA_PAGE_READER:
         version.update(base_revision=PAGE_READER_REVISION, adapter_sha256=PAGE_ADAPTER_SHA256)
     return version
 

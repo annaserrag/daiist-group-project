@@ -8,7 +8,7 @@ from pathlib import Path
 from .catalog import OPTIONS, OPTION_TEXTS, QUESTIONS
 from .handoff import VisionExam
 
-VERSION = "vision-finetune/reader-v3/page-lora-12e3a113/bridge-v8"
+VERSION = "vision-finetune/reader-v3/page/bridge-v8"
 _ANSWER_SHEET_HEADER = "data science examination | answer sheet"
 _BARE_CHOICE = re.compile(r"([1-9][0-9]?)\s+([A-Da-d])")
 _CHOICE_WITH_TEXT = re.compile(r"([A-Da-d])(?:\s*[,.:)]\s*|\s+)(.+)", re.DOTALL)
@@ -18,8 +18,8 @@ with contextlib.redirect_stdout(sys.stderr):
     sys.path.insert(1, sys.argv[2])
     from exam_grader.page_confidence import read_exam
     from vision import reader
-    if getattr(reader, "PAGE_ADAPTER_SHA256", None) != "12e3a113ff186a494aaaa41192a12cbbddba28814e3386b6d57c0c6112289fc4" or "+" not in reader.PAGE_READER:
-        raise RuntimeError("GRADE_VISION_ROOT must point to a checkout with the evaluated LoRA reader.")
+    if getattr(reader, "PAGE_READER", None) != "Qwen/Qwen3-VL-2B-Instruct":
+        raise RuntimeError("GRADE_VISION_ROOT must point to a checkout whose page reader is the pretrained Qwen3-VL-2B.")
     result = read_exam(sys.argv[1])
 json.dump(result, sys.stdout)
 """
