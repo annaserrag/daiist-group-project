@@ -1,0 +1,23 @@
+{
+  "smoke": false,
+  "chosen": {
+    "question_no": {
+      "run": "question_no_yolo11n_scan_f0_lr0.002",
+      "weights": "weights/question_no_detector.pt",
+      "mAP50_95": 0.22912890497079497,
+      "mAP50": 0.48969663937705415,
+      "ap50_minus_rules": 0.5035090137849527,
+      "reader_conf": 0.25,
+      "cpu_ms_per_image": 29.8
+    },
+    "text_line": {
+      "run": "text_line_yolo11n_default_f0_lr0.002",
+      "weights": "weights/text_line_detector.pt",
+      "mAP50_95": 0.4949578674061691,
+      "mAP50": 0.8780816710529539,
+      "ap50_minus_rules": 0.7534268805064794,
+      "reader_conf": 0.25,
+      "cpu_ms_per_image": 29.0
+    }
+  }
+}

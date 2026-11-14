@@ -1,6 +1,6 @@
-# Exam grading assistant · Component 2
+# Exam grading assistant
 
-Start the local Gradio app from this folder in PowerShell.
+Follow [the integrated setup and two-PDF acceptance check](SETUP.md) to install the reader and grader. Start the local Gradio app from this folder.
 
 ~~~powershell
 uv run --locked --no-dev python app.py

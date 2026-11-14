@@ -57,7 +57,7 @@ uv run --no-dev python -m exam_grader.handoff exam_grader/data/vision-example.js
 
 ## Connect the actual vision reader
 
-From the grading checkout, point the adapter at the local root of Anna's branch. The path below matches Javi's Windows worktree. On a new machine first install the reader environment with `uv sync --locked --no-dev` in Anna's checkout. The first nonblank page read downloads the pretrained model. On Windows, check that the reader's PyTorch build supports your GPU if you want CUDA acceleration.
+In the integrated branch, follow [SETUP.md](SETUP.md) to run both components in one environment. The following optional workflow is for developers testing two separate checkouts. From the grading checkout, point the adapter at the local root of Anna's branch. The path below matches Javi's Windows worktree. On a new machine first install the reader environment with `uv sync --locked --no-dev` in Anna's checkout. The first nonblank page read downloads the pretrained model. On Windows, check that the reader's PyTorch build supports your GPU if you want CUDA acceleration.
 
 ```powershell
 $env:GRADE_VISION_ROOT = "$env:LOCALAPPDATA/daiist-component2/worktrees/vision-finetune"

@@ -1,0 +1,7 @@
+detector,model,images,ap50,precision,recall,mAP50_95,mAP50
+question_no,finetuned (chosen on val),21,0.7946614276086916,0.6511627906976745,0.7777777777777778,0.3977467476658984,0.79500453651107
+question_no,rules (no learning),21,0.0,0.0,0.0,,
+question_no,"COCO YOLO11n zero-shot, any box",21,0.0,0.0,0.0,,
+text_line,finetuned (chosen on val),44,0.8822439055179058,0.8035714285714286,0.84375,0.44891832763115624,0.8626157469244099
+text_line,rules (no learning),44,0.18972211916143922,0.24728260869565216,0.56875,,
+text_line,"COCO YOLO11n zero-shot, any box",44,0.0010073061117564272,0.0,0.0,,

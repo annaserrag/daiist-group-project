@@ -1,0 +1,5 @@
+detector,model,ap50,precision,recall
+question_no,rules (no learning),0.0025547862251776698,0.010882708585247884,0.12
+question_no,"COCO YOLO11n zero-shot, any box",1.2055455093429777e-05,0.0,0.0
+text_line,rules (no learning),0.13554063947277523,0.2609427609427609,0.5098684210526315
+text_line,"COCO YOLO11n zero-shot, any box",0.006824864541225832,0.0,0.0

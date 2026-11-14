@@ -11,6 +11,14 @@ dependencies = [
     "numpy>=2.0",
     "pandas>=2.2",
     "pypdf>=6,<8",
+    # the exam reader (vision/reader.py): TrOCR, the YOLO detectors, PDF pages
+    "torch==2.14.1",
+    "torchvision==0.29.1",
+    "transformers>=4.46",
+    "ultralytics>=8.4,<8.5",
+    "opencv-python-headless>=4.10",
+    "pypdfium2>=4.30",
+    "pillow>=10.0",
 ]
 
 # Only for running evaluate.ipynb locally; not installed on the Space.
@@ -19,9 +27,28 @@ dev = [
     "nbconvert>=7.16",
     "ipykernel>=6.29",
 ]
+# Only for training the vision detectors (vision/train_detector.py); not installed on the Space.
+# (torch, ultralytics and opencv are already in the main dependencies, for the reader.)
+train = [
+    "roboflow>=1.7",
+    "matplotlib>=3.9",
+    "pyarrow>=17",  # reads the fine-tuning data (vision/finetune_data.py)
+    "peft>=0.17",   # LoRA for fine-tuning the page reader (vision/finetune_reader.py)
+]
 
 [tool.uv]
 required-environments = [
     "sys_platform == 'darwin' and platform_machine == 'arm64'",
     "sys_platform == 'win32' and platform_machine == 'AMD64'",
 ]
+
+# Windows x64 uses the same CUDA-enabled wheels as the validated page reader.
+# PyTorch selects CPU when a compatible NVIDIA driver is unavailable.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu130", marker = "sys_platform == 'win32' and platform_machine == 'AMD64'" }]
+torchvision = [{ index = "pytorch-cu130", marker = "sys_platform == 'win32' and platform_machine == 'AMD64'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true

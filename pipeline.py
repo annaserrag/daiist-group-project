@@ -66,7 +66,7 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
     if path.suffix.lower() == ".json":
         reader, version, input_type = read_export, "ocr-json-replay-v1", "ocr_export"
     elif path.suffix.lower() == ".pdf":
-        module_name = os.getenv("GRADE_VISION_MODULE", "vision")
+        module_name = os.getenv("GRADE_VISION_MODULE") or "exam_grader.vision_finetune"
         if find_spec(module_name) is None:
             reader = lambda _: {"schema_version":"vision.exam.v1", "exam_status":"unreadable", "answers":[]}
             version, input_type = "vision-unavailable", "pdf_awaiting_reader"

@@ -75,13 +75,9 @@ The team packet was assembled with Codex. Transcriptions were checked against th
 
 #### Run with Anna's reader
 
-From the grading checkout, configure the two environments and check the first PDF as described in [the handoff](../HANDOFF.md#connect-the-actual-vision-reader). For the full evaluation, configure the grader's local key and use the frozen PDF hashes below. The PDFs contain no searchable answer layer. The evaluation runner keeps the reference readings and teacher marks separate from both components.
+Install the integrated checkout and run both acceptance PDFs as described in [SETUP.md](../SETUP.md). For the full evaluation, configure the grader's local key and use the frozen PDF hashes below. The PDFs contain no searchable answer layer. The evaluation runner keeps the reference readings and teacher marks separate from both components.
 
 ```powershell
-$env:GRADE_VISION_MODULE = 'exam_grader.vision_finetune'
-$env:GRADE_VISION_ROOT = "$env:LOCALAPPDATA/daiist-component2/worktrees/vision-finetune"
-uv run --locked --no-dev python -c "import importlib,os; r=importlib.import_module(os.environ['GRADE_VISION_MODULE']); assert callable(r.read_exam) and r.VERSION; print(r.VERSION)"
-if ($LASTEXITCODE -ne 0) { throw 'Install the reader before running the packet.' }
 $packet = Get-Content -Raw eval/case_references.json | ConvertFrom-Json
 $env:GRADE_APPROVED_HASHES = ($packet.psobject.Properties.Value.sha256 -join ' ')
 uv run --locked --no-dev python main.py evaluate

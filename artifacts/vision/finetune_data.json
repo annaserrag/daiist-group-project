@@ -1,0 +1,42 @@
+{
+  "train": {
+    "exam": {
+      "pages": 500,
+      "lines": 11630,
+      "numbered_lines": 7368
+    },
+    "gnhk": {
+      "pages": 512,
+      "lines": 6842,
+      "numbered_lines": 236
+    }
+  },
+  "val": {
+    "exam": {
+      "pages": 100,
+      "lines": 2307,
+      "numbered_lines": 1464
+    },
+    "gnhk": {
+      "pages": 161,
+      "lines": 1931,
+      "numbered_lines": 53
+    }
+  },
+  "gnhk_dropped": {
+    "duplicate_train_files": 3,
+    "val_pages_sharing_text": [
+      "eng_AF_041.jpg",
+      "eng_AS_036.jpg",
+      "eng_AS_045.jpg",
+      "eng_AS_063.jpg",
+      "eng_EU_014.jpg",
+      "eng_EU_069.jpg",
+      "eng_EU_139.jpg",
+      "eng_EU_313.jpg",
+      "eng_NA_065.jpg",
+      "eng_NA_085.jpg",
+      "eng_NA_142.jpg"
+    ]
+  }
+}

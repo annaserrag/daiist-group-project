@@ -1,18 +1,37 @@
 # Setup
 
-**Exam grading project:** from the repo root, run `uv sync --locked --no-dev` and `uv run --locked --no-dev python app.py`. “Try synthetic OCR example” works without a key. For the private retrieval worksheet run `uv run --locked --no-dev python -m exam_grader.worksheet`. For live written marking set GEMINI_API_KEY locally; only server-approved, vetted inputs may be sent. The public corpus is included. See [Component 2 instructions](README.md) for the vector build, approval hashes, course evaluation and test commands, and [the integration contract](HANDOFF.md) to configure the team's PDF reader. Until that reader is connected, queued PDFs cannot receive marks. The general course setup follows.
+## Run the integrated exam grader from a fresh clone
 
-## Install
+Open the repository at the version you want to grade and run the commands below from its root. Use [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.12 (uv can install Python). The committed lock contains both the handwriting reader and the grader. Leave `GRADE_VISION_MODULE` and `GRADE_VISION_ROOT` unset. No second checkout, training set or fine-tuning is needed.
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/). One member forks this repo and adds the rest of the team as collaborators (*Settings → Collaborators*). Each of you clones the fork and runs `uv sync`.
+1. Install the inference dependencies.
 
-Then:
+   ```sh
+   uv sync --locked --no-dev
+   ```
 
-```bash
-uv run python app.py
-```
+2. Copy `.env.example` to `.env` (PowerShell: `Copy-Item .env.example .env`; macOS/Linux: `cp .env.example .env`). In this local file, enter your own active Gemini key and the following approved digest for the bundled, de-identified c06 PDF. c24 is marked locally. No Hugging Face token or log repository is needed for these checks. Keep secrets out of Git.
 
-You should see the template's placeholder app at <http://127.0.0.1:7860>, with its App and Monitoring tabs.
+   ```dotenv
+   GEMINI_API_KEY=<your key>
+   GRADE_APPROVED_HASHES=ff35ee20848842d1d4e76031eceb282582cb30a217d21c9e654f18b360caeb73
+   ```
+
+3. Run the acceptance check. The first nonblank PDF downloads the pinned public Qwen3-VL-2B-Instruct checkpoint from Hugging Face (several GB). Allow disk space for the model and PyTorch, an internet connection, and Gemini quota for Q21. The YOLO detector weights and course index are in this repo. The reader selects CUDA, Apple MPS or CPU depending on availability. Windows x64 uses the locked CUDA 13 wheels; a compatible NVIDIA driver enables GPU acceleration. Other hardware can have different runtimes and readings. The live Gemini response may vary.
+
+   ```sh
+   uv run --locked --no-dev python -m exam_grader.check_integration
+   ```
+
+   The check uses the same PDF processing and request logger as the app, looks up expectations after grading and exits nonzero if either case fails. **c06** should propose Q18 = 1, Q19 = 0, Q20 = 1 and Q21 = 2 with a course citation. **c24** should propose Q1 = 1 and refer Q2 as unreadable. Both PDFs are excerpts, so neither should receive a final total. An unavailable written-grading provider or an unapproved c06 leaves Q21 for review.
+
+4. Start Gradio and open the local address it prints. In **App**, upload `eval/inputs/c06.pdf` and then `eval/inputs/c24.pdf`. The app also has **Materials** and **Monitoring** tabs.
+
+   ```sh
+   uv run --locked --no-dev python app.py
+   ```
+
+The two-PDF check covers integration. For the course-wide evaluation and drift requirements see [the evaluation guide](eval/README.md) and `uv run --locked --no-dev python check.py`. The detector training commands and the optional two-checkout development workflow are in [the reader handoff](HANDOFF.md).
 
 ## API keys
 
