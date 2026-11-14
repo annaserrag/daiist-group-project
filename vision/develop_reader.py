@@ -44,6 +44,9 @@ LINE_MODELS = {"TrOCR base, lines": "microsoft/trocr-base-handwritten",
                "TrOCR large, lines": "microsoft/trocr-large-handwritten",
                "Qwen3-VL-2B, lines": "Qwen/Qwen3-VL-2B-Instruct"}
 PAGE_MODELS = {"Qwen3-VL-2B, page": "Qwen/Qwen3-VL-2B-Instruct", "Qwen3-VL-4B, page": "Qwen/Qwen3-VL-4B-Instruct"}
+# Once vision/finetune_reader.py has trained a LoRA adapter, the fine-tuned 2B is compared with the others here.
+if (ROOT / "weights" / "page_reader_lora" / "adapter_config.json").is_file():
+    PAGE_MODELS["Qwen3-VL-2B + LoRA, page"] = "Qwen/Qwen3-VL-2B-Instruct+weights/page_reader_lora"
 # The page reader the product uses, and the one Parts 3 and 4 look at. 4B reads a little more accurately (Part 2),
 # but finds fewer question numbers on SMHD, takes twice as long, and needs more memory than a free Space has.
 PAGE_LABEL = "Qwen3-VL-2B, page"

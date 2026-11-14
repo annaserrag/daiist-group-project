@@ -130,6 +130,40 @@ Download, and extract each into its own folder under `~/.cache/daiist-vision/dev
 
 `devset.py` adds the Roboflow answer-sheet pages of the detectors' test booklet (question-number boxes, no text), real pages whitened below their second line, and blank pages. These parts check reading, question numbers, and invented text. Handwritten lists are rare in public data: SMHD has 21 pages with numbered lists, and School Notebooks 2. No public dataset has whole exam pages with numbered answers and a key besides Mendeley, so handwritten multiple-choice lists like "7). B" are not in the development set. A set of handwritten a/b/c/d answers exists on IEEE DataPort (CC BY 4.0, <https://ieee-dataport.org/documents/handwritten-text-dataset>) but needs a subscription.
 
+## Fine-tuning the page reader (in progress)
+
+The next try is to fine-tune the page reader (Qwen3-VL-2B, LoRA) on exam-like handwriting. `finetune_data.py` builds its training data, with nothing from the Mendeley exams or the development set, so the development set can judge the fine-tuned reader against the pretrained one and Mendeley stays a clean evaluation. `finetune_reader.py` trains the adapter. The full run has not been done yet.
+
+Download into `~/.cache/daiist-vision/finetune/` (about 2 GB), then run `uv run --group train python -m vision.finetune_data`:
+
+- `data/*.parquet` from <https://huggingface.co/datasets/radhakrishnadeshpande/gnhk-pagelevel> into `finetune/gnhk/`: GNHK (Lee, Chung and Lee, ICDAR 2021; CC BY 4.0), 687 phone photos of English handwriting from four continents (notes, diaries, shopping lists) with every word boxed and transcribed. The original page, goodnotes.com/gnhk, now redirects to the app's home page; this copy keeps the original images and annotations, and the text is rebuilt from the annotations here.
+- `validation/*` from <https://huggingface.co/datasets/to-be/OpenHand-Synth> into `finetune/openhand/`: synthetic handwriting lines (CC BY 4.0). Only single English lines are used, split by writer (85% train, 15% validation).
+- `emnist-balanced-*` from <https://huggingface.co/datasets/Heliosoph/EMNIST> into `finetune/emnist/`: handwritten digits and letters (Cohen et al. 2017, from NIST SD 19; CC BY 4.0 on this copy). EMNIST's own train and test files go to our train and validation pages.
+
+| | pages, train | pages, validation | text lines (train) | numbered lines (train) |
+|---|---|---|---|---|
+| GNHK, real photos (its own train / test split, less leaks) | 512 | 161 | 6,842 | 236 |
+| Synthetic exam pages | 500 | 100 | 11,630 | 7,368 |
+
+A synthetic page is an A4 answer sheet, white or ruled. It has questions numbered from a random start, written with EMNIST digits and a pen-drawn '.' or ')', and about 15% of written answers get a sub-part ('2a)'). Each question is answered with an EMNIST letter A to D (40%), or with one to three OpenHand lines (60%). The target text follows the reader's prompt: one line per written line, numbers kept at the start. On GNHK, unreadable words (`%NA%`) and drawn symbols (`%math%`) are painted out of the image, crossed-out words (`%SC%`) stay on the page but not in the text, and printed words are left out, as the reader is asked for the handwriting only.
+
+Checks: three sample pages with their text are in `artifacts/vision/finetune_samples/` (synthetic only; the GNHK photos are other people's notes and stay out of the repo). No text line of 25 or more characters is shared with the development set. Two problems were found and fixed by looking at the pages. 118 GNHK photos were stored on their side with a camera rotation tag, and their word boxes are drawn on the upright page, so the tag is now applied. Some OpenHand lines had grey scanner backgrounds that showed as boxes, so their backgrounds are now brought to white. A leakage check found that GNHK's own split is by photo, not by page: some notebook pages were photographed twice, once in each split (eng_AS_063 in test is eng_AS_044 in train, framed differently). The 11 test pages that share a line of 20 or more characters with a training page are dropped from validation, and 3 files found twice in train are kept once. Between our OpenHand train and validation lines no writer is shared, and only 5 short sentences (place names) are, written by different writers. One limit remains: EMNIST characters are 28 pixels, so the numbers look thicker and blurrier than pen writing, and a few are ambiguous (an EMNIST '8' can look like 'P').
+
+### Training (`finetune_reader.py`)
+
+Run `caffeinate -i uv run --group train python -m vision.finetune_reader` (`caffeinate -i` keeps the Mac awake), or add `--smoke` for 3 steps on the 24 heaviest pages, which check speed and memory and save nothing. Stop a run with Ctrl+C, not Ctrl+Z: a paused run keeps all its memory.
+
+- **What trains.** LoRA of rank 16 on every attention and MLP projection of Qwen3-VL-2B's language model: 17.4 million parameters, 0.8% of the model. The image encoder and the model's own weights stay frozen. The adapter takes 67 MB.
+- **How it trains.** One page at a time in bfloat16, with gradient checkpointing and 8 pages per optimiser step. AdamW at 1e-4, with 10 warm-up steps then cosine decay, for one epoch: 127 steps over the 1,012 pages. The loss is only on the text the reader should write, not on the prompt.
+- **Validation loss.** It is measured on the same 60 validation pages (30 GNHK, 30 synthetic) before and after training.
+- **Output.** The adapter goes to `weights/page_reader_lora/`. The loss log goes to `artifacts/vision/finetune_log.csv` and the settings and validation losses to `finetune_result.json`.
+- **Memory.** A page takes 1,500 to 4,700 tokens, mostly image tokens: a full A4 page at the reader's width is 2,802 of them. The first full run kept the memory of every page in PyTorch's cache, grew to 57 GB on a 48 GB Mac and swapped for hours without finishing. Now the cache is emptied after every page, and the process may use at most 70% of the GPU's recommended maximum (26 GB on a 48 GB Mac). Past that it stops with an out-of-memory error instead of swapping. The log (`finetune_log.csv`, with each step's peak memory) is written as it trains, and the adapter is saved every 25 steps.
+- **Smoke test on the 24 heaviest pages, on an M5 Pro with 48 GB.** It peaked at 21.1 GB and took about 17 s per page. A full epoch should take about 4 hours. The first smoke test ran on light pages only (7.5 s and 24 GB with no cache release) and underestimated both.
+- **Fewer synthetic pages.** There are 500 synthetic pages instead of 1,000. The pretrained reader already reads them almost perfectly (validation loss 0.24, against 1.03 on GNHK), and halving them cut the run from about 6 to about 4 hours.
+- **Loss before training.** The pretrained reader's validation loss is 1.03 on GNHK and 0.24 on the synthetic pages. It already reads the synthetic pages almost perfectly, so most of what the adapter can learn is on the real GNHK pages.
+
+**How it is judged.** `reader.py` loads a model named `model+folder` as that model with the adapter merged in, so reading is as fast as before. When `weights/page_reader_lora/` exists, `develop_reader.py` adds "Qwen3-VL-2B + LoRA, page" to its comparison of readers. Whether the product switches is decided there, on the development set. Mendeley is read only after that choice is made.
+
 ## Evaluate it on the Mendeley exams
 
 Download the dataset from <https://data.mendeley.com/datasets/sf3kvjwknt/1>. Put `answerkey.txt` and `Teacher_manual_marks_Anonymized.csv` in `~/.cache/daiist-vision/mendeley/`, and the raw `Student_Pdf/Student_<n>.pdf` files in `~/.cache/daiist-vision/mendeley/pdfs/`. Leave the rest of the download where it is:
@@ -181,5 +215,6 @@ The page reader's confidence barely separates right from wrong letters (median 1
 | `artifacts/vision/reads/` | what every try read (dev text; Mendeley without the text) |
 | `artifacts/vision/dev_readers.csv`, `dev_line_boxes.csv`, `dev_number_rule.csv`, `dev_decoding.csv`, `dev_choices.json` | the reader's design choices on the development set |
 | `artifacts/vision/reader_eval_summary.csv`, `reader_eval_questions.csv` | the frozen reader on the 50 Mendeley exams: rules vs detectors vs ocr vs page with 2B and 4B (the reported result) |
+| `artifacts/vision/finetune_data.json`, `finetune_samples/` | the fine-tuning data: pages and lines per source and split, and three synthetic pages with their text |
 | `artifacts/vision/reader_eval_summary_v1_all50.csv`, `reader_eval_questions_v1_all50.csv` | the first run, rules vs detectors, which showed the detectors do not transfer |
 | `weights/question_no_detector.pt`, `weights/text_line_detector.pt` | the chosen models |

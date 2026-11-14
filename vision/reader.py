@@ -208,11 +208,17 @@ def ink(page: np.ndarray) -> float:
 
 @lru_cache(maxsize=2)
 def _vlm(name: str):
+    """name is a Hugging Face model, or 'model+folder' for that model with a LoRA adapter from this folder (relative
+    to the repo; vision/finetune_reader.py). The adapter is merged in, so reading is as fast as without it."""
     import torch
     from transformers import AutoModelForImageTextToText, AutoProcessor
-    processor = AutoProcessor.from_pretrained(name)
-    model = AutoModelForImageTextToText.from_pretrained(name, dtype=torch.bfloat16).to(device()).eval()
-    return processor, model, torch
+    base, _, adapter = name.partition("+")
+    processor = AutoProcessor.from_pretrained(base)
+    model = AutoModelForImageTextToText.from_pretrained(base, dtype=torch.bfloat16)
+    if adapter:
+        from peft import PeftModel
+        model = PeftModel.from_pretrained(model, WEIGHTS.parent / adapter).merge_and_unload()
+    return processor, model.to(device()).eval(), torch
 
 
 def vlm_read(image: Image.Image, prompt: str, name: str, max_new_tokens: int) -> list[tuple[str, float]]:

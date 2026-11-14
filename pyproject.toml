@@ -29,6 +29,8 @@ dev = [
 train = [
     "roboflow>=1.7",
     "matplotlib>=3.9",
+    "pyarrow>=17",  # reads the fine-tuning data (vision/finetune_data.py)
+    "peft>=0.17",   # LoRA for fine-tuning the page reader (vision/finetune_reader.py)
 ]
 
 [tool.uv]
