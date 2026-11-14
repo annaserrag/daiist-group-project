@@ -1,0 +1,1813 @@
+{
+  "base_revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+  "adapter_sha256": "12e3a113ff186a494aaaa41192a12cbbddba28814e3386b6d57c0c6112289fc4",
+  "counts": {
+    "answersheet": 21,
+    "asap": 40,
+    "blank": 4,
+    "notebook": 12,
+    "short": 10,
+    "smhd": 39
+  },
+  "scores": {
+    "base": {
+      "cer_smhd": 0.07176364292903026,
+      "cer_asap": 0.016517064178078474,
+      "cer_notebook": 0.04925913699605267,
+      "numbers_found_smhd": 0.8452380952380952,
+      "numbers_found_notebook": 1.0,
+      "numbers_found_answersheet": 0.42515262515262514,
+      "extra_numbers_per_page": 0.20454545454545456,
+      "invented_lines": 12
+    },
+    "lora": {
+      "cer_smhd": 0.06728343573974352,
+      "cer_asap": 0.015685629465400207,
+      "cer_notebook": 0.04493544838670235,
+      "numbers_found_smhd": 0.8785714285714286,
+      "numbers_found_notebook": 1.0,
+      "numbers_found_answersheet": 0.3857753357753358,
+      "extra_numbers_per_page": 0.06818181818181818,
+      "invented_lines": 10
+    }
+  },
+  "pages": [
+    {
+      "kind": "smhd",
+      "image": "0101.jpg",
+      "sha256": "df7ce06c51ce0de6c8fa3f99d7b255ca75871b6d56dc9daebae142277a18fc2f",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "1",
+        "2",
+        "3"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "1",
+        "2",
+        "3"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "1",
+        "2",
+        "3"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0103.jpg",
+      "sha256": "8160f8040c36bb91795cb458769b505fadac687290774dbf353784d2533947c0",
+      "expected": [
+        "1",
+        "2",
+        "1",
+        "2",
+        "3"
+      ],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0110.jpg",
+      "sha256": "0ee98ba40ae995cda99ab2bb0c30b9136f074df4defe8cc5d74389220ba17e1f",
+      "expected": [
+        "1",
+        "1"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "1"
+      ],
+      "lora": [
+        "1",
+        "1"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0113.jpg",
+      "sha256": "5ed1711def76bef8b35fc89906f7ba59dd54a900a38fea526cb8a892f6cbc48f",
+      "expected": [
+        "2",
+        "5",
+        "2",
+        "4"
+      ],
+      "boxes": null,
+      "base": [
+        "2",
+        "5",
+        "2"
+      ],
+      "lora": [
+        "2"
+      ],
+      "gained": [],
+      "lost": [
+        "2",
+        "5"
+      ]
+    },
+    {
+      "kind": "smhd",
+      "image": "0131.jpg",
+      "sha256": "3883c8a0a34868ab534c0238523d5ef0f9c37fc3ef6482abbed1bd02a7f62c1a",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0142.jpg",
+      "sha256": "8c8f6f408cfcf6d129f6637c1dce15757c214535e77e17e6748cddd413ac78ac",
+      "expected": [
+        "1",
+        "4"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "4"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0143.jpg",
+      "sha256": "a72b2b58e6a724a875d58167fa8d9a39a9811e29e2f5e3c70c0b3b0a711e7ed5",
+      "expected": [
+        "1",
+        "2",
+        "3"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0144.jpg",
+      "sha256": "8629ffdfff698c034042a26952fbb2d7a6a80396282103d266f480e40dcd19bc",
+      "expected": [
+        "1",
+        "3",
+        "5",
+        "1"
+      ],
+      "boxes": null,
+      "base": [],
+      "lora": [
+        "1",
+        "3",
+        "5",
+        "1"
+      ],
+      "gained": [
+        "1",
+        "1",
+        "3",
+        "5"
+      ],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0145.jpg",
+      "sha256": "74e22d92da0b0ed6a434216cfb8f26a3a310b5efb68a39d5f83c2c7337239d1c",
+      "expected": [
+        "1",
+        "2"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2"
+      ],
+      "lora": [
+        "1",
+        "2"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0146.jpg",
+      "sha256": "d2eedcf120c22e1f9f15e4cf5d5ffb091768147b05017dda49c75f542988863f",
+      "expected": [
+        "1",
+        "2",
+        "3"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0147.jpg",
+      "sha256": "042e06c3afef6a09d59801c6bed1b536d0933019e59b170b9ef48fe4615f4575",
+      "expected": [
+        "1",
+        "2",
+        "3"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0148.jpg",
+      "sha256": "c01876bc36a04ff79ee8a0f6703bbb14912f3ddb87f0e2c1c190d3798757f8af",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0159.jpg",
+      "sha256": "7a48b76be77f0cdd40e393f4941afc420b80931c1a5ba2f7c8f41efc3a9f9ea8",
+      "expected": [
+        "1",
+        "2"
+      ],
+      "boxes": null,
+      "base": [],
+      "lora": [
+        "1",
+        "2"
+      ],
+      "gained": [
+        "1",
+        "2"
+      ],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0236.jpg",
+      "sha256": "5f1f3b6c1146c048df6ccd09adf1bed036c3897bafc8c307c53d0bf0f4a1c827",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0501.jpg",
+      "sha256": "4275e64508e4ba27847676f7e11e62cfedbccaf389cab37eb8c221ebd3a913c6",
+      "expected": [
+        "1",
+        "3",
+        "4",
+        "5"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "3",
+        "4",
+        "5"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0502.jpg",
+      "sha256": "a19c731161541f534281b99ccea8b01bafd4436c5ea24957063b961ed59e3082",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0503.jpg",
+      "sha256": "4497eb35ac2da23e059b824904684d0586d503369651bd2b39a66d1952ec8ec0",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1"
+      ],
+      "gained": [],
+      "lost": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "kind": "smhd",
+      "image": "0505.jpg",
+      "sha256": "2b30cd34aca5b0ae0a55cbc554ac605bc135ab80fe150ead84bf394a24872f7e",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0523.jpg",
+      "sha256": "3f137a8c46d55c887b6c265a8e9151f23c62439caf77b54905e8c7859db34348",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0527.jpg",
+      "sha256": "fa1d2030f913767bd2dbb31e6799a16f8dbec0533a7b86ed8229302f740899c4",
+      "expected": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0528.jpg",
+      "sha256": "27eef89dbdd4c7b6e20e4678e21e2f36938b7b8f6d33189c97c105de68475014",
+      "expected": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0450.jpg",
+      "sha256": "798f520f786da88f482e850f32351b624e3dc92912f838965991538f49dd1dc5",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0065.jpg",
+      "sha256": "76ce7ac9bfa29b92ba4245c3b2d0bb8b505b4e7ee2d421616ddff4538751c7f5",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0112.jpg",
+      "sha256": "24957a5955a627335c431008443ee31dd91f80e7779e14220b5e1096a252137c",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0234.jpg",
+      "sha256": "5bda804938bb69cecabda983e21943d2f5c9dd542791efff58b78373d9ce14d6",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0529.jpg",
+      "sha256": "1af692fb3788d9b72bffef9119a8c8edd1ebb186c649dd183802d23180e7dff5",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0513.jpg",
+      "sha256": "57dde17cf3cfa62892e3c6ded75907e9af552806cb6adf6a2b76e4264f672a88",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0057.jpg",
+      "sha256": "c9fbc7da62a612b9818685775875a355fbc44bde48decce9bfb77e2f82b01f7d",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0275.jpg",
+      "sha256": "f9a216bcfc47eea38580a70d1294017639cb6d60a6397b1bd0d228ea59dbff9b",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0509.jpg",
+      "sha256": "f017bb3e206ffac1accd1cc3ce9ff65b408ad9c0cd977bea4ea25b1a626e8479",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0381.jpg",
+      "sha256": "f7d944c90381f106e31a9b079933895638854c9d4cad1881473bb727e8fe028b",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0019.jpg",
+      "sha256": "475c15753ed8f89fd7d966c1dda81a5d6ce9af94d00d8aac88c1d1b139643b8b",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0213.jpg",
+      "sha256": "8ec093157e823d014672519f3eabd96296ddc95cb7da76ec1f7a6548efc80ef5",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0524.jpg",
+      "sha256": "c79433ffe91eb1dac1288ed1b33f4e44cd45484b97daa5db3baf1dc9882ef22a",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0173.jpg",
+      "sha256": "9cfdbff7e51e03500ff50fbf13bd01dcaeeee85b855fe6f338c5e5ee8f20211c",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0264.jpg",
+      "sha256": "f669e93abbff15911f739a2cd44e1dc552e663f773e2e0bc57ca47b41fb577b3",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0149.jpg",
+      "sha256": "eed89880491c7e1bd322e29def2ef20ab8911b72108949110f03c17062a23e43",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0037.jpg",
+      "sha256": "91a97ced44c6bbc91567f6324acfefc0f33491a7653ee5aca51e501e204bad32",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "smhd",
+      "image": "0230.jpg",
+      "sha256": "d8f7fc237b9f41cd9bfb6fca3f04dd48e2a25a7ed977d4b3ea9aca3e9ccc3e59",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6889.png",
+      "sha256": "af97e75a1ddd3029314c5364001c1801bf334e26704c7061c57089a873f1083d",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7081.png",
+      "sha256": "5057ed55182d7eecee110685919a60db617030e4c45eb4046b9538cc6c87e98a",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6904.png",
+      "sha256": "d6c4b11fa26af6dd95ba80d131a6d94cf04ea62d75796abecffa41b2aa898bcf",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6890.png",
+      "sha256": "eeab55675e9de4ff200a421cc1155e23f4b615da3ca2d743aa66d371fa2c3c18",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6996.png",
+      "sha256": "a5c24ab1bd9086faaa1501a8a274a1ceacca64d952b5492a116a26a747d5b730",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6962.png",
+      "sha256": "88dc45e9dafe1f6307f70d762d893b67434bb24c438c6218ca723bfb6200d1ad",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6820.png",
+      "sha256": "26b7c7be0b5b53441836358bb9645f0681c3ac337ce5dbf2999838b63aead25c",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7085.png",
+      "sha256": "9e88abbc3c2d52e6d3f0e6c1f22f0d3b4054c38fb1db65bfd134f058e4383f84",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7009.png",
+      "sha256": "caef487257a47ec8c397b262671256ea469dabde68348edd2e7924af4411d17d",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6947.png",
+      "sha256": "3697b373a955519c8636b946a409fba22d7ad3c43e497a041f0c9e33b7fcf652",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7037.png",
+      "sha256": "318922e713c88486c490779042a8100fda2eab185259726137d4579bb602af34",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7042.png",
+      "sha256": "e44588fe66fd718c0110b9170d18a592fc6102ecc0e4bea0c194e528d62a1b30",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6817.png",
+      "sha256": "2916e1c26e09e9598a19131611d381c7b4668b32e61b4edca2027478c5514864",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6958.png",
+      "sha256": "a32da5315e9cc9f1175329d4e51a0143f4348be36649dbe2c715f3c30a737c49",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7166.png",
+      "sha256": "20bda404d554332bbc56c7b126ddeeb59a078d6f7e83435887e7289e1351d798",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6953.png",
+      "sha256": "43b6deb4b2f329aa04a6e2b358fd91b4ea3df2844f96ce26ae2f82752787355a",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6857.png",
+      "sha256": "19ceab5d41a719fdb61f9125068c51bea74fb5d12491c0608fb33ab168d78267",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6832.png",
+      "sha256": "bb9bbb7199df737681f59d652ea98a0ec5ea3f5613c3693621b32d8892dd0f01",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6902.png",
+      "sha256": "bae564dbfeb3c45a5e441d4131dbdb4caf1b2887a6d5e09f79398195bea288ba",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6886.png",
+      "sha256": "2b0f7ae9201836152d24d0e14439384176e1572744b1bed7c4ba17e2a8b2d88e",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6908.png",
+      "sha256": "af11ba45679465b4c72ec7299414c549c417160814b64e6a9d5f3978d46a4ea5",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6864.png",
+      "sha256": "de57eeb4df603cd51f719f3fea3f2277ca233202d2f0faa9c2728983a18e8da6",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6816.png",
+      "sha256": "771c088dfdbc85c07accb1dc9c969b5dc7df2144a4ed37fc5cde70326b2982c9",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6999.png",
+      "sha256": "57cc79d8dc56f9e9edbc1e48859756df82e9876c4016d71e3bb68e376e25fcf0",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6899.png",
+      "sha256": "8b2a3f685fe8cfb2d6648164f5dba6a98b8e9a31454744b978fa42632002fec7",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6977.png",
+      "sha256": "a34ae24201c9fb1e23c87f74ba3c63930a7ea9371098c0a296ee5deeea7b741a",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7000.png",
+      "sha256": "cf92f28d5f52359635ce6cb6ec3e3dacabaab648b5883c49653653a4e2b78f51",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7080.png",
+      "sha256": "640100323489e4fe957b7485b104475662eb8f028dc035324ab1e15fd070bdef",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6978.png",
+      "sha256": "1a5fe0a27dde4b03fcc04714fceb81d7939f0bd301afce7f04b1e79170a6c99b",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7156.png",
+      "sha256": "79275c91de7934348566127bebd2fbfa9b951cec1eecaa6f07019794d03dbd47",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6842.png",
+      "sha256": "1eb409dd6574690fb35b9cefdbe0213175afbd26ae01f38499d71eadd5b9c54e",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6891.png",
+      "sha256": "69ff59c5d10c5d69f2313034778dda6da599b0f6824f193ea4ad8c308df16499",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7026.png",
+      "sha256": "38097fb7f991487b33a5eff19d93108807441679edbc45d8fdef56ac1ddc2d49",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6877.png",
+      "sha256": "6aec077013d15de2c3d3aa43074758a4d927b63af63f00b48d18d3448869d3e4",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6821.png",
+      "sha256": "597722af0db4d8db6d8bc5ff45c68ab5a520b5b81ee081c66a27f8f8f5466bb3",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6876.png",
+      "sha256": "caa977e084fb610ba549aa6550053333cce6270c078dbece26191017458149d2",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6934.png",
+      "sha256": "92fe2b2d273dfbb63f4139a5ae611be769ad28c89cfee8fa0f2ea4d2ad091df5",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6975.png",
+      "sha256": "4389911acaca48e45ab84953ca247e1eb0f6e3fdd435b6346231aee12f571a53",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_6959.png",
+      "sha256": "bc77ac8ff7637ea6d4fe304d30855e71532a7c261d238f8c7c885c130e18d9f0",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "asap",
+      "image": "SAS_3_7186.png",
+      "sha256": "ef8028051051a024b97c292ee11330f4dae5e467bc66abbfb111a73ae784a8b9",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_03_IMG_20211001_134553.jpg",
+      "sha256": "f887fcae2fa0440e9910f23c96c754e2f5a6e9ddccef55b0a09669990dd287bf",
+      "expected": [
+        "2",
+        "3",
+        "4"
+      ],
+      "boxes": null,
+      "base": [
+        "2",
+        "3",
+        "4"
+      ],
+      "lora": [
+        "2",
+        "3",
+        "4"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_04_IMG_20211001_134431.jpg",
+      "sha256": "a9333a5c4ddab6a71b2150f9f926cf4bdb364cb2c131b82560af1869ca6de017",
+      "expected": [
+        "1",
+        "2"
+      ],
+      "boxes": null,
+      "base": [
+        "1",
+        "2"
+      ],
+      "lora": [
+        "1",
+        "2"
+      ],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_09_356.jpg",
+      "sha256": "cbb8dcd76e41af307b995d077aef9341059067aa68d61634282044bdb43fdca3",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_09_362.jpg",
+      "sha256": "ad4f9788337703d2c8ab85e4e1263644c119e180b177d6823a2e8eb3a3bd8447",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_01_8.jpg",
+      "sha256": "766a2334ca66342a78cb7bc490bb63435ff0bc815a64656e3bdd763bde4e4665",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_05_IMG_20211001_134659.jpg",
+      "sha256": "ea25b11fceb0a6c8ae67d40f9e94aeb115fa1163cc0c298d559b06e7d90dfce8",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58"
+      ],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_10_335.jpg",
+      "sha256": "db729013691c146bae87955b17619b239202c08025a2e2dfce0bef8878ccc44a",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_10_329.jpg",
+      "sha256": "d1d751b88baee10e9a9649457f67129eb5c7967264f23fb6a425ad3e819c375a",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_09_358.jpg",
+      "sha256": "c480eb988d13daaaaa56b923df26bf60bad1ef9d69b7f37f95ea111a21a772ff",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_07_IMG_20211001_134902.jpg",
+      "sha256": "87be3b8b736a56827851bac896fc09c35d4ecc9490ff69fe5a183db0b8b3bc2c",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "26"
+      ],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_10_328.jpg",
+      "sha256": "b92676dcc4dd913234ba6733ad95e2f2f2ab451bbcfeec3feab2fbf1511ef875",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "notebook",
+      "image": "en_hw2022_08_IMG_20211001_134302.jpg",
+      "sha256": "858532c4dd18d1ae0e3bd36dac3936c3bba320ba25554e907102da55c1980d1f",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": [],
+      "gained": [],
+      "lost": []
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_10_png.rf.064c0c3dcc9480a5d33f7189b0011521.jpg",
+      "sha256": "e3c9561b85c64e65b2c3656722cb5cee191ffe80826d26c59d33fea9ac35cea2",
+      "expected": [],
+      "boxes": 2,
+      "base": [
+        "25"
+      ],
+      "lora": [
+        "25"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_11_png.rf.a66be444712cc38dfe1dc1f3eb060457.jpg",
+      "sha256": "a0ffa1dbf81dfa09f720b382f13e8c0ce87aacb30a4ca0a56c7708f96db7fbf5",
+      "expected": [],
+      "boxes": 5,
+      "base": [
+        "26"
+      ],
+      "lora": [
+        "26"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_12_png.rf.12e6d1bc735e4e3769111fa0d496a8f2.jpg",
+      "sha256": "97eb27419c394121dd4b72a07b63adafff11e32fd1c34aa88cf1bf86857a51c5",
+      "expected": [],
+      "boxes": 4,
+      "base": [
+        "26"
+      ],
+      "lora": [
+        "27"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_13_png.rf.0242efccd0bc4de59fbf523b68ec5078.jpg",
+      "sha256": "8c0193e201034f1dfd1f13962788e4200d1922e48f93a8ce3fab0deebb097f78",
+      "expected": [],
+      "boxes": 1,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_14_png.rf.577973bac58131c0bea05cf8b1288c48.jpg",
+      "sha256": "027b76e9bfc3aee5dd20d8cfd18f0e49c1def9e25e74304fdd6d0394892f912a",
+      "expected": [],
+      "boxes": 3,
+      "base": [
+        "26"
+      ],
+      "lora": [
+        "29"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_15_png.rf.5d1721cc9888c88ebbefcdcecc4b7ddf.jpg",
+      "sha256": "32b5f2e8df8adc313937ef198b2559aa16594a9f4ba7b287235da7b9be7973b5",
+      "expected": [],
+      "boxes": 2,
+      "base": [
+        "30"
+      ],
+      "lora": [
+        "30"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_16_png.rf.4969885fd06fc8a8ae8451bc7b65cdfa.jpg",
+      "sha256": "6844db0855b9ae17b3d9f3131df3875840d2cc761ca65f5780b78fa88a0e7c70",
+      "expected": [],
+      "boxes": 4,
+      "base": [
+        "31"
+      ],
+      "lora": [
+        "31"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_17_png.rf.212a7ba2176512e271099cddadd822e2.jpg",
+      "sha256": "af3f4f5447d6b3007300ef4feb2ec07ef535d37f8a64ad4a9ca7e8286264acda",
+      "expected": [],
+      "boxes": 4,
+      "base": [
+        "31"
+      ],
+      "lora": [
+        "31"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_18_png.rf.64d8458d0bf86be4cfd96dd5a191a139.jpg",
+      "sha256": "60aa9aa42f12c9b7d281999a5b0bec95ce1cfaa2a5d8fc1e35eb425449346268",
+      "expected": [],
+      "boxes": 2,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_19_png.rf.4e4a82962bb973399d45a1f94ef2c002.jpg",
+      "sha256": "59993793b8b9bacac93a76065bcf0b6c910514291b88e7c45d1528bbb8c49db0",
+      "expected": [],
+      "boxes": 1,
+      "base": [
+        "26",
+        "26",
+        "26"
+      ],
+      "lora": []
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_20_png.rf.3bc548b95f7c08dac8bbbfa5ab69d4d9.jpg",
+      "sha256": "73227cbc675d2a3deaac194af784db1ebb32b7d318b77508ce6d30c3e253600d",
+      "expected": [],
+      "boxes": 2,
+      "base": [
+        "33"
+      ],
+      "lora": [
+        "33"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_21_png.rf.239fdd590922b94c4bc7473136c4ed86.jpg",
+      "sha256": "30f69acc876833e571a69cfbe63b5af01083064f47df4571d692dba492850a1f",
+      "expected": [],
+      "boxes": 2,
+      "base": [
+        "34",
+        "34"
+      ],
+      "lora": [
+        "34",
+        "34"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_22_png.rf.0424fd2c9d394fab4eba82534500230d.jpg",
+      "sha256": "312fcedd62f708c7d39a3402481ae6f8bb91d7414366b5682066b83452c5d3ca",
+      "expected": [],
+      "boxes": 1,
+      "base": [],
+      "lora": [
+        "3"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_23_png.rf.34072727e58c20f6470c8a6469d0e1ef.jpg",
+      "sha256": "0bff8ad2d5db7d0f4fd51a68e7cf0a5acefd5fb49e3ac4d2af9dbcf3908407c7",
+      "expected": [],
+      "boxes": 1,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_3_png.rf.0ad5d2e6a7bcc85543333b2bc47411ad.jpg",
+      "sha256": "031487394641a55f284437916b3cc9efb60eaaba3da567d75945ba63364faa86",
+      "expected": [],
+      "boxes": 13,
+      "base": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_4_png.rf.1553a3921e1ee0da497967440b53ec83.jpg",
+      "sha256": "fb44608d0d76de486b3d3615f96f1a6a18c85273485cbbd0e343d1d61e12c9f9",
+      "expected": [],
+      "boxes": 12,
+      "base": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "lora": [
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_5_png.rf.2c852f9d02d9f546eedca640bc9835e9.jpg",
+      "sha256": "b735f5f79f003f7c7e58d16d4beba1beade05109e0f09e4f59c8236f916ff037",
+      "expected": [],
+      "boxes": 14,
+      "base": [
+        "3",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19"
+      ],
+      "lora": [
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_6_png.rf.33758440c2118fbfb4746e2410792db2.jpg",
+      "sha256": "9d61375c6c87b0983cf9a18e68e29c15db2cfcc24f1fd36988303b9381ca2a93",
+      "expected": [],
+      "boxes": 5,
+      "base": [
+        "20",
+        "21"
+      ],
+      "lora": [
+        "20",
+        "21"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_7_png.rf.78b2432c6d3297f52e58377f9e7b544f.jpg",
+      "sha256": "047045c0698d2aa121f9b88332073b3119f12daad9f1c7a1c49273c128bb5d02",
+      "expected": [],
+      "boxes": 5,
+      "base": [
+        "2"
+      ],
+      "lora": [
+        "2"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_8_png.rf.6d8ed1e6fec322635b880dd356d338e5.jpg",
+      "sha256": "4caa990f7a948cb181e096e24e35e238548ee0570abe08135a4b05cda905dac4",
+      "expected": [],
+      "boxes": 4,
+      "base": [
+        "26",
+        "27",
+        "28",
+        "29",
+        "30"
+      ],
+      "lora": [
+        "23"
+      ]
+    },
+    {
+      "kind": "answersheet",
+      "image": "32-5-1-Social-Science-Topper-Solution-_page_9_png.rf.0b6855f745c5aa756697ce379ece2ac1.jpg",
+      "sha256": "0f3c580806136d27e28c756635c667ca04249622e03d4ad6a393170c53eb72ad",
+      "expected": [],
+      "boxes": 3,
+      "base": [
+        "24",
+        "2",
+        "3"
+      ],
+      "lora": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "kind": "short",
+      "image": "short_Engl_0173.png",
+      "sha256": "074510cd6d666f997d3cea4afe8dad29a71e65916771aaad624a9b546b9ba5bc",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Biol_0146.png",
+      "sha256": "4087948dad6634d9931f3266425ae3cd591a08fbbc5e2bcf0a7c152440fad31b",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Note_0527.png",
+      "sha256": "ab69c676ea190d961be2b9307817b479fb5105e7e105c68da97b614ae926feae",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Biol_0143.png",
+      "sha256": "0fb1627e73ee8c52ceabcd869df8074f188e57875ce2b9c2037f9aabce84e316",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Biol_0131.png",
+      "sha256": "c6a1c252db1f70ff46107ebc920c1a4cdc663ccadf612bb92f44e6ef64f31747",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Essa_0450.png",
+      "sha256": "f988029bfb368baaee9efd60664099e986ff95f5c40405a1a71ea2c51dc9b566",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Essa_0381.png",
+      "sha256": "cd47a9c2d9a5d73cac84b5a8f1b4d046a26a625bedc2291993e2062c9da4c2eb",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Envi_0264.png",
+      "sha256": "5be48e0fdd724c75f7679b8171ab8967398dff8f0e802f5401bf55045eebffa1",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Biol_0148.png",
+      "sha256": "4f6bc160d97702245c1ea753655c1ad905b89ecf92bec0d808aeb1c835973f06",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "short",
+      "image": "short_Engl_0236.png",
+      "sha256": "b390137bfd3dfe4aa223057edf7d4021761749d0bc662a884e786e88e7aec090",
+      "expected": [],
+      "boxes": null,
+      "base": [],
+      "lora": []
+    },
+    {
+      "kind": "blank",
+      "image": "blank_0.png",
+      "sha256": "629474979d9bab751c12c7bea1668fc494409fa5e7b5d5049f849449312dc384",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "26"
+      ],
+      "lora": []
+    },
+    {
+      "kind": "blank",
+      "image": "blank_1.png",
+      "sha256": "0465a2f0b9f93ab968aa5e3022faf13458c043f3b708c89dabc26a815560f902",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "26"
+      ],
+      "lora": []
+    },
+    {
+      "kind": "blank",
+      "image": "blank_2.png",
+      "sha256": "d2b3f5a6b9e6b63e60b71267b1e3edc6239d6b1ad5fb6525d9c9fbb2bde8efa6",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "26"
+      ],
+      "lora": []
+    },
+    {
+      "kind": "blank",
+      "image": "blank_3.png",
+      "sha256": "f32b66c274979aa933dd85ba438568cfd9995404736c7343720964c6775c12b8",
+      "expected": [],
+      "boxes": null,
+      "base": [
+        "26"
+      ],
+      "lora": []
+    }
+  ]
+}

@@ -158,82 +158,83 @@ def score(dev: pd.DataFrame, lines_of) -> dict:
             "extra_numbers_per_page": np.mean(out["extra"]), "invented_lines": out["invented"]}
 
 
-# %% Part 1. The development set
-section("Part 1. The development set: public handwriting, no Mendeley exam")
-dev = devset.build()
-dev["ink"] = [reader.ink(reader.load_pages(p)[0]) for p in dev["image"]]
-print(dev.groupby("kind").agg(images=("image", "size"), numbered_lines=("numbers", lambda s: sum(map(len, s))),
-                              ink_min=("ink", "min"), ink_median=("ink", "median")).round(4).to_string())
+if __name__ == "__main__":
+    # %% Part 1. The development set
+    section("Part 1. The development set: public handwriting, no Mendeley exam")
+    dev = devset.build()
+    dev["ink"] = [reader.ink(reader.load_pages(p)[0]) for p in dev["image"]]
+    print(dev.groupby("kind").agg(images=("image", "size"), numbered_lines=("numbers", lambda s: sum(map(len, s))),
+                                  ink_min=("ink", "min"), ink_median=("ink", "median")).round(4).to_string())
 
-# %% Part 2. Which model reads
-section("Part 2. Which model reads: error rate, question numbers, speed")
-chosen_generate = reader.VLM_GENERATE
-rows = {label: {**score(dev, lambda r, label=label: [tuple(x) for x in read_lines(label, r.image)["lines"]]),
-                "seconds_per_image": np.median([read_lines(label, p)["seconds"] for p in dev["image"]])}
-        for label in LINE_MODELS}
-for label, model in PAGE_MODELS.items():
-    rows[label] = {**score(dev, lambda r, model=model: read_page(r.image, chosen_generate, model)),
-                   "seconds_per_image": np.nanmedian([page_seconds(p, chosen_generate, model) for p in dev["image"]])}
-reader.PAGE_READER = PAGE_MODELS[PAGE_LABEL]
-readers = pd.DataFrame(rows).T.sort_values("cer_smhd")
-print(readers.round(3).to_string())
-best = readers.index[0]
-print(f"\nLowest error rate: {best}. Used by the product: {PAGE_LABEL} (see PAGE_LABEL).")
+    # %% Part 2. Which model reads
+    section("Part 2. Which model reads: error rate, question numbers, speed")
+    chosen_generate = reader.VLM_GENERATE
+    rows = {label: {**score(dev, lambda r, label=label: [tuple(x) for x in read_lines(label, r.image)["lines"]]),
+                    "seconds_per_image": np.median([read_lines(label, p)["seconds"] for p in dev["image"]])}
+            for label in LINE_MODELS}
+    for label, model in PAGE_MODELS.items():
+        rows[label] = {**score(dev, lambda r, model=model: read_page(r.image, chosen_generate, model)),
+                       "seconds_per_image": np.nanmedian([page_seconds(p, chosen_generate, model) for p in dev["image"]])}
+    reader.PAGE_READER = PAGE_MODELS[PAGE_LABEL]
+    readers = pd.DataFrame(rows).T.sort_values("cer_smhd")
+    print(readers.round(3).to_string())
+    best = readers.index[0]
+    print(f"\nLowest error rate: {best}. Used by the product: {PAGE_LABEL} (see PAGE_LABEL).")
 
-reader.SPLIT_TALL = False
-unsplit = score(dev, lambda r: [tuple(x) for x in read_lines("TrOCR base, lines", r.image)["lines"]])
-reader.SPLIT_TALL = True
-split_table = pd.DataFrame({"cut tall boxes": rows["TrOCR base, lines"], "as detected": unsplit}).T
-print("\nTrOCR base, with tall line boxes cut into rows or read as detected:")
-print(split_table[["cer_smhd", "cer_asap", "cer_notebook"]].round(3).to_string())
+    reader.SPLIT_TALL = False
+    unsplit = score(dev, lambda r: [tuple(x) for x in read_lines("TrOCR base, lines", r.image)["lines"]])
+    reader.SPLIT_TALL = True
+    split_table = pd.DataFrame({"cut tall boxes": rows["TrOCR base, lines"], "as detected": unsplit}).T
+    print("\nTrOCR base, with tall line boxes cut into rows or read as detected:")
+    print(split_table[["cer_smhd", "cer_asap", "cer_notebook"]].round(3).to_string())
 
-# %% Part 3. Question numbers
-section("Part 3. Question numbers: the stray-mark prefix of the number rule")
-with_prefix = reader.LEADING_NUMBER
-reader.LEADING_NUMBER = re.compile(with_prefix.pattern.replace(r"^\W{0,3}(?:(?:q|question|ex|exercise)\s*\.?\s*|[a-z](?=\d))?",
-                                                               r"^\s*(?:(?:q|question|ex|exercise)\s*\.?\s*)?"), re.IGNORECASE)
-without = score(dev, lambda r: read_page(r.image, chosen_generate))
-reader.LEADING_NUMBER = with_prefix
-rules = pd.DataFrame({"with prefix": rows[PAGE_LABEL], "without prefix": without}).T
-print(rules[["numbers_found_smhd", "numbers_found_notebook", "numbers_found_answersheet", "extra_numbers_per_page"]].round(3).to_string())
+    # %% Part 3. Question numbers
+    section("Part 3. Question numbers: the stray-mark prefix of the number rule")
+    with_prefix = reader.LEADING_NUMBER
+    reader.LEADING_NUMBER = re.compile(with_prefix.pattern.replace(r"^\W{0,3}(?:(?:q|question|ex|exercise)\s*\.?\s*|[a-z](?=\d))?",
+                                                                   r"^\s*(?:(?:q|question|ex|exercise)\s*\.?\s*)?"), re.IGNORECASE)
+    without = score(dev, lambda r: read_page(r.image, chosen_generate))
+    reader.LEADING_NUMBER = with_prefix
+    rules = pd.DataFrame({"with prefix": rows[PAGE_LABEL], "without prefix": without}).T
+    print(rules[["numbers_found_smhd", "numbers_found_notebook", "numbers_found_answersheet", "extra_numbers_per_page"]].round(3).to_string())
 
-# %% Part 4. Blank pages and loops
-section("Part 4. Blank pages, and decoding loops of the page reader")
-written, blank = dev.loc[dev["kind"] != "blank", "ink"], dev.loc[dev["kind"] == "blank", "ink"]
-blank_ink = round(float(written.min()) / 2, 4)  # half the lightest written page
-assert blank.max() < blank_ink, "a blank page has more ink than the threshold"
-print(f"ink: blank pages up to {blank.max():.4f}, written pages from {written.min():.4f} -> threshold {blank_ink}")
-decoding = pd.DataFrame({name: score(dev, lambda r, g=g: read_page(r.image, g)) for name, g in DECODING.items()}).T
-reader.VLM_GENERATE = chosen_generate
-print(decoding.round(3).to_string())
+    # %% Part 4. Blank pages and loops
+    section("Part 4. Blank pages, and decoding loops of the page reader")
+    written, blank = dev.loc[dev["kind"] != "blank", "ink"], dev.loc[dev["kind"] == "blank", "ink"]
+    blank_ink = round(float(written.min()) / 2, 4)  # half the lightest written page
+    assert blank.max() < blank_ink, "a blank page has more ink than the threshold"
+    print(f"ink: blank pages up to {blank.max():.4f}, written pages from {written.min():.4f} -> threshold {blank_ink}")
+    decoding = pd.DataFrame({name: score(dev, lambda r, g=g: read_page(r.image, g)) for name, g in DECODING.items()}).T
+    reader.VLM_GENERATE = chosen_generate
+    print(decoding.round(3).to_string())
 
-# %% Part 5. Save
-section("Part 5. Save")
-ARTIFACTS.mkdir(parents=True, exist_ok=True)
-readers.to_csv(ARTIFACTS / "dev_readers.csv")
-split_table.to_csv(ARTIFACTS / "dev_line_boxes.csv")
-rules.to_csv(ARTIFACTS / "dev_number_rule.csv")
-decoding.to_csv(ARTIFACTS / "dev_decoding.csv")
-choices = {"reader": PAGE_LABEL, "lowest_error_rate": best, "blank_ink": blank_ink, "generate": chosen_generate,
-           "dev_set": dev.groupby("kind").size().to_dict()}
-(ARTIFACTS / "dev_choices.json").write_text(json.dumps(choices, indent=2))
+    # %% Part 5. Save
+    section("Part 5. Save")
+    ARTIFACTS.mkdir(parents=True, exist_ok=True)
+    readers.to_csv(ARTIFACTS / "dev_readers.csv")
+    split_table.to_csv(ARTIFACTS / "dev_line_boxes.csv")
+    rules.to_csv(ARTIFACTS / "dev_number_rule.csv")
+    decoding.to_csv(ARTIFACTS / "dev_decoding.csv")
+    choices = {"reader": PAGE_LABEL, "lowest_error_rate": best, "blank_ink": blank_ink, "generate": chosen_generate,
+               "dev_set": dev.groupby("kind").size().to_dict()}
+    (ARTIFACTS / "dev_choices.json").write_text(json.dumps(choices, indent=2))
 
-# What every try read, line by line, so each number above can be checked (public data only, no Mendeley exam).
-tries = {label: lambda r, label=label: [tuple(x) for x in read_lines(label, r.image)["lines"]] for label in LINE_MODELS}
-reader.SPLIT_TALL = False
-tries["TrOCR base, lines as detected"] = {r.image: [tuple(x) for x in read_lines("TrOCR base, lines", r.image)["lines"]]
-                                          for r in dev.itertuples()}.get
-reader.SPLIT_TALL = True
-tries |= {f"{label}, {name}": lambda r, m=model, g=g: read_page(r.image, g, m)
-          for label, model in PAGE_MODELS.items() for name, g in DECODING.items()
-          if model == PAGE_MODELS[PAGE_LABEL] or g == chosen_generate}
-dump = []
-for name, lines_of in tries.items():
-    for r in dev.itertuples():
-        lines = lines_of(r.image) if name == "TrOCR base, lines as detected" else lines_of(r)
-        dump += [{"try": name, "kind": r.kind, "image": Path(r.image).name, "line": k, "text": text, "confidence": conf}
-                 for k, (text, conf) in enumerate(lines, start=1)]
-(ARTIFACTS / "reads").mkdir(exist_ok=True)
-pd.DataFrame(dump).to_csv(ARTIFACTS / "reads" / "dev_reads.csv", index=False)
-print(f"saved {len(dump)} read lines from {len(tries)} tries to artifacts/vision/reads/dev_reads.csv")
-print(json.dumps(choices, indent=2))
+    # What every try read, line by line, so each number above can be checked (public data only, no Mendeley exam).
+    tries = {label: lambda r, label=label: [tuple(x) for x in read_lines(label, r.image)["lines"]] for label in LINE_MODELS}
+    reader.SPLIT_TALL = False
+    tries["TrOCR base, lines as detected"] = {r.image: [tuple(x) for x in read_lines("TrOCR base, lines", r.image)["lines"]]
+                                              for r in dev.itertuples()}.get
+    reader.SPLIT_TALL = True
+    tries |= {f"{label}, {name}": lambda r, m=model, g=g: read_page(r.image, g, m)
+              for label, model in PAGE_MODELS.items() for name, g in DECODING.items()
+              if model == PAGE_MODELS[PAGE_LABEL] or g == chosen_generate}
+    dump = []
+    for name, lines_of in tries.items():
+        for r in dev.itertuples():
+            lines = lines_of(r.image) if name == "TrOCR base, lines as detected" else lines_of(r)
+            dump += [{"try": name, "kind": r.kind, "image": Path(r.image).name, "line": k, "text": text, "confidence": conf}
+                     for k, (text, conf) in enumerate(lines, start=1)]
+    (ARTIFACTS / "reads").mkdir(exist_ok=True)
+    pd.DataFrame(dump).to_csv(ARTIFACTS / "reads" / "dev_reads.csv", index=False)
+    print(f"saved {len(dump)} read lines from {len(tries)} tries to artifacts/vision/reads/dev_reads.csv")
+    print(json.dumps(choices, indent=2))

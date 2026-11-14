@@ -408,6 +408,7 @@ dependencies = [
     { name = "numpy" },
     { name = "opencv-python-headless" },
     { name = "pandas" },
+    { name = "peft" },
     { name = "pillow" },
     { name = "pypdf" },
     { name = "pypdfium2" },
@@ -426,7 +427,6 @@ dev = [
 ]
 train = [
     { name = "matplotlib" },
-    { name = "peft" },
     { name = "pyarrow" },
     { name = "roboflow" },
 ]
@@ -440,6 +440,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.0" },
     { name = "opencv-python-headless", specifier = ">=4.10" },
     { name = "pandas", specifier = ">=2.2" },
+    { name = "peft", specifier = ">=0.17" },
     { name = "pillow", specifier = ">=10.0" },
     { name = "pypdf", specifier = ">=6,<8" },
     { name = "pypdfium2", specifier = ">=4.30" },
@@ -458,7 +459,6 @@ dev = [
 ]
 train = [
     { name = "matplotlib", specifier = ">=3.9" },
-    { name = "peft", specifier = ">=0.17" },
     { name = "pyarrow", specifier = ">=17" },
     { name = "roboflow", specifier = ">=1.7" },
 ]

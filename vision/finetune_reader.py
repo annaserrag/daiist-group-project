@@ -44,7 +44,7 @@ BUILT = datasets.WORK / "finetune" / "built"
 ADAPTER = datasets.WORK / "finetune" / "adapter"
 WEIGHTS = ROOT / "weights" / "page_reader_lora"
 LOG = ARTIFACTS / "finetune_log.csv"
-BASE = reader.PAGE_READER
+BASE = reader.BASE_PAGE_READER
 SMOKE = "--smoke" in sys.argv
 SEED = 0
 

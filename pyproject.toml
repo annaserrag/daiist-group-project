@@ -15,6 +15,7 @@ dependencies = [
     "torch==2.14.1",
     "torchvision==0.29.1",
     "transformers>=4.46",
+    "peft>=0.17",   # loads the fine-tuned page reader at inference
     "ultralytics>=8.4,<8.5",
     "opencv-python-headless>=4.10",
     "pypdfium2>=4.30",
@@ -33,7 +34,6 @@ train = [
     "roboflow>=1.7",
     "matplotlib>=3.9",
     "pyarrow>=17",  # reads the fine-tuning data (vision/finetune_data.py)
-    "peft>=0.17",   # LoRA for fine-tuning the page reader (vision/finetune_reader.py)
 ]
 
 [tool.uv]

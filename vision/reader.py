@@ -47,7 +47,9 @@ ROOT = Path(__file__).resolve().parents[1]
 WEIGHTS = ROOT / "weights"
 OCR_MODEL = "microsoft/trocr-base-handwritten"   # reads the crops in the 'detectors' and 'rules' modes
 LINE_READER = "microsoft/trocr-base-handwritten"  # reads each line in the 'ocr' mode (a TrOCR or a vision-language model)
-PAGE_READER = "Qwen/Qwen3-VL-2B-Instruct"         # reads whole pages in the 'page' mode
+BASE_PAGE_READER = "Qwen/Qwen3-VL-2B-Instruct"
+PAGE_READER = BASE_PAGE_READER + "+weights/page_reader_lora"
+PAGE_ADAPTER_SHA256 = "12e3a113ff186a494aaaa41192a12cbbddba28814e3386b6d57c0c6112289fc4"
 PAGE_READER_REVISION = "89644892e4d85e24eaac8bacfd4f463576704203"  # evaluated public checkpoint
 PAGE_WIDTH = 2000   # pages are read at about this width; TrOCR resizes every crop to 384 px anyway
 DETECT_SIZE = 640   # both detectors were trained on 640 x 640 images (see vision/README.md)
@@ -214,6 +216,14 @@ def _vlm(name: str):
     import torch
     from transformers import AutoModelForImageTextToText, AutoProcessor
     base, _, adapter = name.partition("+")
+    if adapter == "weights/page_reader_lora":
+        import hashlib
+        path = WEIGHTS.parent / adapter / "adapter_model.safetensors"
+        if not path.is_file():
+            raise FileNotFoundError(f"Missing trained page reader: {path}")
+        with path.open("rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != PAGE_ADAPTER_SHA256:
+                raise ValueError("The page reader adapter differs from the evaluated checkpoint.")
     revision = PAGE_READER_REVISION if base == "Qwen/Qwen3-VL-2B-Instruct" else None
     processor = AutoProcessor.from_pretrained(base, revision=revision)
     model = AutoModelForImageTextToText.from_pretrained(base, revision=revision, dtype=torch.bfloat16)

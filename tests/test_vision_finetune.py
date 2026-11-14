@@ -17,6 +17,28 @@ def convert(*rows, loose=None):
 
 
 class VisionFinetuneTests(unittest.TestCase):
+    def test_recovered_labels_require_agreement_on_ids_and_answer_words(self):
+        from vision import reader
+        from exam_grader.page_confidence import recover_layout
+        def lines(*values):
+            return [(text, [.97] * len(text)) for text in values]
+        first = lines("C", "A")
+        layout = lines("Data Science Examination | Answer sheet", "18 C", "20 A")
+        recovered, scores = recover_layout(first, layout, lines("18 C", "20 A"), reader)
+        self.assertEqual([s for s, _ in recovered][1:], ["18. C", "20. A"])
+        self.assertEqual(scores, [.97, .97])
+        for other in [lines("18 C", "19 A"), lines("18 A", "20 C"), lines("18 C")]:
+            self.assertEqual(recover_layout(first, layout, other, reader), (first, []))
+        self.assertEqual(recover_layout(lines("C", "D"), layout, lines("18 C", "20 A"), reader)[1], [])
+
+    def test_crop_verification_requires_unique_exact_phrase(self):
+        from exam_grader.page_confidence import verify_crop_words
+        phrase = "learning from examples"
+        crops = [[(phrase, [.96] * len(phrase))]]
+        words = phrase.split()
+        self.assertEqual(verify_crop_words(phrase, [.5]*3, words, crops), .96)
+        self.assertEqual(verify_crop_words(phrase, [.5]*3, words*2, crops), .5)
+        self.assertEqual(verify_crop_words("learning from mistakes", [.5]*3, words, crops), .5)
     def test_wrong_document_needs_a_title_and_matching_confident_image_read(self):
         def line(text, confidence=1.0):
             return text, [confidence] * len(text)
