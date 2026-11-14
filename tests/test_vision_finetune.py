@@ -39,6 +39,15 @@ class VisionFinetuneTests(unittest.TestCase):
         self.assertEqual(verify_crop_words(phrase, [.5]*3, words, crops), .96)
         self.assertEqual(verify_crop_words(phrase, [.5]*3, words*2, crops), .5)
         self.assertEqual(verify_crop_words("learning from mistakes", [.5]*3, words, crops), .5)
+
+    def test_low_confidence_digit_keeps_its_own_review_gate(self):
+        from vision import reader
+        from exam_grader.page_confidence import recover_layout
+        original = [("A", [.98]), ("B", [.96])]
+        layout = [("3. A", [.5, .99, .99, .97]), ("7. B", [.99]*4)]
+        lines, scores = recover_layout(original, layout, layout, reader)
+        self.assertEqual([s for s, _ in lines], ["3. A", "7. B"])
+        self.assertEqual(scores, [.5, .99])
     def test_wrong_document_needs_a_title_and_matching_confident_image_read(self):
         def line(text, confidence=1.0):
             return text, [confidence] * len(text)

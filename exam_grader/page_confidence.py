@@ -196,6 +196,36 @@ def verify_crop_words(text, first_scores, page_text, crops):
     return min(scores)
 
 
+def local_labels(page, reader):
+    """Read the leading ink of separated horizontal writing bands in their physical order."""
+    import numpy as np
+    from PIL import Image
+    ink = page < 100
+    ys = np.flatnonzero(ink.sum(axis=1) >= 4)
+    groups = np.split(ys, np.flatnonzero(np.diff(ys) > max(12, round(page.shape[1] / 80))) + 1)
+    if len(groups) > 40:
+        return []
+    labels = []
+    for band in groups:
+        if len(band) < 10:
+            continue
+        top, bottom = band[0], band[-1]
+        xs = np.flatnonzero(ink[top:bottom + 1].sum(axis=0) > 1)
+        if not len(xs):
+            continue
+        left = xs[0]
+        crop = Image.fromarray(page[max(0, top-15):bottom+16,
+                                    max(0, left-12):left+round(.09 * page.shape[1])]).convert("RGB")
+        result = page_lines(crop, reader, prompt=_CROP_PROMPT, limit=12)
+        if len(result) != 1:
+            continue
+        text, scores = result[0]
+        match = re.match(r"^\s*(?:[Qq]\s*)?(\d{1,3})(?=\s*[.):,]|\s*$)", text)
+        if match:
+            labels.append((match[1], span_score(text, scores, *match.span(1))))
+    return labels
+
+
 def assemble(pages, reader, started):
     """Let Anna assign every line. Attach scores for the exact spans her parser used."""
     original = []
@@ -291,6 +321,7 @@ def read_exam(path):
     images = []
     scope_pages = []
     recovered = {}
+    local_by_page = {}
     originals = reader.load_pages(path)
     ink_pixels = 0.0
     total_pixels = 0
@@ -311,7 +342,30 @@ def read_exam(path):
                 layout = page_lines(image, reader, prompt=_LAYOUT_PROMPT, limit=1024)
                 scope_lines = layout
                 normalized, _ = headed_choices(layout, [])
-                if any(reader.LEADING_NUMBER.match(s.strip()) for s, _ in normalized):
+                if not any(reader.LEADING_NUMBER.match(s.strip()) for s, _ in normalized):
+                    # Some handwritten labels have only a space before the answer. The
+                    # digit must be present in both full reads and in an isolated image crop.
+                    bare = re.compile(r"^(\d{1,2})\s+(?=[A-Za-z])")
+                    candidates = [bare.match(s) for s, _ in lines if bare.match(s)]
+                    if len(candidates) == 1:
+                        number = candidates[0][1]
+                        local = local_labels(page, reader)
+                        local_by_page[len(pages) + 1] = local
+                        tagged = [(s, sc) for s, sc in layout if bare.match(s)]
+                        if (len(local) == 1 and local[0][0] == number and local[0][1] >= _ID_CHECK_THRESHOLD
+                                and len(tagged) == 1 and bare.match(tagged[0][0])[1] == number
+                                and [s.split() for s, _ in layout[-len(lines):]] == [s.split() for s,_ in lines]):
+                            normalized = []
+                            for s, sc in lines:
+                                m = bare.match(s)
+                                if m:
+                                    pos = m.end(1)
+                                    s = s[:pos] + "." + s[pos:]
+                                    sc = sc[:pos] + [sc[pos-1]] + sc[pos:]
+                                normalized.append((s, sc))
+                            lines = normalized
+                            recovered[len(pages)+1] = [local[0][1]]
+                if len(pages)+1 not in recovered and any(reader.LEADING_NUMBER.match(s.strip()) for s, _ in normalized):
                     verification = page_lines(image, reader, prompt=_LABEL_PROMPT, limit=1024)
                     lines, scores = recover_layout(lines, layout, verification, reader)
                     if scores:
@@ -336,6 +390,15 @@ def read_exam(path):
         return result
     for page_no, image in enumerate(images, start=1):
         rows = [r for r in result["questions"] if r["page"] == page_no]
+        if ("+" in reader.PAGE_READER and rows and not any(r["part"] for r in rows)
+                and any(max(r["number_conf"], r.get("confirmed_number_conf", 0)) < _ID_CHECK_THRESHOLD for r in rows)):
+            labels = local_by_page.get(page_no)
+            if labels is None:
+                labels = local_labels(originals[page_no-1], reader)
+            if [number for number, _ in labels] == [r["number"] for r in rows]:
+                for row, (_, score) in zip(rows, labels, strict=True):
+                    if score >= _ID_CHECK_THRESHOLD:
+                        row["confirmed_number_conf"] = max(row.get("confirmed_number_conf", 0), score)
         if not any(max(r["number_conf"], r.get("confirmed_number_conf", 0)) < _ID_CHECK_THRESHOLD
                    <= r["number_token_conf"] for r in rows):
             continue

@@ -475,7 +475,10 @@ def versions(mode: str) -> dict:
         detectors = {**(detectors or {}), "numbers": "leading-number-v5"}
     if mode == "page":
         detectors = {**detectors, "generate": VLM_GENERATE, "blank_ink": BLANK_INK}
-    return {"reader": READER_VERSION, "mode": mode, "ocr": ocr, "detectors": detectors}
+    version = {"reader": READER_VERSION, "mode": mode, "ocr": ocr, "detectors": detectors}
+    if mode == "page" and ocr == BASE_PAGE_READER + "+weights/page_reader_lora":
+        version.update(base_revision=PAGE_READER_REVISION, adapter_sha256=PAGE_ADAPTER_SHA256)
+    return version
 
 
 def _weights_id(name: str) -> str:
