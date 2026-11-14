@@ -179,7 +179,7 @@ def course_term_words(words):
     """Case variants of these full course terms carry the same meaning. Keep symbols and variables exact."""
     normalized = list(words)
     for i, word in enumerate(words):
-        if word.lower() == "k-means":
+        if word.lower() in {"k-means", "kmeans"}:
             normalized[i] = "k-means"
         elif word.lower() == "supervised" and i+1 < len(words) and words[i+1].lower() == "learning":
             normalized[i:i+2] = ["supervised", "learning"]
@@ -207,6 +207,47 @@ def verify_crop_words(text, first_scores, page_text, crops, *, course_terms=Fals
                 scores[i:i+n] = [max(a, b) for a, b in zip(scores[i:i+n], read, strict=True)]
                 break
     return min(scores)
+
+
+def confirm_isolated_written_id(row, page, reader):
+    """Require a strong page digit and a single agreeing label from a separate crop."""
+    number = row["number"]
+    if (not number or not number.isascii() or not number.isdecimal() or not 21 <= int(number) <= 35
+            or row["part"] or not row["number_conf"] < _ID_CHECK_THRESHOLD <= row["number_token_conf"]):
+        return False
+    try:
+        labels = local_labels(page, reader)
+    except (OSError, RuntimeError):
+        return False
+    if len(labels) != 1 or labels[0][0] != number or labels[0][1] < _ID_CHECK_THRESHOLD:
+        return False
+    row["confirmed_number_conf"] = min(row["number_token_conf"], labels[0][1])
+    return True
+
+
+def verify_isolated_answer(row, first_scores, page, reader):
+    """Align complete words from separate line images against the sole answer on this page."""
+    text = row["text"]
+    words = text.split()
+    if not words or "[?]" in text or "\ufffd" in text:
+        return None
+    crops = []
+    for x0, y0, x1, y1 in reader.line_boxes(page, "detectors"):
+        # Reduce ink from adjacent lines in loose detector boxes.
+        inset = (y1 - y0) * .10
+        crop = reader.crop(page, [x0, y0+inset, x1, y1-inset], pad=16)
+        for line, scores in page_lines(crop, reader, prompt=reader.VLM_PAGE_PROMPT, limit=120):
+            label = reader.LEADING_NUMBER.match(line)
+            if label:
+                if label[1] != row["number"] or label[2]:
+                    continue
+                line, scores = line[label.start(3):], scores[label.start(3):]
+            # A terminal word whose punctuation changed keeps its original score.
+            last = re.search(r"(\S+)\s*$", line)
+            if last and last[1].isalpha() and last[1] + "." == words[-1]:
+                line, scores = line[:last.start()], scores[:last.start()]
+            crops.append([(line, scores)])
+    return verify_crop_words(text, first_scores, words, crops, course_terms=True)
 
 
 def local_labels(page, reader):
@@ -425,6 +466,7 @@ def read_exam(path):
         result["confirmed_other_document"] = True
         result["stats"]["seconds"] = round(time.perf_counter() - started, 1)
         return result
+    crop_verified_pages = set()
     for page_no, image in enumerate(images, start=1):
         rows = [r for r in result["questions"] if r["page"] == page_no]
         if ("+" in reader.PAGE_READER and rows and not any(r["part"] for r in rows)
@@ -440,6 +482,10 @@ def read_exam(path):
                    <= r["number_token_conf"] for r in rows):
             continue
         if len(rows) == 1:
+            if (reader.PAGE_READER == reader.BASE_PAGE_READER and len(images) == 1
+                    and not result["unassigned"] and confirm_isolated_written_id(rows[0], originals[page_no-1], reader)):
+                crop_verified_pages.add(page_no)
+                continue
             # On an isolated answer the page model can repeat the same wrong digit.
             # Require a separately localized number, with no answer text for context.
             if not reader.has_detectors():
@@ -502,6 +548,13 @@ def read_exam(path):
             # A failed optional inference leaves the original reading available for review.
             continue
         score = confirmed_text_score(row["text"], first_scores, lines)
+        if page_no in crop_verified_pages and (score is None or score < _TEXT_CHECK_THRESHOLD) and reader.has_detectors():
+            try:
+                crop_score = verify_isolated_answer(row, first_scores, originals[page_no-1], reader)
+            except (OSError, RuntimeError):
+                crop_score = None
+            if crop_score is not None:
+                score = max(score or 0, crop_score)
         second_words = [word for line, _ in lines for word in line.split()]
         same_terms = ("+" in reader.PAGE_READER and "[?]" not in row["text"] and "\ufffd" not in row["text"]
                       and course_term_words(row["text"].split()) == course_term_words(second_words))

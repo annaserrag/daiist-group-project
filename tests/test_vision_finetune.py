@@ -17,6 +17,37 @@ def convert(*rows, loose=None):
 
 
 class VisionFinetuneTests(unittest.TestCase):
+    def test_isolated_digit_requires_two_strong_reads_and_preserves_text_score(self):
+        from exam_grader.page_confidence import confirm_isolated_written_id
+        question = row("31", "student answer", number_conf=.57, number_token_conf=.90, answer_token_conf=.57)
+        with patch("exam_grader.page_confidence.local_labels") as crop:
+            for labels in [[], [("34", .99)], [("31", .6)], [("31", .99), ("31", .99)]]:
+                crop.return_value = labels
+                self.assertFalse(confirm_isolated_written_id(question, None, None))
+                self.assertNotIn("confirmed_number_conf", question)
+            crop.return_value = [("31", .99)]
+            self.assertFalse(confirm_isolated_written_id(dict(question, number_token_conf=.70), None, None))
+            self.assertTrue(confirm_isolated_written_id(question, None, None))
+            self.assertEqual(question["confirmed_number_conf"], .90)
+            self.assertEqual(question["answer_token_conf"], .57)
+
+    def test_line_crop_only_confirms_words_with_unique_agreeing_context(self):
+        from vision import reader
+        from exam_grader.page_confidence import verify_isolated_answer
+        question = row("31", "K in kmeans algorithm defines clusters.")
+        def read(line):
+            return [(line, [.96]*len(line))]
+        with (patch.object(reader, "line_boxes", return_value=[[0, 0, 200, 30]]),
+              patch.object(reader, "crop", return_value=None),
+              patch("exam_grader.page_confidence.page_lines") as crop):
+            for line in ["34) K in Kmeans algorithm defines clusters",
+                         "31) K in nearest algorithm defines clusters"]:
+                crop.return_value = read(line)
+                self.assertEqual(verify_isolated_answer(question, [1,1,.57,1,1,1], None, reader), .57)
+            crop.return_value = read("31) K in Kmeans algorithm defines clusters")
+            self.assertEqual(verify_isolated_answer(question, [1,1,.57,1,1,1], None, reader), .96)
+            self.assertEqual(verify_isolated_answer(question, [1,1,.57,1,1,.45], None, reader), .45)
+
     def test_recovered_labels_require_agreement_on_ids_and_answer_words(self):
         from vision import reader
         from exam_grader.page_confidence import recover_layout
