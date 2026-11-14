@@ -30,6 +30,7 @@ class WrittenQuestion(BaseModel):
     question: Text
     reference_answer: Text
     criteria: Annotated[list[Criterion], Field(min_length=1, max_length=4)]
+    paper_label: Annotated[str, StringConstraints(pattern=r"^(?:[1-9][0-9]?[a-zA-Z]?|[A-Za-z])$")] | None = None
     requires_figure: bool = False
     full_credit_match: FullCreditMatch | None = None
 
@@ -66,13 +67,24 @@ class WrittenQuestion(BaseModel):
 class WrittenExam(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     title: Text
+    booklet_question: Annotated[int, Field(ge=1, le=99)] | None = None
     questions: Annotated[list[WrittenQuestion], Field(min_length=1, max_length=15)]
 
     @model_validator(mode="after")
     def unique_questions(self):
         if len({q.question_id for q in self.questions}) != len(self.questions):
             raise ValueError("Question numbers must be unique within this exam.")
+        labels = [(q.paper_label or str(q.question_id)).casefold() for q in self.questions]
+        if len(set(labels)) != len(labels):
+            raise ValueError("Use a unique printed label for each written question.")
         return self
+
+    @property
+    def reader_definition(self):
+        # Only identification data reaches the transcriber. Rubrics and solutions stay in grading.
+        return {"exam_id": self.exam_id, "title": self.title, "booklet_question": self.booklet_question,
+                "questions": [{"id": q.question_id, "label": q.paper_label or str(q.question_id),
+                               "question": q.question} for q in self.questions]}
 
     @property
     def exam_id(self):

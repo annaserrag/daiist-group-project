@@ -73,6 +73,10 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
         else:
             module = import_module(module_name)
             reader, version, input_type = module.read_exam, module.VERSION, "pdf"
+            if written_exam is not None and hasattr(module, "read_selected_exam"):
+                from functools import partial
+                reader = partial(module.read_selected_exam, definition=written_exam.reader_definition)
+                version += "/selected-v1"
     else:
         raise ValueError("Choose an OCR JSON export or a PDF exam.")
     started = perf_counter()

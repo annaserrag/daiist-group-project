@@ -48,7 +48,7 @@ _ANSWER_PROMPT = ("Read only the student's handwritten answer labeled {number} o
                   "Mark illegible text with [?].")
 
 
-def page_lines(image, reader, *, prompt, limit):
+def page_lines(image, reader, *, prompt, limit, flag_truncation=False):
     processor, model, torch = reader._vlm(reader.PAGE_READER)
     content = [{"type": "image", "image": image}, {"type": "text", "text": prompt}]
     message = [{"role": "user", "content": content}]
@@ -63,6 +63,8 @@ def page_lines(image, reader, *, prompt, limit):
     pieces = ((processor.tokenizer.decode([token], skip_special_tokens=True), prob)
               for token, prob in zip(tokens, probs, strict=True))
     lines = [(line, scores) for line, scores in scored_lines(pieces) if line.strip()]
+    if flag_truncation and len(tokens) >= limit and tokens[-1] != processor.tokenizer.eos_token_id:
+        lines.append(("[?]", [0.0] * 3))
     return lines or [("", [min(probs, default=0.0)])]
 
 

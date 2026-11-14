@@ -20,7 +20,11 @@ with contextlib.redirect_stdout(sys.stderr):
     from vision import reader
     if getattr(reader, "PAGE_READER", None) != "Qwen/Qwen3-VL-2B-Instruct":
         raise RuntimeError("GRADE_VISION_ROOT must point to a checkout whose page reader is the pretrained Qwen3-VL-2B.")
-    result = read_exam(sys.argv[1])
+    if len(sys.argv) > 3:
+        from exam_grader.selected_reader import read_pdf
+        result = read_pdf(sys.argv[1], json.load(sys.stdin))
+    else:
+        result = read_exam(sys.argv[1])
 json.dump(result, sys.stdout)
 """
 
@@ -113,12 +117,27 @@ def read_exam(path):
         from .page_confidence import read_exam as read_page
         return adapt(read_page(pdf))
 
+    return adapt(_external_raw(pdf, root))
+
+
+def read_selected_exam(path, *, definition):
+    pdf = Path(path).resolve(strict=True)
+    root = os.getenv("GRADE_VISION_ROOT")
+    if root:
+        return _external_raw(pdf, root, definition)
+    from .selected_reader import read_pdf
+    return read_pdf(pdf, definition)
+
+
+def _external_raw(pdf, root, definition=None):
     # The two branches can keep their own dependency locks and Python environments.
     checkout = Path(root).expanduser().resolve(strict=True)
     python = checkout / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-    result = subprocess.run([str(python), "-X", "utf8", "-c", _WORKER, str(pdf), str(Path(__file__).resolve().parents[1])],
+    result = subprocess.run([str(python), "-X", "utf8", "-c", _WORKER, str(pdf), str(Path(__file__).resolve().parents[1]),
+                             *(["selected"] if definition is not None else [])],
+                            input=json.dumps(definition).encode() if definition is not None else None,
                             cwd=checkout, stdout=subprocess.PIPE, check=True)
-    return adapt(json.loads(result.stdout))
+    return json.loads(result.stdout)
 
 
 def assign_unresolved(payload, assignments):
