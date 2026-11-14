@@ -250,6 +250,83 @@ def verify_isolated_answer(row, first_scores, page, reader):
     return verify_crop_words(text, first_scores, words, crops, course_terms=True)
 
 
+def is_sheet_header(text):
+    from .vision_finetune import _ANSWER_SHEET_HEADER
+    return " ".join(text.casefold().split()) == _ANSWER_SHEET_HEADER
+
+
+def page_body(lines, number, reader):
+    """Strip only a leading sheet header and the expected first label. Reject other labels."""
+    lines = list(lines)
+    if lines and is_sheet_header(lines[0][0]):
+        lines = lines[1:]
+    if not lines:
+        return []
+    body = []
+    for i, (line, scores) in enumerate(lines):
+        label = reader.LEADING_NUMBER.match(line)
+        if i == 0 and number is not None:
+            if not label or label[1] != number or label[2]:
+                return []
+            start = label.start(3)
+            line, scores = line[start:], scores[start:]
+        elif label or is_sheet_header(line):
+            return []
+        if line.strip():
+            body.append((line, scores))
+    return body
+
+
+def verify_page_bodies(row, pages, originals, reader):
+    """Re-read the ink of each page and align every word within its original page."""
+    import numpy as np
+    from PIL import Image
+    bodies = [page_body(lines, row["number"] if i == 0 else None, reader)
+              for i, (lines, _) in enumerate(pages)]
+    if not all(bodies):
+        return None
+    if len(bodies) == 2:
+        # A continuation must carry on a visible bullet list across adjacent pages.
+        bullet = re.compile(r"^\s*([-•])\s+\S")
+        continuation = bullet.match(bodies[1][0][0])
+        if not continuation or not any(line.lstrip().startswith(continuation[1] + " ") for line, _ in bodies[0]):
+            return None
+    text = " ".join(line for body in bodies for line, _ in body)
+    if text.split() != row["text"].split():
+        return None
+    verified = []
+    crops = []
+    for i, (body, page) in enumerate(zip(bodies, originals, strict=True)):
+        ink = page < 140
+        xs, ys = np.flatnonzero(ink.any(axis=0)), np.flatnonzero(ink.any(axis=1))
+        if not len(xs):
+            return None
+        crop = reader.crop(page, [xs[0], ys[0], xs[-1]+1, ys[-1]+1], pad=22)
+        crop.thumbnail((2000, 2200))
+        crops.append(crop)
+        prompt = _LAYOUT_PROMPT if len(bodies) == 2 else reader.VLM_PAGE_PROMPT
+        repeated = page_body(page_lines(crop, reader, prompt=prompt, limit=768),
+                             row["number"] if i == 0 else None, reader)
+        scores = [score for line, values in body for score in word_scores(line, values)]
+        score = confirmed_text_score(" ".join(line for line, _ in body), scores, repeated)
+        if score is None:
+            return None
+        verified.append(score)
+    if len(crops) == 2 and min(verified) >= _TEXT_CHECK_THRESHOLD:
+        # A matching bullet alone does not establish that both pages answer one question.
+        joined = Image.new("RGB", (max(im.width for im in crops), sum(im.height for im in crops)+30), "white")
+        joined.paste(crops[0], (0, 0))
+        joined.paste(crops[1], (0, crops[0].height+30))
+        prompt = ("These are two consecutive pages. Transcribe the single handwritten response only if the second "
+                  "page continues the same question as the first. If another question starts or the connection "
+                  "is unclear, output [?]. Preserve the original question number, both list items and their exact "
+                  "words. Omit printed headers.")
+        joint_body = page_body(page_lines(joined, reader, prompt=prompt, limit=768), row["number"], reader)
+        if [w for line, _ in joint_body for w in line.split()] != text.split():
+            return None
+    return min(verified)
+
+
 def local_labels(page, reader):
     """Read the leading ink of separated horizontal writing bands in their physical order."""
     import numpy as np
@@ -467,6 +544,7 @@ def read_exam(path):
         result["stats"]["seconds"] = round(time.perf_counter() - started, 1)
         return result
     crop_verified_pages = set()
+    only_headers = all(is_sheet_header(item["text"]) for item in result["unassigned"])
     for page_no, image in enumerate(images, start=1):
         rows = [r for r in result["questions"] if r["page"] == page_no]
         if ("+" in reader.PAGE_READER and rows and not any(r["part"] for r in rows)
@@ -483,7 +561,8 @@ def read_exam(path):
             continue
         if len(rows) == 1:
             if (reader.PAGE_READER == reader.BASE_PAGE_READER and len(images) == 1
-                    and not result["unassigned"] and confirm_isolated_written_id(rows[0], originals[page_no-1], reader)):
+                    and only_headers
+                    and confirm_isolated_written_id(rows[0], originals[page_no-1], reader)):
                 crop_verified_pages.add(page_no)
                 continue
             # On an isolated answer the page model can repeat the same wrong digit.
@@ -533,9 +612,23 @@ def read_exam(path):
         number = row["number"]
         page_no = row["page"]
         if (not number or not number.isascii() or not number.isdecimal() or not 21 <= int(number) <= 35
-                or row["part"] or counts[number] != 1 or page_no != last_page
+                or row["part"] or counts[number] != 1
                 or max(row["number_conf"], row.get("confirmed_number_conf", 0)) < _ID_CHECK_THRESHOLD
                 or row.get("answer_token_conf", 1) >= _TEXT_CHECK_THRESHOLD or not first_scores):
+            continue
+        continued = page_no != last_page
+        if (reader.PAGE_READER == reader.BASE_PAGE_READER and len(result["questions"]) == 1
+                and only_headers and page_no == 1
+                and ((len(pages) == 2 and last_page == 2)
+                     or (len(pages) == 1 and page_no in crop_verified_pages and result["unassigned"]))):
+            try:
+                score = verify_page_bodies(row, pages, originals, reader)
+            except (OSError, RuntimeError):
+                score = None
+            if score is not None and score >= _TEXT_CHECK_THRESHOLD:
+                row["confirmed_answer_conf"] = score
+                continue
+        if continued:
             continue
         if page_no not in verification_images:
             detail = Image.fromarray(originals[page_no - 1]).convert("RGB")

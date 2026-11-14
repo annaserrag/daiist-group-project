@@ -1,0 +1,27 @@
+{
+  "run_id": "ddbb3c1d862c497292e183aae215e502",
+  "cases": 30,
+  "automatically_assessed": 30,
+  "model_calls": 3,
+  "cache_hits": 12,
+  "awaiting_human_assessment": 0,
+  "cases_with_execution_issues": 0,
+  "agreement_with_structured_expectations": 0.6666666666666666,
+  "mean_review_questions": 32.93333333333333,
+  "mean_exam_latency_s": 2.923176666666667,
+  "known_cost_exams": 29,
+  "mean_known_cost_eur": 0.0,
+  "pdf_packet": {
+    "baseline_case_correct": 14,
+    "reader_structure_ok": 26,
+    "reader_exact_cases": 17,
+    "expected_question_slots": 105,
+    "exact_reading_slots": 77,
+    "numeric_references": 100,
+    "comparable_proposals": 61,
+    "exact_marks": 61,
+    "large_mark_errors": 0,
+    "full_credit_baseline_exact_on_proposals": 41,
+    "full_credit_baseline_exact_on_all": 64
+  }
+}

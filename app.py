@@ -129,7 +129,14 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
                 location = cite["title"] + (f", p. {cite['page']}" if "page" in cite else "")
                 sources.append(f"{name} ({cite['coverage']}) · {location} · {cite['quote']}")
             passages = []
-            for hit in item.get("review_passages", []):
+            review_hits = item.get("review_passages", [])
+            if (not custom and q in (24, 25) and len(item["readings"]) == 1
+                    and item["reason"] in {"uncertain_question_id", "low_read_confidence"}):
+                # Local search for the reviewer only. The unverified OCR cannot authorize a mark.
+                index = selected_index(library, course) or pipeline.resources()[0]
+                review_hits = [dict(hit, excerpt=hit["text"][:1200])
+                               for hit in index.search(q, item["readings"][0])]
+            for hit in review_hits:
                 location = hit["title"] + (f", p. {hit['page']}" if "page" in hit else "")
                 if hit.get("url"):
                     location += f" · {hit['url']}"

@@ -54,5 +54,26 @@
     "heading": "Adapted from scikit-learn",
     "url": "https://scikit-learn.org/stable/auto_examples/preprocessing/plot_scaling_importance.html",
     "text": "K-nearest neighbors picks training examples by distance. With features measured on very different scales, the wider-ranging feature can dominate distances and change which examples are nearest. Scaling features to comparable ranges gives each feature a more comparable influence on the neighborhood."
+  },
+  {
+    "source": "language-identification",
+    "title": "Component 2 study note · Identifying the language of text",
+    "heading": "Adapted from fastText language identification",
+    "url": "https://fasttext.cc/docs/en/language-identification.html",
+    "text": "Language identification models take text as input and predict which language it uses. For example, fastText trained classifiers on multilingual text to distinguish 176 languages. The same task can be applied to an incoming message."
+  },
+  {
+    "source": "housing-regression",
+    "title": "Component 2 study note · Predicting housing values",
+    "heading": "Adapted from the scikit-learn California housing dataset",
+    "url": "https://scikit-learn.org/stable/datasets/real_world.html#california-housing-dataset",
+    "text": "Housing price prediction is a regression task. The California housing dataset pairs district characteristics such as location and average rooms with the median house value that a model aims to predict."
+  },
+  {
+    "source": "deployment-performance",
+    "title": "Component 2 study note · Uncertainty about future model performance",
+    "heading": "Adapted from Google Machine Learning Crash Course, Monitoring pipelines",
+    "url": "https://developers.google.com/machine-learning/crash-course/production-ml-systems/monitoring#test_the_quality_of_live_model_on_served_data",
+    "text": "Even with ample training data, future model performance is uncertain because the conditions a model encounters can change. If the distribution of real inputs shifts after validation, a model that tested well can make worse predictions. Monitoring quality on new observations helps detect this degradation."
   }
 ]

@@ -34,6 +34,8 @@ DISCRETIZATION = re.compile(r"\bdiscreti[sz](?:e[ds]?|ing|ation)\b", re.I)
 # In an open question, use the concepts the student actually discusses to diversify
 # the evidence window. A match nominates a passage; the grader still verifies the quote.
 CHALLENGE_FACETS = [
+    (r"\buncertaint(?:y|ies)\b|\bdistribution(?:al)? shift\b",
+     r"\b(?:future|deployment|real.world)\b.{0,75}\bperformance\b.{0,160}\b(?:shift|chang)\w*"),
     (r"\b(?:over|under)[ -]?fit", r"\b(?:over|under)[ -]?fit\w*\b.{0,140}\b(?:training|new data|generaliz)"),
     (r"\b(?:find\w*|collect\w*|gather\w*)\s+(?:a\s+|the\s+)?data|\bdata\s+collection",
      r"\b(?:collect|construct|gather)\w*\b.{0,150}\b(?:time|cost|effort)\b"),
@@ -41,11 +43,18 @@ CHALLENGE_FACETS = [
     (r"\boutliers?\b", r"\boutliers?\b.{0,180}\b(?:error|investigat|detect|flag)"),
 ]
 
-def challenge_evidence(ranked, answer):
+APPLICATION_FACETS = [
+    (r"\b(?:house|home|housing|property|real estate)\s+(?:pric|valu)\w*",
+     r"\b(?:housing|house|property)\b.{0,45}\b(?:price|value)\b.{0,85}\b(?:predict|regression)\w*"),
+    (r"\blanguage\s+(?:detect|identif|recogni)\w*|\b(?:detect|identif|recogni)\w*\s+(?:the\s+)?language\b",
+     r"\b(?:models?|classifiers?)\b.{0,120}\b(?:identify|predict|recognize|distinguish)\b.{0,55}\blanguages?\b"),
+]
+
+def facet_evidence(ranked, answer, facets):
     selected = []
-    for cue, standard in CHALLENGE_FACETS:
+    for cue, standard in facets:
         if re.search(cue, answer, re.I):
-            hit = next((r for r in ranked[:30] if re.search(standard, r["text"], re.I)), None)
+            hit = next((r for r in ranked if re.search(standard, r["text"], re.I)), None)
             if hit and hit not in selected:
                 selected.append(hit)
     # Preserve the leading relevance score used for the retrieval threshold.
@@ -86,7 +95,7 @@ class Index:
                 raise ValueError("Rebuild index: manifest does not match")
             self.version = f"{design}:{digest(raw)[:12]}:{MODEL}:hybrid-v3"
         if multipart:
-            self.version += ":multipart-v2"
+            self.version += ":multipart-v3"
         if teaching_notes:
             raw_notes = (DATA / "teaching-notes.json").read_bytes()
             notes = chunks(json.loads(raw_notes), "paragraph")
@@ -105,7 +114,7 @@ class Index:
         """Build an independent index for the active course in a teacher's session."""
         index = cls.__new__(cls)
         index.rows, index.vectors = rows, vectors
-        index.version, index.multipart = version, multipart
+        index.version, index.multipart = version + (":multipart-v3" if multipart else ""), multipart
         index._prepare_bags()
         return index
 
@@ -147,8 +156,11 @@ class Index:
                 score = (0.8*sem + 0.2*lex) if answer else sem
             results.append(dict(row,score=score))
         ranked = sorted(results,key=lambda r:(-r["score"],r["id"]))
-        if self.multipart and ranked and answer and ML.search(question) and CHALLENGE.search(question):
-            ranked = challenge_evidence(ranked, answer)
+        if self.multipart and ranked and answer:
+            if ML.search(question) and CHALLENGE.search(question):
+                ranked = facet_evidence(ranked, answer, CHALLENGE_FACETS)
+            elif re.search(r"\bapplications?\b", question, re.I):
+                ranked = facet_evidence(ranked, answer, APPLICATION_FACETS)
         if (self.multipart and OUTLIER.search(question) and re.search(r"\b(?:detect|identif|find)\w*", question, re.I)
                 and re.search(r"\b(?:handl|treat|manag)\w*", question, re.I)
                 and not any(covers_treatment(hit) for hit in ranked[:3])):

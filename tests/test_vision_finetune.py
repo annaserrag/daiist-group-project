@@ -17,6 +17,40 @@ def convert(*rows, loose=None):
 
 
 class VisionFinetuneTests(unittest.TestCase):
+    def test_page_body_keeps_unknown_headers_and_rejects_a_second_label(self):
+        from vision import reader
+        from exam_grader.page_confidence import page_body, is_sheet_header
+        def lines(*texts):
+            return [(s, [.95]*len(s)) for s in texts]
+        heading = "Data Science Examination | Answer sheet"
+        self.assertTrue(is_sheet_header(heading))
+        self.assertFalse(is_sheet_header(heading+" Q26"))
+        self.assertEqual(page_body(lines(heading, "25. Two uses"), "25", reader), lines("Two uses"))
+        self.assertFalse(page_body(lines(heading, "26. Two uses"), "25", reader))
+        self.assertFalse(page_body(lines("- One more point", "26. Different question"), None, reader))
+        self.assertFalse(page_body(lines("Another worksheet", "25. Two uses"), "25", reader))
+
+    def test_continuation_requires_verbatim_page_and_joint_reads(self):
+        import numpy as np
+        from vision import reader
+        from exam_grader.page_confidence import verify_page_bodies
+        def lines(*texts):
+            return [(s, [.98]*len(s)) for s in texts]
+        start = lines("24. Two issues", "- Poor data")
+        end = lines("- Uncertain future performance")
+        pages = [(start, None), (end, None)]
+        images = [np.zeros((20, 40), dtype=np.uint8)] * 2
+        question = row("24", "Two issues - Poor data - Uncertain future performance")
+        with patch("exam_grader.page_confidence.page_lines") as read:
+            for last in [lines("[?]"), start+lines("25. Uncertain future performance"),
+                         start+lines("- Certain future performance")]:
+                read.side_effect = [start, end, last]
+                self.assertIsNone(verify_page_bodies(question, pages, images, reader))
+            read.side_effect = [start, lines("- Certain future performance")]
+            self.assertIsNone(verify_page_bodies(question, pages, images, reader))
+            read.side_effect = [start, end, start+end]
+            self.assertEqual(verify_page_bodies(question, pages, images, reader), .98)
+
     def test_isolated_digit_requires_two_strong_reads_and_preserves_text_score(self):
         from exam_grader.page_confidence import confirm_isolated_written_id
         question = row("31", "student answer", number_conf=.57, number_token_conf=.90, answer_token_conf=.57)

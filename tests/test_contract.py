@@ -281,6 +281,14 @@ class Contract(unittest.TestCase):
         hits = index.search(27, "quartiles and interquartile range")
         self.assertTrue(any("Correct a verified error" in hit["text"] for hit in hits))
 
+    def test_second_application_or_challenge_gets_body_evidence(self):
+        for semantic in (True, False):
+            index = Index("section", semantic, teaching_notes=True)
+            applications = index.search(25, "Estimate home values and identify the language of incoming messages.")
+            self.assertIn("language-identification", {hit["source"] for hit in applications})
+            challenges = index.search(24, "Poor data quality and uncertainty about performance on new inputs.")
+            self.assertIn("deployment-performance", {hit["source"] for hit in challenges})
+
     def test_summary_quote_repair_still_checks_the_mark_and_review_policy(self):
         from exam_grader.grading import checked
         detection = "Box plots can flag extreme values."

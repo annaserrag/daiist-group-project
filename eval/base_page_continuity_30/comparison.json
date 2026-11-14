@@ -1,0 +1,104 @@
+{
+  "baseline_run": "ddbb3c1d862c497292e183aae215e502",
+  "run_id": "a67e48862236415d8b4a88098e883f60",
+  "totals": {
+    "before": {
+      "written": {
+        "targets": 25,
+        "review": 17,
+        "proposed": 8,
+        "comparable": 7,
+        "matched": 7
+      },
+      "mcq": {
+        "targets": 80,
+        "review": 26,
+        "proposed": 54,
+        "comparable": 54,
+        "matched": 54
+      }
+    },
+    "after": {
+      "written": {
+        "targets": 25,
+        "review": 15,
+        "proposed": 10,
+        "comparable": 9,
+        "matched": 9
+      },
+      "mcq": {
+        "targets": 80,
+        "review": 26,
+        "proposed": 54,
+        "comparable": 54,
+        "matched": 54
+      }
+    }
+  },
+  "changed_target_decisions": [
+    {
+      "case": "c10",
+      "question": "25",
+      "reference": 2.0,
+      "before": {
+        "status": "review",
+        "reason": "uncertain_question_id",
+        "mark": null
+      },
+      "after": {
+        "status": "proposed",
+        "reason": "grounded_proposal",
+        "mark": 2.0
+      }
+    },
+    {
+      "case": "c20",
+      "question": "24",
+      "reference": 2.0,
+      "before": {
+        "status": "review",
+        "reason": "low_read_confidence",
+        "mark": null
+      },
+      "after": {
+        "status": "proposed",
+        "reason": "grounded_proposal",
+        "mark": 2.0
+      }
+    }
+  ],
+  "changed_other_decisions": [],
+  "changed_case_outcomes": [
+    [
+      "c10",
+      "False",
+      "True"
+    ],
+    [
+      "c20",
+      "False",
+      "True"
+    ]
+  ],
+  "changed_exam_statuses": [],
+  "changed_readings_or_states": [],
+  "changed_feedback_or_citations": [
+    [
+      "c10",
+      "25"
+    ],
+    [
+      "c20",
+      "24"
+    ]
+  ],
+  "remaining_written_review_reasons": {
+    "uncertain_question_id": 4,
+    "written_mark_review": 3,
+    "mark_disagreement": 2,
+    "low_read_confidence": 2,
+    "missing_detection": 2,
+    "context_check": 1,
+    "single_hyperparameter_review": 1
+  }
+}

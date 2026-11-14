@@ -1,0 +1,171 @@
+{
+  "before_run": "da6714678b6e4014aa688c4dd269f661",
+  "after_run": "ddbb3c1d862c497292e183aae215e502",
+  "totals": {
+    "before": {
+      "written": {
+        "targets": 25,
+        "review": 17,
+        "proposed": 8,
+        "comparable": 7,
+        "matched": 7
+      },
+      "mcq": {
+        "targets": 80,
+        "review": 26,
+        "proposed": 54,
+        "comparable": 54,
+        "matched": 54
+      }
+    },
+    "after": {
+      "written": {
+        "targets": 25,
+        "review": 17,
+        "proposed": 8,
+        "comparable": 7,
+        "matched": 7
+      },
+      "mcq": {
+        "targets": 80,
+        "review": 26,
+        "proposed": 54,
+        "comparable": 54,
+        "matched": 54
+      }
+    }
+  },
+  "changed_target_decisions": [],
+  "changed_other_decisions": [],
+  "changed_case_outcomes": [],
+  "changed_exam_statuses": [],
+  "changed_readings": [],
+  "changed_feedback_or_citations": [
+    [
+      "c08",
+      25
+    ]
+  ],
+  "target_details": [
+    {
+      "case": "c10",
+      "question": 25,
+      "production_reason": "uncertain_question_id",
+      "production_mark": null,
+      "teacher_mark": 2.0,
+      "before_top3": [
+        "industry-applications-85b4a9b6041a",
+        "applications-85ee7c296204",
+        "semi-629606030c4a"
+      ],
+      "after_top3": [
+        "industry-applications-85b4a9b6041a",
+        "housing-regression-61d1f334e102",
+        "language-identification-b87ddfd1e498"
+      ],
+      "review_panel_verified": true,
+      "verified_input_before": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "feedback": "Teacher review. The passages do not fully support these rubric points. second: A different concrete application. Examples in the key are illustrative.",
+        "criterion_evidence": {
+          "first": {
+            "id": "industry-applications-85b4a9b6041a",
+            "title": "Component 2 study note \u00b7 Applications of data science in healthcare, finance and retail",
+            "heading": "Adapted from Google Cloud",
+            "url": "https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning",
+            "quote": "In finance, transaction data can be used to detect fraud.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": [
+          "second"
+        ]
+      },
+      "verified_input_after": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "feedback": "The student correctly identified two distinct real-world applications of data science.",
+        "criterion_evidence": {
+          "first": {
+            "id": "housing-regression-61d1f334e102",
+            "title": "Component 2 study note \u00b7 Predicting housing values",
+            "heading": "Adapted from the scikit-learn California housing dataset",
+            "url": "https://scikit-learn.org/stable/datasets/real_world.html#california-housing-dataset",
+            "quote": "Housing price prediction is a regression task.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "language-identification-b87ddfd1e498",
+            "title": "Component 2 study note \u00b7 Identifying the language of text",
+            "heading": "Adapted from fastText language identification",
+            "url": "https://fasttext.cc/docs/en/language-identification.html",
+            "quote": "Language identification models take text as input and predict which language it uses.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      }
+    },
+    {
+      "case": "c20",
+      "question": 24,
+      "production_reason": "low_read_confidence",
+      "production_mark": null,
+      "teacher_mark": 2.0,
+      "before_top3": [
+        "quality-12aa1645af38",
+        "quality-790d57682cc4",
+        "dataset-preparation-0210bc6121e1"
+      ],
+      "after_top3": [
+        "quality-12aa1645af38",
+        "deployment-performance-12113386e602",
+        "quality-790d57682cc4"
+      ],
+      "review_panel_verified": true,
+      "verified_input_before": {
+        "mark": null,
+        "reason": "insufficient_evidence",
+        "feedback": "Teacher review. The passages do not fully support these rubric points. second: Another distinct ML challenge with explanation. Accept valid alternatives to the sample key.",
+        "criterion_evidence": {
+          "first": {
+            "id": "quality-12aa1645af38",
+            "title": "Data quality",
+            "heading": "Page Summary",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+            "quote": "A machine learning model's performance is heavily reliant on the quality and quantity of the dataset it's trained on, with larger, high-quality datasets generally leading to better results.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": [
+          "second"
+        ]
+      },
+      "verified_input_after": {
+        "mark": 2.0,
+        "reason": "grounded_proposal",
+        "feedback": "The student correctly identified two distinct challenges in machine learning (data quality and uncertainty in future performance) and provided a brief explanation for each.",
+        "criterion_evidence": {
+          "first": {
+            "id": "quality-12aa1645af38",
+            "title": "Data quality",
+            "heading": "Page Summary",
+            "url": "https://developers.google.com/machine-learning/crash-course/overfitting/data-characteristics",
+            "quote": "A machine learning model's performance is heavily reliant on the quality and quantity of the dataset it's trained on, with larger, high-quality datasets generally leading to better results.",
+            "coverage": "full"
+          },
+          "second": {
+            "id": "deployment-performance-12113386e602",
+            "title": "Component 2 study note \u00b7 Uncertainty about future model performance",
+            "heading": "Adapted from Google Machine Learning Crash Course, Monitoring pipelines",
+            "url": "https://developers.google.com/machine-learning/crash-course/production-ml-systems/monitoring#test_the_quality_of_live_model_on_served_data",
+            "quote": "Even with ample training data, future model performance is uncertain because the conditions a model encounters can change. If the distribution of real inputs shifts after validation, a model that tested well can make worse predictions.",
+            "coverage": "full"
+          }
+        },
+        "criteria_needing_evidence": []
+      }
+    }
+  ]
+}
