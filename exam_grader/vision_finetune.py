@@ -8,7 +8,7 @@ from pathlib import Path
 from .catalog import OPTIONS, OPTION_TEXTS, QUESTIONS
 from .handoff import VisionExam
 
-VERSION = "vision-finetune/reader-v3/page/bridge-v11"
+VERSION = "vision-finetune/reader-v3/page/bridge-v12"
 _ANSWER_SHEET_HEADER = "data science examination | answer sheet"
 _BARE_CHOICE = re.compile(r"([1-9][0-9]?)\s+([A-Da-d])")
 _CHOICE_WITH_TEXT = re.compile(r"([A-Da-d])(?:\s*[,.:)]\s*|\s+)(.+)", re.DOTALL)
@@ -77,6 +77,26 @@ def _observation(row, question_id):
             "state": "read" if text.strip() else "unreadable"}
 
 
+def is_heading(row, first_page):
+    """A line the reader put before the first question number that is part of the page header (subject, name, ID
+    number, date, "Answer"), not an answer. The reader only leaves a line unassigned when no question number came
+    before it in the whole exam, so these lines sit above the answers by construction. Only short lines on the page
+    where the answers start count; a bare option letter, or anything longer, stays for the teacher to check, because
+    it could be an answer whose number was not read. So does a line that opens with a one- to three-digit number
+    ("3 A or D"); a long digit run, such as a student ID number, does not protect a line."""
+    text = " ".join(str(row.get("text", "")).split())
+    if not text or row.get("page", first_page) != first_page:
+        return False
+    if re.fullmatch(r"\(?[A-Da-d][.)]?", text) or re.match(r"^\W*\d{1,3}(?!\d)", text):
+        return False  # an option letter, or a line opening with a question-sized number: maybe an answer
+    return len(text.split()) <= HEADING_WORDS and len(text) <= HEADING_CHARS
+
+
+# A header line is at most this long. Chosen before looking at any exam: a subject, a name and an ID number fit; a
+# written answer of one sentence does not. Checked on development exams only (eval/header_rule_dev.py).
+HEADING_WORDS, HEADING_CHARS = 6, 40
+
+
 def adapt(raw):
     """Keep duplicate detections and unassigned lines for the grader's review gates."""
     questions, loose = raw["questions"], raw["unassigned"]
@@ -95,6 +115,8 @@ def adapt(raw):
         return " ".join(row["text"].casefold().split()) == _ANSWER_SHEET_HEADER
 
     headed_pages = {row["page"] for row in loose if is_header(row) and type(row.get("page")) is int}
+    pages = [row["page"] for row in questions if type(row.get("page")) is int]
+    first_page = min(pages) if pages else 1
     for row in loose:
         if row.get("page") in headed_pages:
             if is_header(row):
@@ -104,6 +126,8 @@ def adapt(raw):
                 answers.append(_observation({**row, "text": choice[2], "number_conf": row.get("ocr_conf")},
                                             int(choice[1])))
                 continue
+        if is_heading(row, first_page):
+            continue  # page header: neither an answer nor something to send on (it may hold the student's name)
         answers.append(_observation(row, None))
     readable = any(a["question_id"] is not None and a["state"] == "read" for a in answers)
     payload = {"schema_version": "vision.exam.v1", "exam_id": "mendeley-sf3kvjwknt-v1",

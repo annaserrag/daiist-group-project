@@ -9,10 +9,13 @@ from time import perf_counter
 import gradio as gr
 import pandas as pd
 
+import desk_ui as ui
 import logbook
 import monitor
 import pipeline
+from exam_grader import bandit
 from exam_grader.catalog import KEY, OPTION_TEXTS, QUESTIONS
+from exam_grader.grading import Policy
 from exam_grader.rubric import CRITERIA
 from exam_grader.build import vector
 from exam_grader.written_exam import WrittenExam
@@ -49,11 +52,17 @@ REVIEW_ACTIONS = {
     "invalid_contract": "Validate the vision export before grading this exam.",
 }
 
-def process_once(raw_input, course_index=None, exam_state=None):
+def process_once(raw_input, course_index=None, exam_state=None, review_threshold=None):
+    """Grade one paper and log it. review_threshold is the reading-confidence threshold the bandit chose (App tab
+    only); None keeps the fixed default, as the /run API and the acceptance checks expect."""
     started = perf_counter()
     exam, queries = exam_state or (None, None)
-    views = pipeline.run_views(raw_input, course_index=course_index, written_exam=exam, query_vectors=queries)
+    policy = None
+    if review_threshold is not None:
+        policy = Policy(min_read=review_threshold, written_review_at_or_below=None if exam else 1)
+    views = pipeline.run_views(raw_input, policy=policy, course_index=course_index, written_exam=exam, query_vectors=queries)
     record = views["record"]
+    record["versions"]["review_threshold"] = review_threshold if review_threshold is not None else bandit.DEFAULT_ARM
     record["latency_s"] = round(perf_counter() - started, 4)
     return views["teacher"], logbook.log_request(record)
 
@@ -103,10 +112,20 @@ def preview_material(question, library, course=BUILTIN, exam_state=None):
             for hit in index.search(int(question))]
 
 
+def choose_threshold():
+    """The bandit's threshold for the next paper (Thompson sampling over the warm start and real sign-offs), or
+    None when a policy file fixes the policy for an evaluation."""
+    if os.getenv("GRADE_POLICY_FILE") or os.getenv("GRADE_BANDIT", "on") == "off":
+        return None
+    arm, _ = bandit.choose(bandit.load_prior(), bandit.rewards_from_logs(logbook.load_signoffs()))
+    return arm
+
+
 def display(raw_input, library=None, course=BUILTIN, exam_state=None):
     if not raw_input:
         raise gr.Error("Choose an OCR export or a PDF first.")
-    teacher, record = process_once(raw_input, selected_index(library, course), exam_state)
+    threshold = choose_threshold()
+    teacher, record = process_once(raw_input, selected_index(library, course), exam_state, threshold)
     review_index = None
     evidence, marks = [], []
     referrals = {}
@@ -173,12 +192,23 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         status = f"Exam status: {teacher['exam_status'].replace('_',' ')}. No exam total available."
     else:
         status = f"{len(marks)-count} of {len(marks)} questions have a proposed mark. {count} require review."
+        if threshold is not None:
+            status += (f" Answers read with less than {threshold:.0%} confidence go to you; the review rule chose this"
+                       " threshold from earlier sign-offs.")
         if teacher["near_pass_boundary"]:
             status += " Check the total against the configured pass boundary."
     context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
                "near_boundary": teacher.get("near_pass_boundary", False),
                "limits":[(r["question_id"],r["max_mark"]) for r in teacher["answers"]],
-               "referrals":referrals, "review_started":perf_counter(), "proposals":[point for _,point in marks]}
+               "referrals":referrals, "review_started":perf_counter(), "proposals":[point for _,point in marks],
+               "review_threshold":threshold,
+               # What the teacher needs to check any proposed mark (no student identity, only the reading).
+               "details":{item["question_id"]: {
+                   "question": item["question"], "reading": " | ".join(item["readings"]), "max": item["max_mark"],
+                   "reason": item["reason"].replace("_", " "), "feedback": item["feedback"] or "",
+                   "source": ((item["citation"] or {}).get("title", "")
+                              + (f", p. {(item['citation'] or {})['page']}" if (item["citation"] or {}).get("page") else "")),
+                   "quote": (item["citation"] or {}).get("quote", "")} for item in teacher["answers"]}}
     eligible = {q for q, referral in referrals.items() if referral["reason"] == "low read confidence"}
     for page in teacher.get("crop_pages", []):
         for answer in page["answers"]:
@@ -274,6 +304,12 @@ def sign_off(context, marks):
             "initially_referred":sum(p is None for p in previous),
             "accepted_proposals":sum(p == r["mark"] for p,r in zip(previous, final_marks, strict=True)),
             "changed_proposals":sum(p is not None and p != r["mark"] for p,r in zip(previous, final_marks, strict=True))}
+        # The bandit's reward: what this paper cost the teacher under the threshold it was graded with.
+        session = signed["review_session"]
+        threshold = context.get("review_threshold")
+        reward = bandit.paper_reward(len(final_marks), session["initially_referred"], session["changed_proposals"])
+        logbook.log_signoff(context["id"], threshold, len(final_marks), session["initially_referred"],
+                            session["changed_proposals"], round(reward, 4) if threshold is not None else None)
     return signed
 
 def rate(ctx, value):
@@ -290,7 +326,7 @@ def monitoring():
     frame = monitor.summary(logs)
     columns = ["time","requests","answer review share","thumbs down among rated"]
     if logs.empty:
-        return message, frame, pd.DataFrame(columns=columns)
+        return message, frame, pd.DataFrame(columns=columns), review_rule()
     data = logs.set_index("timestamp")
     groups = data.resample("h")
     rows = []
@@ -301,7 +337,19 @@ def monitoring():
         answer_shares = group.get("f_review_share", pd.Series(dtype=float)).dropna()
         rows.append([str(when), len(group), round(answer_shares.mean(), 3) if len(answer_shares) else None,
                      round((rated < 0).mean(), 3) if len(rated) else None])
-    return message, frame, pd.DataFrame(rows, columns=columns)
+    return message, frame, pd.DataFrame(rows, columns=columns), review_rule()
+
+
+def review_rule():
+    """What the review-threshold bandit has learnt: each arm's posterior and how often it was played."""
+    signoffs = logbook.load_signoffs()
+    state = bandit.posterior(bandit.load_prior(), bandit.rewards_from_logs(signoffs))
+    logs = logbook.load()
+    played = logs["versions"].map(lambda v: v.get("review_threshold")).value_counts() if not logs.empty else {}
+    return pd.DataFrame([{"threshold": arm, "papers graded": int(played.get(arm, 0)),
+                          "papers signed off": s["real_papers"], "warm-start papers": s["warm_start_papers"],
+                          "teacher cost per answer (estimate)": round(-s["mean"], 3), "uncertainty": round(s["sd"], 3)}
+                         for arm, s in state.items()])
 
 def results_view(context, sheet, selected, signed, status):
     context = context or {}
@@ -353,144 +401,304 @@ def results_view(context, sheet, selected, signed, status):
             gr.update(visible=signed_here))
 
 
+# ---------------------------------------------------------------- the redesigned Grade tab
+
+def paper_view(context, sheet, selected, focus, signed):
+    """The stepper, the summary band and the answer map, from the context and the teacher's current sheet."""
+    context = context or {}
+    limits = context.get("limits", [])
+    if not context.get("in_scope"):
+        return ui.stepper(0), "", ui.map_value(None, [], None)
+    marks = {row[0]: row[1] for row in sheet or [] if len(row) == 2}
+    referrals = context.get("referrals", {})
+    pending = [q for q, _ in limits if marks.get(q) in (None, "")]
+    need_you = [q for q in pending if q in referrals]
+    signed_here = bool(signed) and signed.get("request_id") == context.get("id")
+    stage = 3 if signed_here else 2 if not pending else 1
+    total = sum(v for v in marks.values() if isinstance(v, (int, float)))
+    maximum = sum(m for _, m in limits)
+    proposals = context.get("proposals", [])
+    changed = sum(1 for (q, _), p in zip(limits, proposals) if p is not None and marks.get(q) not in (None, "") and marks[q] != p)
+    if signed_here:
+        title, detail = "Paper signed off", f"{total:g} of {maximum:g} points. The marks are final."
+    elif not pending:
+        title, detail = "Ready to sign off", f"{total:g} of {maximum:g} points. Check anything you want, then sign off."
+    else:
+        title = f"{len(need_you) or len(pending)} answer{'s' if (len(need_you) or len(pending)) != 1 else ''} need you"
+        detail = "Click a question marked ? on the map, or work through them in order below."
+    chips = [("proposed by the product", str(sum(p is not None for p in proposals))),
+             ("sent to you", str(len(referrals))), ("you changed", str(changed)),
+             ("points so far", f"{total:g}/{maximum:g}")]
+    if context.get("review_threshold") is not None:
+        chips.append(("review threshold", f"{context['review_threshold']:.0%}"))
+    band = ui.summary_band(title, detail, len(limits) - len(pending), len(limits), chips)
+    shown = focus if focus is not None else selected
+    return ui.stepper(stage, len(need_you)), band, ui.map_value(context, sheet, shown)
+
+
+def open_question(context, picked, sheet):
+    """A click on the answer map. A question still waiting for the teacher opens in the review panel; any other
+    question opens in the check panel, where its mark can be confirmed or changed."""
+    context = context or {}
+    q = (picked or {}).get("selected")
+    limits = dict(context.get("limits", []))
+    if q not in limits:
+        return None, gr.update(), gr.update(visible=False), "", gr.update(choices=[], value=None)
+    marks = {row[0]: row[1] for row in sheet or [] if len(row) == 2}
+    referrals = context.get("referrals", {})
+    if q in referrals and marks.get(q) in (None, ""):
+        return None, gr.update(value=q), gr.update(visible=False), "", gr.update(choices=[], value=None)
+    detail = dict(context.get("details", {}).get(q, {}))
+    if q in referrals:  # already marked by the teacher: show the referral's reading and key
+        item = referrals[q]
+        detail.update(reading=item["reading"], feedback=f"Answer key: {item['key']}", source="", quote="")
+    detail.setdefault("question", QUESTIONS.get(q, f"Question {q}"))
+    detail.setdefault("reading", ""); detail.setdefault("reason", ""); detail.setdefault("feedback", "")
+    detail["max"] = limits[q]
+    maximum = limits[q]
+    choices = [(f"{point:g}", point) for point in ([0, 1] if maximum == 1 else [n / 2 for n in range(int(2 * maximum) + 1)])]
+    current = marks.get(q)
+    return (q, gr.update(), gr.update(visible=True), ui.proposal_card(q, detail, current),
+            gr.update(choices=choices, value=current if current not in ("", None) else None,
+                      label=f"Mark for Q{q} · out of {maximum:g}"))
+
+
+def apply_check_mark(context, question, point, marks):
+    """Confirm or change the mark of a question opened in the check panel."""
+    limits = dict((context or {}).get("limits", []))
+    if question not in limits:
+        raise gr.Error("Choose a question on the answer map first.")
+    if (type(point) not in (int, float) or not math.isfinite(point) or not 0 <= point <= limits[question]
+            or (point if limits[question] == 1 else point * 2) % 1):
+        raise gr.Error(f"Choose a mark between 0 and {limits[question]:g} for Q{question}.")
+    if [row[0] for row in marks] != list(limits):
+        raise gr.Error("Restore the question numbers on the mark sheet before changing a mark.")
+    return [[q, point if q == question else old] for q, old in marks], None
+
+
+# ---------------------------------------------------------------- the redesigned Monitoring tab
+
+def monitoring_view():
+    """Everything the Monitoring tab shows: the alert, the tiles, quality over time, drift per signal, and what the
+    review rule has learnt."""
+    logs = logbook.load()
+    reference = monitor.load_reference()
+    message, frame, timeline, rule = monitoring()
+    fired = monitor.alerts(logs, reference) if not logs.empty else []
+    quality = monitor.quality(logs) if not logs.empty else pd.DataFrame(columns=["time", "signal", "value"])
+    if not quality.empty:  # the plot reads naive datetimes; the logs are in UTC
+        quality["time"] = pd.to_datetime(quality["time"]).dt.tz_localize(None)
+    drift = pd.DataFrame(columns=["feature", "psi", "threshold", "alert"])
+    if reference is not None and len(logs) >= monitor.MIN_WINDOW:
+        drift = monitor.drift(reference, monitor.live_features(logs), monitor.MIN_WINDOW)
+    costs = rule.assign(threshold=rule["threshold"].map(lambda v: f"{v:.0%}"),
+                        cost=rule["teacher cost per answer (estimate)"])
+    return (ui.alert_banner(message, fired), ui.tiles(frame), quality, drift, costs, frame, timeline)
+
+
 def build_app():
     with gr.Blocks(title="Exam desk · Exam grading assistant") as demo:
-        gr.HTML('<header class="desk-mast"><span>Exam desk</span></header>')
+        masthead = gr.HTML(ui.masthead(bool(os.getenv("GEMINI_API_KEY"))))
         library = gr.State({})
         exam_state = gr.State(None)
         ctx = gr.State(None)
-        with gr.Tab("Grade exams"):
-            gr.Markdown("# Grade a paper\nUpload a student’s work, then review the suggested marks.", elem_classes="desk-intro")
+        focus = gr.State(None)  # a question opened from the answer map that is not waiting for the teacher
+
+        # ------------------------------------------------------------ 1. Grade
+        with gr.Tab("Grade", id="grade"):
+            progress_steps = gr.HTML(ui.stepper(0))
             with gr.Row(elem_classes="desk-columns"):
-                with gr.Column(scale=3, min_width=280, elem_classes="desk-card"):
+                with gr.Column(scale=3, min_width=280, elem_classes="desk-card upload-card"):
+                    gr.HTML('<h2 class="card-title">Student paper</h2><p class="card-note">A scanned PDF, as it '
+                            'comes from the scanner, or the reader’s JSON export.</p>')
                     upload = gr.File(label="Student paper · PDF or reader JSON", file_types=[".pdf", ".json"],
-                                     type="filepath", height=160, elem_id="paper-drop")
+                                     type="filepath", height=150, elem_id="paper-drop", show_label=False)
                     with gr.Row(elem_classes="desk-actions"):
                         go = gr.Button("Grade paper", variant="primary")
-                        example = gr.Button("Try a sample paper")
+                        example = gr.Button("Try a sample paper", variant="secondary")
                 with gr.Column(scale=2, min_width=250, elem_classes=["desk-card", "desk-settings"]):
-                    gr.Markdown("## Marking setup")
+                    gr.HTML('<h2 class="card-title">Marking setup</h2>')
                     exam_info = gr.Textbox(label="Exam", value="Built-in ML exam selected.", interactive=False)
                     course = gr.Dropdown([BUILTIN], value=BUILTIN, label="Course materials")
-                    gr.Markdown("Use the Materials tab to add a marking guide or course PDF.")
+                    gr.HTML('<p class="card-note">Add another exam or course PDF in the Materials tab.</p>')
+
             with gr.Column(visible=False, elem_id="grading-results") as results:
                 status = gr.Textbox(visible=False)
-                summary_card = gr.HTML()
+                summary_card = gr.HTML(visible=False)  # kept for results_view; the band below replaces it
+                band = gr.HTML()
+                answer_map = ui.AnswerMap(elem_id="answer-map")
+
+                with gr.Column(visible=False, elem_classes="desk-card check-panel", elem_id="check-panel") as check_panel:
+                    check_card = gr.HTML()
+                    with gr.Row(elem_classes="mark-actions"):
+                        check_point = gr.Radio(label="Mark", choices=[], interactive=True)
+                        check_save = gr.Button("Save mark", variant="primary")
+                        check_close = gr.Button("Close", variant="secondary")
+
                 with gr.Column(visible=False, elem_classes="desk-card", elem_id="active-review") as review:
-                    with gr.Accordion("Jump to another unmarked question", open=False):
-                        review_q = gr.Dropdown(label="Unmarked questions", choices=[], type="value")
+                    gr.HTML('<p class="panel-kicker">Needs your mark</p>')
                     reading = gr.HTML()
-                    with gr.Accordion("See rubric and sources", open=False):
+                    with gr.Accordion("Marking guide and sources", open=False):
                         standard = gr.Textbox(label="Marking guide", interactive=False)
                         support = gr.Textbox(label="Supporting passages", interactive=False)
+                    with gr.Row(elem_classes="mark-actions"):
+                        review_point = gr.Radio(label="Your mark", choices=[], interactive=True)
+                        record_point = gr.Button("Save & next", variant="primary", interactive=False)
+                    with gr.Accordion("Jump to another question that needs you", open=False):
+                        review_q = gr.Dropdown(label="Questions that need you", choices=[], type="value")
+
                     @gr.render(inputs=[ctx, review_q])
-                    def crop_panel(context, question):
+                    def handwriting(context, question):
                         item = (context or {}).get("referrals", {}).get(question, {})
                         if "crop" not in item:
                             return
-                        # A newly selected referral gets its own output components, including during a slow OCR call.
                         key = f"{context['id']}-{question}"
-                        button = gr.Button("Show disputed handwriting", key=f"crop-button-{key}")
+                        button = gr.Button("Show the handwriting", key=f"crop-button-{key}", size="sm")
                         crops = gr.Gallery(label="Original scan lines", columns=1, height="auto", format="png",
                                            interactive=False, key=f"crop-gallery-{key}")
                         wording = gr.Textbox(label="Disputed words in context", interactive=False, lines=4,
                                              key=f"crop-text-{key}")
                         button.click(show_review_lines, [ctx, review_q], [crops, wording], api_name=False)
 
-                    with gr.Row(elem_classes="mark-actions"):
-                        review_point = gr.Radio(label="Your mark", choices=[], interactive=True)
-                        record_point = gr.Button("Save & continue", variant="primary", interactive=False)
-                approve = gr.Button("Sign off this paper", variant="primary", visible=False)
-                with gr.Accordion("View signed record", open=False, visible=False) as signed_sheet:
+                with gr.Row(elem_classes="signoff-row"):
+                    approve = gr.Button("Sign off this paper", variant="primary", visible=False, size="lg")
+                with gr.Row(elem_classes="feedback-row"):
+                    gr.HTML('<p class="feedback-q">Was this grading useful?</p>')
+                    up = gr.Button("👍 Useful", size="sm")
+                    down = gr.Button("👎 Not useful", size="sm")
+                    feedback_status = gr.Markdown()
+                with gr.Accordion("Signed record", open=False, visible=False) as signed_sheet:
                     signed = gr.JSON(label="Teacher-approved marks")
-                with gr.Accordion("Mark sheet and paper details", open=False):
+                with gr.Accordion("Mark sheet and grading evidence", open=False):
                     with gr.Tab("Mark sheet", visible=False) as sheet_tab:
                         teacher_marks = gr.Dataframe(headers=["Q", "Teacher mark"], type="array",
                                                      datatype=["number", "number"], interactive=True,
-                                                     static_columns=[0],
-                                                     label="Edit a mark")
+                                                     static_columns=[0], label="Edit any mark")
                     with gr.Tab("Grading evidence"):
                         evidence = gr.Dataframe(headers=["Q", "Question", "OCR reading", "Out of", "Proposal", "Decision",
                                                          "Feedback", "Source", "PDF page", "Source URL", "Supporting quote",
                                                          "Passage opened by model", "Evidence by rubric point"],
-                                                interactive=False, label="Proposals and evidence")
-                    with gr.Tab("Give feedback"):
-                        with gr.Row():
-                            up = gr.Button("Helpful")
-                            down = gr.Button("Unhelpful")
-                        feedback_status = gr.Markdown()
-            outputs = [status,evidence,teacher_marks,ctx,signed]
+                                                interactive=False, label="Proposals and evidence", wrap=True)
+
+            outputs = [status, evidence, teacher_marks, ctx, signed]
             detail_outputs = [reading, standard, support, review_point, record_point]
+            view_outputs = [progress_steps, band, answer_map]
 
             def refresh_after(event, *, scroll=False):
                 event.success(results_view, [ctx, teacher_marks, review_q, signed, status],
                               [results, summary_card, review, review_q, sheet_tab, approve, signed_sheet],
                               scroll_to_output=scroll, api_name=False).success(
-                                  question_view, [ctx, review_q], detail_outputs, api_name=False)
+                                  question_view, [ctx, review_q], detail_outputs, api_name=False).success(
+                                  paper_view, [ctx, teacher_marks, review_q, focus, signed], view_outputs, api_name=False)
 
             refresh_after(go.click(display, [upload, library, course, exam_state], outputs, api_name="run",
-                                   show_progress_on=upload), scroll=True)
+                                   show_progress_on=upload).success(lambda: None, None, focus, api_name=False), scroll=True)
             refresh_after(example.click(lambda lib, active, state: display(pipeline.EXAMPLE, lib, active, state),
                                         [library, course, exam_state], outputs, api_name="grade_example",
-                                        show_progress_on=upload), scroll=True)
-            review_q.input(question_view, [ctx, review_q], detail_outputs, api_name=False)
+                                        show_progress_on=upload).success(lambda: None, None, focus, api_name=False),
+                          scroll=True)
+            review_q.input(question_view, [ctx, review_q], detail_outputs, api_name=False).success(
+                paper_view, [ctx, teacher_marks, review_q, focus, signed], view_outputs, api_name=False)
             review_point.input(lambda point: gr.update(interactive=point is not None),
                                review_point, record_point, api_name=False)
-            refresh_after(record_point.click(apply_review_mark, [ctx,review_q,review_point,teacher_marks],
-                               [teacher_marks,review_q,review_point,signed], api_name=False))
-            refresh_after(approve.click(sign_off,[ctx,teacher_marks],signed,api_name=False), scroll=True)
+            refresh_after(record_point.click(apply_review_mark, [ctx, review_q, review_point, teacher_marks],
+                                             [teacher_marks, review_q, review_point, signed], api_name=False))
+            # The answer map: a click opens that question in the review panel or in the check panel.
+            answer_map.change(open_question, [ctx, answer_map, teacher_marks],
+                              [focus, review_q, check_panel, check_card, check_point], api_name=False).success(
+                question_view, [ctx, review_q], detail_outputs, api_name=False).success(
+                paper_view, [ctx, teacher_marks, review_q, focus, signed], view_outputs, api_name=False)
+            refresh_after(check_save.click(apply_check_mark, [ctx, focus, check_point, teacher_marks],
+                                           [teacher_marks, focus], api_name=False).success(
+                lambda: (gr.update(visible=False), None), None, [check_panel, signed], api_name=False))
+            check_close.click(lambda: (gr.update(visible=False), None), None, [check_panel, focus], api_name=False).success(
+                paper_view, [ctx, teacher_marks, review_q, focus, signed], view_outputs, api_name=False)
+            refresh_after(approve.click(sign_off, [ctx, teacher_marks], signed, api_name=False), scroll=True)
             ctx.change(lambda: "", None, feedback_status, api_name=False)
-            up.click(lambda c: rate(c,1),ctx,feedback_status,api_name=False)
-            down.click(lambda c: rate(c,-1),ctx,feedback_status,api_name=False)
+            up.click(lambda c: rate(c, 1), ctx, feedback_status, api_name=False)
+            down.click(lambda c: rate(c, -1), ctx, feedback_status, api_name=False)
             refresh_after(teacher_marks.input(lambda: None, None, signed, api_name=False))
-        with gr.Tab("Materials"):
-            gr.Markdown("# Course materials\nChoose the sources and marking guide for this session.", elem_classes="desk-intro")
+
+        # ------------------------------------------------------------ 2. Materials
+        with gr.Tab("Materials", id="materials"):
+            gr.HTML('<div class="tab-intro"><h1>Course materials</h1><p>Choose the exam and the sources the written '
+                    'answers are graded against.</p></div>')
             with gr.Row(elem_classes="desk-columns"):
                 with gr.Column(scale=3, min_width=280, elem_classes="desk-card"):
-                    gr.Markdown("## Add a course PDF")
+                    gr.HTML('<h2 class="card-title">Add a course PDF</h2>')
                     name = gr.Textbox(label="Course name", value="My ML course")
                     material = gr.File(label="Course PDF", file_types=[".pdf"], type="filepath", height=130)
-                    gr.Markdown("When semantic search is enabled, passages are sent to Gemini for indexing.")
+                    gr.HTML('<p class="card-note">With semantic search on, the passages are sent to Gemini to be indexed.</p>')
                     add = gr.Button("Index PDF and select course", variant="primary")
                     indexed = gr.Textbox(label="Indexing result", interactive=False)
                 with gr.Column(scale=2, min_width=250, elem_classes=["desk-card", "desk-settings"]):
-                    gr.Markdown("## Choose a marking guide")
+                    gr.HTML('<h2 class="card-title">Choose a marking guide</h2>')
                     exam_file = gr.File(label="Exam definition · JSON", file_types=[".json"], type="filepath", height=130)
                     load_exam = gr.Button("Apply exam definition")
                     material_exam = gr.Textbox(label="Active exam", value="Built-in ML exam selected.", interactive=False)
             with gr.Accordion("Find a supporting passage", open=False):
                 material_course = gr.Dropdown([BUILTIN], value=BUILTIN, label="Course materials")
-                question = gr.Dropdown([(f"Q{q}. {QUESTIONS[q]}", q) for q in range(21,36)], value=21, label="Exam question")
+                question = gr.Dropdown([(f"Q{q}. {QUESTIONS[q]}", q) for q in range(21, 36)], value=21, label="Exam question")
                 search = gr.Button("Find supporting passages")
                 passages = gr.Dataframe(headers=["Source", "PDF page", "Passage", "Score"],
-                                        label="Passages for this question", interactive=False)
-            add.click(index_material,[material,name,library],[library,course,indexed,passages],api_name="index_material")
+                                        label="Passages for this question", interactive=False, wrap=True)
+            add.click(index_material, [material, name, library], [library, course, indexed, passages], api_name="index_material")
             course.change(lambda lib, active: gr.update(choices=[BUILTIN, *lib], value=active),
                           [library, course], material_course, api_name=False)
             material_course.input(lambda value: value, material_course, course, api_name=False)
             material_exam.change(lambda value: value.split(" · Reader exam_id: ")[0],
                                  material_exam, exam_info, api_name=False)
-            refresh_after(load_exam.click(select_exam,[exam_file],[exam_state,material_exam,question]).success(
+            refresh_after(load_exam.click(select_exam, [exam_file], [exam_state, material_exam, question]).success(
                 lambda: ("", [], [], None, None, []), None, [*outputs, passages], api_name=False))
-            search.click(preview_material,[question,library,material_course,exam_state],passages,api_name="find_passages")
-            course.change(lambda: [],None,passages,api_name=False)
-            question.change(lambda: [],None,passages,api_name=False)
-        with gr.Tab("Monitoring"):
-            gr.Markdown("# Monitoring\nCheck scan quality and review activity across graded papers.", elem_classes="desk-intro")
-            refresh = gr.Button("Refresh monitoring")
-            alert = gr.Textbox(label="Drift alert",interactive=False)
-            summary = gr.Dataframe(label="Request summary",interactive=False)
-            with gr.Accordion("Hourly activity", open=False):
-                timeline = gr.Dataframe(label="Hourly quality signals",interactive=False)
-            refresh.click(monitoring,None,[alert,summary,timeline],api_name=False)
-            demo.load(monitoring,None,[alert,summary,timeline],api_name=False)
+            search.click(preview_material, [question, library, material_course, exam_state], passages, api_name="find_passages")
+            course.change(lambda: [], None, passages, api_name=False)
+            question.change(lambda: [], None, passages, api_name=False)
+
+        # ------------------------------------------------------------ 3. Monitoring
+        with gr.Tab("Monitoring", id="monitoring"):
+            with gr.Row(elem_classes="tab-head"):
+                gr.HTML('<div class="tab-intro"><h1>Monitoring</h1><p>Is the product still seeing the papers it was '
+                        'tested on, and are teachers finding it useful?</p></div>')
+                refresh = gr.Button("Refresh", size="sm", elem_classes="refresh-btn")
+            banner = gr.HTML()
+            kpis = gr.HTML()
+            with gr.Row(elem_classes="desk-columns"):
+                with gr.Column(scale=3, elem_classes="desk-card"):
+                    gr.HTML('<h2 class="card-title">Quality over time</h2><p class="card-note">Share of answers sent '
+                            'to review, and share of 👎 among rated papers, per hour.</p>')
+                    quality_plot = gr.LinePlot(x="time", y="value", color="signal", show_label=False, height=260,
+                                               y_lim=[0, 1])
+                with gr.Column(scale=2, elem_classes="desk-card"):
+                    gr.HTML('<h2 class="card-title">Input drift</h2><p class="card-note">Population stability index '
+                            'of each scan signal over the last 100 papers against the reference set. An alert fires '
+                            'above 0.25 and above twice what chance gives at this sample size.</p>')
+                    drift_plot = gr.BarPlot(x="feature", y="psi", show_label=False, height=260, sort="-y")
+            with gr.Column(elem_classes="desk-card"):
+                gr.HTML('<h2 class="card-title">Review rule (learning from sign-offs)</h2><p class="card-note">For '
+                        'each paper the app picks the confidence below which an answer goes to the teacher, by '
+                        'Thompson sampling. The cost per answer counts each review as 1 and each proposal the teacher '
+                        'changed as 5: lower is better. Warm-start papers are simulated; signed-off papers are real.</p>')
+                rule_plot = gr.BarPlot(x="threshold", y="cost", y_title="cost per answer", show_label=False, height=220)
+                learning = gr.Dataframe(label="Review thresholds", interactive=False)
+            with gr.Accordion("All numbers", open=False):
+                summary = gr.Dataframe(label="Request summary", interactive=False)
+                timeline = gr.Dataframe(label="Hourly quality signals", interactive=False)
+                drift_table = gr.Dataframe(label="Drift per signal", interactive=False)
+            monitor_outputs = [banner, kpis, quality_plot, drift_plot, rule_plot, summary, timeline]
+
+            def refresh_monitoring():
+                banner_html, tiles_html, quality, drift, costs, frame, hourly = monitoring_view()
+                return banner_html, tiles_html, quality, drift, costs, frame, hourly, drift, costs.drop(columns="cost")
+
+            refresh.click(refresh_monitoring, None, [*monitor_outputs, drift_table, learning], api_name=False)
+            demo.load(refresh_monitoring, None, [*monitor_outputs, drift_table, learning], api_name=False)
     return demo
 
 demo = build_app()
 def launch_app(**options):
-    theme = gr.themes.Base(primary_hue="emerald", secondary_hue="teal", neutral_hue="stone",
-                           font=["Source Sans 3", "Segoe UI", "sans-serif"])
-    return demo.launch(theme=theme, css_paths=Path(__file__).with_name("app.css"), **options)
+    # Fonts come from app.css: Gradio 6.31 cannot compare a theme with custom font objects to its built-in themes.
+    theme = gr.themes.Base(primary_hue="emerald", secondary_hue="teal", neutral_hue="stone")
+    return demo.launch(theme=theme, css_paths=Path(__file__).with_name("app.css"), head=ui.HEAD, **options)
 
 
 if __name__ == "__main__":

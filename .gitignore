@@ -7,3 +7,6 @@ logs/
 logs_archive/
 .gradio/
 eval/private/
+
+# Gradio writes a type stub next to any module that defines a custom component
+desk_ui.pyi

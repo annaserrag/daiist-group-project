@@ -50,6 +50,10 @@ def _feedback_file() -> Path:
     return LOG_DIR / f"feedback-{_run_id}.jsonl"
 
 
+def _signoff_file() -> Path:
+    return LOG_DIR / f"signoff-{_run_id}.jsonl"
+
+
 def start() -> str:
     """Start pushing logs to HF_LOG_REPO, if it is set. Returns where logs go."""
     global _scheduler
@@ -105,6 +109,25 @@ def log_feedback(request_id: str, value: int) -> None:
     _append(_feedback_file(), {
         "id": request_id, "timestamp": datetime.now(timezone.utc).isoformat(), "feedback": int(value),
     })
+
+
+def log_signoff(request_id: str, review_threshold: float | None, answers: int, referred: int, changed: int,
+                reward: float | None) -> None:
+    """The teacher signed off a paper: how many answers the threshold sent to review, how many proposals the
+    teacher changed, and the bandit's reward (exam_grader/bandit.py). Counts only, no marks or text."""
+    _append(_signoff_file(), {
+        "id": request_id, "timestamp": datetime.now(timezone.utc).isoformat(), "review_threshold": review_threshold,
+        "answers": int(answers), "referred": int(referred), "changed": int(changed), "reward": reward,
+    })
+
+
+def load_signoffs() -> pd.DataFrame:
+    """Every signed-off paper once (a later sign-off of the same paper replaces the earlier one)."""
+    rows = pd.DataFrame(_read("signoff-*.jsonl"))
+    if rows.empty:
+        return rows
+    rows["timestamp"] = pd.to_datetime(rows["timestamp"], utc=True, format="ISO8601")
+    return rows.sort_values("timestamp").drop_duplicates("id", keep="last").reset_index(drop=True)
 
 
 def _read(pattern: str) -> list[dict]:

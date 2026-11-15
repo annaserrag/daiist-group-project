@@ -1,0 +1,881 @@
+{
+  "summary": {
+    "exams": 45,
+    "before": {
+      "blocked_exams": 32,
+      "mcq_proposed": 190,
+      "mcq_exact": 189,
+      "median_review_per_exam": 35
+    },
+    "after": {
+      "blocked_exams": 14,
+      "mcq_proposed": 457,
+      "mcq_exact": 453,
+      "median_review_per_exam": 20
+    },
+    "dropped_lines": 223,
+    "dropped_line_max_words": 5
+  },
+  "exams": [
+    {
+      "exam": "Student_1",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 17,
+        "mcq_exact": 17,
+        "review": 17
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 17,
+        "mcq_exact": 17,
+        "review": 17
+      }
+    },
+    {
+      "exam": "Student_2",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 16,
+        "mcq_exact": 16,
+        "review": 19
+      }
+    },
+    {
+      "exam": "Student_3",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_4",
+      "dropped_lines": 1,
+      "dropped_max_words": 3,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      }
+    },
+    {
+      "exam": "Student_5",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 10,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 10,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_6",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 20,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 20,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_7",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      }
+    },
+    {
+      "exam": "Student_8",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 4,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 4,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_9",
+      "dropped_lines": 1,
+      "dropped_max_words": 3,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 11,
+        "mcq_exact": 11,
+        "review": 24
+      }
+    },
+    {
+      "exam": "Student_10",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 18,
+        "review": 17
+      }
+    },
+    {
+      "exam": "Student_11",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      }
+    },
+    {
+      "exam": "Student_12",
+      "dropped_lines": 1,
+      "dropped_max_words": 2,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 18,
+        "review": 17
+      }
+    },
+    {
+      "exam": "Student_13",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 3,
+        "mcq_exact": 3,
+        "review": 32
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 3,
+        "mcq_exact": 3,
+        "review": 32
+      }
+    },
+    {
+      "exam": "Student_14",
+      "dropped_lines": 1,
+      "dropped_max_words": 5,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 17,
+        "mcq_exact": 17,
+        "review": 18
+      }
+    },
+    {
+      "exam": "Student_15",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 16,
+        "mcq_exact": 16,
+        "review": 19
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 16,
+        "mcq_exact": 16,
+        "review": 19
+      }
+    },
+    {
+      "exam": "Student_16",
+      "dropped_lines": 205,
+      "dropped_max_words": 2,
+      "before": {
+        "loose_lines": null,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35,
+        "reader_failed": "ValidationError"
+      },
+      "after": {
+        "loose_lines": 10,
+        "blocked": false,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_17",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": null,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35,
+        "reader_failed": "ValidationError"
+      },
+      "after": {
+        "loose_lines": null,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35,
+        "reader_failed": "ValidationError"
+      }
+    },
+    {
+      "exam": "Student_18",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 11,
+        "mcq_exact": 11,
+        "review": 24
+      }
+    },
+    {
+      "exam": "Student_19",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 15,
+        "mcq_exact": 13,
+        "review": 20
+      }
+    },
+    {
+      "exam": "Student_20",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_21",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      }
+    },
+    {
+      "exam": "Student_22",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": null,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35,
+        "reader_failed": "ValidationError"
+      },
+      "after": {
+        "loose_lines": null,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35,
+        "reader_failed": "ValidationError"
+      }
+    },
+    {
+      "exam": "Student_23",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 17,
+        "review": 17
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 17,
+        "review": 17
+      }
+    },
+    {
+      "exam": "Student_24",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 20,
+        "mcq_exact": 20,
+        "review": 15
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 20,
+        "mcq_exact": 20,
+        "review": 15
+      }
+    },
+    {
+      "exam": "Student_25",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_26",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 16,
+        "mcq_exact": 16,
+        "review": 19
+      }
+    },
+    {
+      "exam": "Student_27",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_28",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 10,
+        "mcq_exact": 10,
+        "review": 25
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 10,
+        "mcq_exact": 10,
+        "review": 25
+      }
+    },
+    {
+      "exam": "Student_29",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_30",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 19,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 19,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_31",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 14,
+        "mcq_exact": 14,
+        "review": 21
+      }
+    },
+    {
+      "exam": "Student_32",
+      "dropped_lines": 1,
+      "dropped_max_words": 2,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_33",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 12,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 11,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_34",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 22,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 22,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_35",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 16,
+        "mcq_exact": 16,
+        "review": 18
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 16,
+        "mcq_exact": 16,
+        "review": 18
+      }
+    },
+    {
+      "exam": "Student_36",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 15,
+        "mcq_exact": 15,
+        "review": 20
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 15,
+        "mcq_exact": 15,
+        "review": 20
+      }
+    },
+    {
+      "exam": "Student_37",
+      "dropped_lines": 1,
+      "dropped_max_words": 3,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 18,
+        "review": 17
+      }
+    },
+    {
+      "exam": "Student_38",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 19,
+        "mcq_exact": 19,
+        "review": 16
+      }
+    },
+    {
+      "exam": "Student_39",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 20,
+        "mcq_exact": 20,
+        "review": 15
+      }
+    },
+    {
+      "exam": "Student_40",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 30,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 30,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      }
+    },
+    {
+      "exam": "Student_41",
+      "dropped_lines": 1,
+      "dropped_max_words": 5,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 18,
+        "review": 16
+      }
+    },
+    {
+      "exam": "Student_42",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 20,
+        "mcq_exact": 20,
+        "review": 15
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 20,
+        "mcq_exact": 20,
+        "review": 15
+      }
+    },
+    {
+      "exam": "Student_44",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 17,
+        "mcq_exact": 17,
+        "review": 18
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 17,
+        "mcq_exact": 17,
+        "review": 18
+      }
+    },
+    {
+      "exam": "Student_48",
+      "dropped_lines": 0,
+      "dropped_max_words": 0,
+      "before": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 34
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 34
+      }
+    },
+    {
+      "exam": "Student_49",
+      "dropped_lines": 1,
+      "dropped_max_words": 1,
+      "before": {
+        "loose_lines": 1,
+        "blocked": true,
+        "mcq_proposed": 0,
+        "mcq_exact": 0,
+        "review": 35
+      },
+      "after": {
+        "loose_lines": 0,
+        "blocked": false,
+        "mcq_proposed": 18,
+        "mcq_exact": 17,
+        "review": 17
+      }
+    }
+  ]
+}

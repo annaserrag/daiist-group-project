@@ -173,7 +173,7 @@ class Gemini:
         if not key:
             raise ValueError("Set GEMINI_API_KEY before enabling live grading.")
         llm = ChatGoogleGenerativeAI(model=model,api_key=key,vertexai=False,temperature=0,
-                                    max_tokens=700,max_retries=0,timeout=40)
+                                    max_tokens=700,max_retries=2,timeout=40)  # two retries: one overloaded moment (HTTP 5xx) no longer refers an answer
         self.llm = llm
         self.evidence_checker = llm.with_structured_output(EvidenceReport, method="json_schema")
         self.binning_checker = llm.with_structured_output(BinningEvidenceReport, method="json_schema")

@@ -343,6 +343,10 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
             item["max_mark"] = 2
         item["readings"] = [a["text"][:4000] for a in buckets.get(q, []) if isinstance(a.get("text"), str)]
         item["reading_states"] = [a.get("state") for a in buckets.get(q, []) if isinstance(a.get("text"), str)]
+        # The lowest reading confidence of the answer, kept so the review-threshold bandit can count what any
+        # other threshold would have sent to review (exam_grader/bandit.py).
+        confidences = [a["confidence"] for a in buckets.get(q, []) if _prob(a.get("confidence"))]
+        item["reading_confidence"] = min(confidences) if confidences else None
     reviewed = sum(r["mark"] is None for r in out)
     subtotal = sum(r["mark"] for r in out if r["mark"] is not None)
     total = subtotal if not reviewed else None

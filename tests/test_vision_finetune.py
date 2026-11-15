@@ -268,7 +268,8 @@ class VisionFinetuneTests(unittest.TestCase):
 
     def test_missing_numbers_subparts_and_loose_lines_block_assignment(self):
         payload = convert(row("1", "A"), row(None, "illegible number"), row("37", "other"),
-                          row("21", "second part", part="ii"), loose=[{"text": "loose", "ocr_conf": .99}])
+                          row("21", "second part", part="ii"),
+                          loose=[{"text": "a loose line that reads like part of an answer", "ocr_conf": .99}])
         self.assertEqual(inspect_export(payload)["unassigned"], 4)
         self.assertTrue(all(a["reason"] == "unassigned_answer"
                             for a in grade_exam(payload, index=None)["teacher"]["answers"]))
@@ -289,6 +290,16 @@ class VisionFinetuneTests(unittest.TestCase):
             adapt({"questions": []})
         with self.assertRaises(ValueError):
             convert(row("21", None))
+
+    def test_header_lines_before_the_first_question_are_not_answers(self):
+        def line(page, text):
+            return {"page": page, "text": text, "ocr_conf": .97}
+        payload = convert(row("1", "A"), row("21", "a written answer"),
+                          loose=[line(1, "Data Science"), line(1, "Answer"), line(1, "1104901053 Data Science"),
+                                 line(1, "B"), line(1, "7 C"), line(2, "Subject"),
+                                 line(1, "this line is much too long to be part of a page header")])
+        loose = [a["text"] for a in payload["answers"] if a["question_id"] is None]
+        self.assertEqual(loose, ["B", "7 C", "Subject", "this line is much too long to be part of a page header"])
 
     def test_recover_bare_mcq_only_on_matching_page(self):
         def line(page, text, confidence=.96):
