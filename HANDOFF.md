@@ -82,7 +82,7 @@ Javi's Windows reader environment uses the CUDA 13.0 wheels of PyTorch 2.14.1 an
 ```powershell
 uv sync --locked --no-dev --group train
 uv pip install --python .venv/Scripts/python.exe --index https://download.pytorch.org/whl/cu130 torch==2.14.1+cu130 torchvision==0.29.1+cu130
-uv run --no-sync --group train python -m vision.finetune_reader --smoke
+RETRAIN=1 SMOKE=1 uv run --no-sync --group train python -m vision.step6_finetune_reader
 ```
 
 Coordinate changes to app.py, pipeline.py and evaluate.py when merging the component branch. Keep the professor's serve(raw_input), pipeline.run(raw_input) and /run endpoint in the shared app.

@@ -1,5 +1,5 @@
 """
-The two public handwriting datasets the detectors are trained on, and why we split them the way we do.
+The two public handwriting datasets the detectors are trained on (step 1), and why we split them the way we do.
 
 Both come from Roboflow Universe and are used exactly as published (no fork), at a pinned version:
 
@@ -13,7 +13,7 @@ for the lines set also 2x2 tiles), and many different photos come from the same 
 same photo session. A split by image would put copies of one page, or pages in one person's handwriting, on
 both sides of the split, and the validation score would flatter the model. So every image is mapped back to
 its source photo and to its group (booklet or session), and the split is made by group. The functions below
-also produce the evidence for that decision (`similarity_evidence`), which train_detector.py prints.
+also produce the evidence for that decision (`similarity_evidence`), which step 1 shows.
 """
 
 from __future__ import annotations
@@ -31,6 +31,9 @@ ROOT = Path(__file__).resolve().parent.parent
 # everything inside the repo to the Space. Set VISION_WORK to put them somewhere else.
 WORK = Path(os.environ.get("VISION_WORK", Path.home() / ".cache" / "daiist-vision"))
 DATASETS = WORK / "datasets"
+# Every chapter writes its tables and figures to its own folder here (artifacts/vision/step1_detectors/, ...).
+ARTIFACTS = ROOT / "artifacts" / "vision"
+SPLIT_CSV = ARTIFACTS / "step1_detectors" / "split.csv"   # our split of every Roboflow image, used again in step 3
 
 # workspace, project, version on Roboflow Universe
 SOURCES = {
@@ -181,9 +184,8 @@ def similarity_evidence(index: pd.DataFrame, vectors: np.ndarray) -> tuple[pd.Da
 
 def plot_similarity(index: pd.DataFrame, vectors: np.ndarray, out: Path) -> None:
     """Histogram of pair similarity per pair type, one panel per dataset."""
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
+    from vision import eda
+    plt = eda.plt()
 
     names = list(index["dataset"].unique())
     fig, axes = plt.subplots(1, len(names), figsize=(6 * len(names), 3.6), squeeze=False)
@@ -206,10 +208,7 @@ def plot_similarity(index: pd.DataFrame, vectors: np.ndarray, out: Path) -> None
         ax.set_xlabel("cosine similarity of ResNet-18 features")
         ax.set_yticks([])
     axes[0][0].legend(frameon=False, fontsize=8)
-    fig.tight_layout()
-    out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=150)
-    plt.close(fig)
+    eda.save_figure(fig, out)
 
 
 def contact_sheet(crossing: pd.DataFrame, out: Path, per_dataset: int = 3) -> None:
@@ -227,8 +226,8 @@ def contact_sheet(crossing: pd.DataFrame, out: Path, per_dataset: int = 3) -> No
             sheet.paste(image, (col * (size + pad), y + head))
             draw.text((col * (size + pad), y + 4),
                       f"{row['dataset']} {row[f'{side}_split']}: {row[side][:30]}  sim {row['similarity']:.3f}", fill="black")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    sheet.save(out)
+    from vision import eda
+    eda.save_image(sheet, out)
 
 
 # --------------------------------------------------------------------------- the split
@@ -320,5 +319,5 @@ def label_sheet(folder: Path, out: Path, split: str = "train", count: int = 6, t
             draw.rectangle([(cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h],
                            outline="lime", width=3)
         sheet.paste(image.resize((thumb, thumb)), ((i % columns) * thumb, (i // columns) * thumb))
-    out.parent.mkdir(parents=True, exist_ok=True)
-    sheet.save(out)
+    from vision import eda
+    eda.save_image(sheet, out)

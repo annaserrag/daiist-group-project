@@ -1,5 +1,5 @@
 """
-The rule baselines (no learning), shared by train_detector.py and the reader.
+The rule baselines (no learning), shared by step 1 (vision/step1_detectors.py) and the reader.
 
 They answer "how far do simple image rules get without any training?", the same role the
 trivial baseline had in Assignment 2. Their few parameters were chosen on the Roboflow

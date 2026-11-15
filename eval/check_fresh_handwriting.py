@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from vision import develop_reader as dev
+from vision import metrics as dev
 from vision import devset, reader
 
 
@@ -19,7 +19,7 @@ def main():
     digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     dev_pages = devset.asap_answers()
     dev_files = {Path(r["image"]).name for r in dev_pages}
-    frozen = json.loads((reader.ROOT/"artifacts/vision/dev_lora_comparison.json").read_bytes())
+    frozen = json.loads((reader.ROOT/"artifacts/vision/step6_finetune_reader/dev_lora_comparison.json").read_bytes())
     excluded = {p["sha256"] for p in frozen["pages"]}
     dev_text = {dev.normalise(r["truth"]) for r in dev_pages}
     pool = []

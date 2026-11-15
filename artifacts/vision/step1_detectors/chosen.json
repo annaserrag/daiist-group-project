@@ -8,7 +8,7 @@
       "mAP50": 0.48969663937705415,
       "ap50_minus_rules": 0.5035090137849527,
       "reader_conf": 0.25,
-      "cpu_ms_per_image": 29.8
+      "cpu_ms_per_image": 24.2
     },
     "text_line": {
       "run": "text_line_yolo11n_default_f0_lr0.002",
@@ -17,7 +17,7 @@
       "mAP50": 0.8780816710529539,
       "ap50_minus_rules": 0.7534268805064794,
       "reader_conf": 0.25,
-      "cpu_ms_per_image": 29.0
+      "cpu_ms_per_image": 24.6
     }
   }
 }

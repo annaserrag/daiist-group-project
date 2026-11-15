@@ -27,13 +27,14 @@ dependencies = [
 dev = [
     "nbconvert>=7.16",
     "ipykernel>=6.29",
+    "jupytext>=1.16",
 ]
-# Only for training the vision detectors (vision/train_detector.py); not installed on the Space.
+# Only for the vision chapters that train or build data (vision/step1, step5, step6); not installed on the Space.
 # (torch, ultralytics and opencv are already in the main dependencies, for the reader.)
 train = [
     "roboflow>=1.7",
     "matplotlib>=3.9",
-    "pyarrow>=17",  # reads the fine-tuning data (vision/finetune_data.py)
+    "pyarrow>=17",  # reads the fine-tuning data (vision/step5_finetune_data.py)
 ]
 
 [tool.uv]

@@ -22,11 +22,14 @@ Which answers are multiple choice, and which questions should be there at all, c
 from the teacher's answer key, not from the page: `answers_by_number()` and
 `choice_letter()` are what the pipeline uses to match the two.
 
-Two modes, so the evaluation can compare them:
-    detectors  the two YOLO models from train_detector.py (weights/*_detector.pt)
-    rules      the no-learning baselines from vision/rules.py, for comparison
+Four modes, so the evaluation can compare them (vision/README.md tells how each came about):
+    page       (the default) Qwen3-VL-2B reads each whole page, and question numbers are read from the text
+               (chosen in vision/step4_choose_reader.py)
+    ocr        the trained line detector finds the lines, TrOCR reads them, numbers read from the text
+    detectors  the two YOLO models of vision/step1_detectors.py find numbers and lines, TrOCR reads them
+    rules      the no-learning baselines of vision/rules.py, for comparison
 
-`uv run python -m vision.reader exam.pdf [rules|detectors]` prints what it reads.
+`uv run python -m vision.reader exam.pdf [page|ocr|detectors|rules]` prints what it reads.
 """
 
 from __future__ import annotations
@@ -48,17 +51,17 @@ WEIGHTS = ROOT / "weights"
 OCR_MODEL = "microsoft/trocr-base-handwritten"   # reads the crops in the 'detectors' and 'rules' modes
 LINE_READER = "microsoft/trocr-base-handwritten"  # reads each line in the 'ocr' mode (a TrOCR or a vision-language model)
 BASE_PAGE_READER = "Qwen/Qwen3-VL-2B-Instruct"
-# The LoRA reader (vision/finetune_reader.py) read characters slightly better on the development set but found fewer
+# The LoRA reader (vision/step6_finetune_reader.py) read characters slightly better on the development set but found fewer
 # question numbers on answer sheets (0.39 against 0.43), the part grading depends on, so the default stays the
-# pretrained reader. The adapter is kept and can be selected by name (artifacts/vision/dev_lora_comparison.json).
+# pretrained reader. The adapter is kept and can be selected by name (artifacts/vision/step6_finetune_reader/).
 LORA_PAGE_READER = BASE_PAGE_READER + "+weights/page_reader_lora"
 PAGE_READER = BASE_PAGE_READER
 PAGE_ADAPTER_SHA256 = "12e3a113ff186a494aaaa41192a12cbbddba28814e3386b6d57c0c6112289fc4"
 PAGE_READER_REVISION = "89644892e4d85e24eaac8bacfd4f463576704203"  # evaluated public checkpoint
 PAGE_WIDTH = 2000   # pages are read at about this width; TrOCR resizes every crop to 384 px anyway
 DETECT_SIZE = 640   # both detectors were trained on 640 x 640 images (see vision/README.md)
-DETECT_CONF = 0.25  # boxes below this are dropped; train_detector.py reports precision and recall at it,
-                    # and a sweep on validation (artifacts/vision/conf_sweep_val.csv) to revisit it
+DETECT_CONF = 0.25  # boxes below this are dropped; step 1 reports precision and recall at it, and a sweep on
+                    # validation (artifacts/vision/step1_detectors/conf_sweep_val.csv) to revisit it
 OCR_BATCH = 8
 READER_VERSION = "reader-v3"  # v3: question sub-parts (3b, 3.ii) and the detection threshold as a constant
 
@@ -200,10 +203,10 @@ VLM_PAGE_PROMPT = ("Transcribe every handwritten line on this exam page, from to
                    "their lines. Do not correct, translate, summarise or add anything. Output only the text.")
 VLM_PAGE_WIDTH = 1400  # pages are shrunk to this width first: enough to read the writing, and about 2,500 image tokens
 BLANK_INK = 0.001      # a page with less ink than this holds no answer and is not sent to the model (see ink):
-                       # half the lightest written page of the development set (vision/develop_reader.py)
+                       # half the lightest written page of the development set (vision/step4_choose_reader.py)
 # Greedy decoding can fall into a loop on a page with little writing ('Cell', 'Cell', 'Cell'...): on the development
 # set it wrote 703 lines that are not on the page. A small repetition penalty stopped it (12 lines) without
-# raising the error rate (vision/develop_reader.py, Part 4).
+# raising the error rate (vision/step4_choose_reader.py, Part 5).
 VLM_GENERATE = {"repetition_penalty": 1.05}
 
 
@@ -216,7 +219,7 @@ def ink(page: np.ndarray) -> float:
 @lru_cache(maxsize=2)
 def _vlm(name: str):
     """name is a Hugging Face model, or 'model+folder' for that model with a LoRA adapter from this folder (relative
-    to the repo; vision/finetune_reader.py). The adapter is merged in, so reading is as fast as without it."""
+    to the repo; vision/step6_finetune_reader.py). The adapter is merged in, so reading is as fast as without it."""
     import torch
     from transformers import AutoModelForImageTextToText, AutoProcessor
     base, _, adapter = name.partition("+")
@@ -295,7 +298,7 @@ def parse_number(text: str) -> tuple[str | None, str | None]:
 # against them (3b, 3(b)), then a separator. A digit right after the separator means it is not a question ("1.5").
 # On the development set the stray-mark prefix found more numbers (89% vs 84%); repairing misread numbers from the
 # sequence, splitting lines at a later number and accepting a number with no separator did not, so they are not
-# used (vision/develop_reader.py, Part 3).
+# used (vision/step4_choose_reader.py, Part 4).
 LEADING_NUMBER = re.compile(
     rf"^\W{{0,3}}(?:(?:q|question|ex|exercise)\s*\.?\s*|[a-z](?=\d))?(\d{{1,3}})(?:\(?({SUB_PART})\)?)?"
     rf"\s*[.):,\-](?!\d)\s*(.*)$", re.IGNORECASE)
@@ -311,7 +314,7 @@ def leading_number(text: str) -> tuple[str | None, str | None, str]:
 
 
 # Splitting a line box much taller than a normal line lowered TrOCR's error rate on the development set
-# (25.1% vs 26.4%), so the 'ocr' mode does it (vision/develop_reader.py, Part 2).
+# (27.6% vs 28.1% on SMHD), so the 'ocr' mode does it (vision/step4_choose_reader.py, Part 3).
 SPLIT_TALL = True
 
 

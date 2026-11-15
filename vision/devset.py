@@ -1,39 +1,41 @@
 """
-The development set for the exam reader: public handwriting that is not from the Mendeley exams, so every
-design choice of the reader (which model reads, how question numbers are found, the blank-page and loop
-safeguards) is made here, and the 50 Mendeley exams stay a clean evaluation.
+The development set for the exam reader (step 3 builds and explores it; steps 4 and 6 use it). It is public
+handwriting that is not from the Mendeley exams, so every design choice of the reader is made here and the 50
+Mendeley exams stay a clean evaluation.
 
 No public dataset has what Mendeley has (whole exam pages with numbered answers and a key), so the set is put
-together from the parts that exist:
+together from the parts that exist, each for one question:
 
     smhd         Student Messy Handwritten Dataset (RMIT, CC BY-NC 4.0): student pages written in exam-like
-                 conditions, with a line-by-line transcription. Every page with a numbered list ('1)', '2:')
-                 and a random sample of the others.                     -> reading accuracy, numbers at line starts
+                 conditions, with a line-by-line transcription. Every page with a numbered list and a random
+                 sample of the others.                                  -> reading accuracy, numbers at line starts
     asap         Handwritten ASAP-SAS (Gold and Zesch 2020, non-commercial research use): short answers to one
                  exam prompt, rewritten by hand, with the original text. -> reading accuracy on exam answers
     notebook     School Notebooks EN (ai-forever, MIT): photos of English school notebooks, every word boxed and
-                 transcribed by line. Every page with a numbered list and a random sample of the others; teacher
-                 comments are left out of the text, as exams arrive uncorrected. -> a second source of numbered lists
-    answersheet  the Roboflow answer-sheet pages of the detectors' test booklet, one per photo, with the
+                 transcribed by line. Every page with a numbered list and a random sample of the others.
+                                                                        -> a second source of numbered lists
+    answersheet  the Roboflow answer-sheet pages of the detectors' test booklet (step 1), one per photo, with the
                  number of question-number boxes (no text).             -> how many question numbers are found
-    short        SMHD pages whitened below their second line: the reader must stop after two lines.
-    blank        empty pages, white and lined.                           -> invented text, decoding loops
+    short        SMHD pages whitened below their second line.           -> does the reader stop when the writing stops
+    blank        empty pages, white and lined.                          -> invented text, decoding loops
 
 Downloads (about 690 MB, into WORK/devsets/; see vision/README.md):
     SMHD-forms.rar                  https://doi.org/10.25439/rmt.24312715.v1
     Handwritten-ASAP-SAS-V1.0.zip   https://zenodo.org/records/8088866
     school_notebooks_EN             https://huggingface.co/datasets/ai-forever/school_notebooks_EN (images.zip and
                                     annotations_*.json)
+
+The functions ending in _all return a source before any selection, with what the cleaning removed, so step 3 can
+show both. build() is the set itself; it must stay as it is, because the cached reads are keyed by its images.
 """
 
 from __future__ import annotations
 
+import json
 import random
 import re
-from pathlib import Path
-
-import json
 from collections import defaultdict
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -47,15 +49,20 @@ ASAP = DEVSETS / "asap" / "x" / "Handwritten ASAP SAS"
 NOTEBOOKS = DEVSETS / "school_notebooks"
 SYNTHETIC = DEVSETS / "synthetic"
 SEED = 0
+# How many of each part: every numbered page of SMHD and the notebooks (they are rare), plus enough other pages to
+# measure reading; 40 ASAP answers; 10 short and 4 blank pages, enough to see a reader inventing text.
 N_SMHD_OTHER, N_ASAP, N_NOTEBOOK_OTHER, N_SHORT, N_BLANK = 18, 40, 10, 10, 4
-STUDENT_TEXT = {0, 1}  # pupil_text and pupil_comment; 2 is teacher_comment, 3 the paper, 4 the line outlines
+# School Notebooks categories: 0 pupil_text and 1 pupil_comment are the student's writing; 2 teacher_comment is
+# left out (exams arrive uncorrected), 3 is the paper and 4 the line outlines.
+STUDENT_TEXT = {0, 1}
 
 # A numbered line in a transcription: '1)', '2:', '3.', 'Q4)'; the number must be followed by a separator.
 NUMBERED = re.compile(r"^\s*(?:q\.?\s*)?(\d{1,3})\s*[.):]", re.IGNORECASE)
 
 
 def clean_truth(text: str) -> str:
-    """SMHD marks crossed-out words with '#'; they are not part of the answer."""
+    """SMHD marks crossed-out words with '#'; they are not part of the answer. Spaces are collapsed and empty
+    lines dropped at the ends, so the truth only differs from a read in what was written."""
     return "\n".join(re.sub(r"\s+", " ", line.replace("#", " ")).strip() for line in text.splitlines()).strip()
 
 
@@ -64,53 +71,88 @@ def numbers_in(text: str) -> list[str]:
     return [str(int(m.group(1))) for line in text.splitlines() if (m := NUMBERED.match(line))]
 
 
-def smhd_pages(rng: random.Random) -> list[dict]:
+# --------------------------------------------------------------------------- SMHD
+
+def smhd_all() -> list[dict]:
+    """Every SMHD page that has both an image and a transcription, with the raw text kept for the cleaning table."""
     pages = []
     for txt in sorted(SMHD.glob("*/*.txt")):
         image = next((txt.with_suffix(ext) for ext in (".jpg", ".jpeg") if txt.with_suffix(ext).is_file()), None)
         if image is not None:
-            truth = clean_truth(txt.read_text(errors="ignore"))
-            pages.append({"kind": "smhd", "image": str(image), "truth": truth, "numbers": numbers_in(truth)})
+            raw = txt.read_text(errors="ignore")
+            truth = clean_truth(raw)
+            pages.append({"kind": "smhd", "image": str(image), "truth": truth, "numbers": numbers_in(truth),
+                          "subject": txt.parent.name.split("-")[0], "raw": raw})
+    return pages
+
+
+def smhd_pages(rng: random.Random) -> list[dict]:
+    pages = [{k: p[k] for k in ("kind", "image", "truth", "numbers")} for p in smhd_all()]
     numbered = [p for p in pages if len(p["numbers"]) >= 2]
     others = [p for p in pages if len(p["numbers"]) < 2]
     return numbered + rng.sample(others, N_SMHD_OTHER)
 
 
-def asap_answers() -> list[dict]:
+# --------------------------------------------------------------------------- ASAP
+
+def asap_all() -> pd.DataFrame:
+    """The prompt-3 index: one row per handwritten answer, with its transcription status and whether the image is
+    there. Only rows with status 'ok' and an image can be used."""
     info = pd.read_csv(ASAP / "information" / "prompt-3.txt", sep="\t", comment="#", header=None,
                        names=["file", "asap_id", "text", "pen", "status"], quoting=3)
-    info = info[(info["status"] == "ok") & info["file"].map(lambda f: (ASAP / "prompt-3" / f).is_file())]
+    info["image_exists"] = info["file"].map(lambda f: (ASAP / "prompt-3" / f).is_file())
+    return info
+
+
+def asap_answers() -> list[dict]:
+    info = asap_all()
+    info = info[(info["status"] == "ok") & info["image_exists"]]
     rows = info.sample(N_ASAP, random_state=SEED)
     return [{"kind": "asap", "image": str(ASAP / "prompt-3" / r.file), "truth": str(r.text).strip(), "numbers": []}
             for r in rows.itertuples()]
 
 
-def notebook_pages(rng: random.Random) -> list[dict]:
-    """Each word carries the id of its line (group_id): the words of a line, left to right, and the lines, top to
+# --------------------------------------------------------------------------- School Notebooks
+
+def notebook_all() -> tuple[list[dict], pd.DataFrame]:
+    """Every notebook page with student text, and a table of the words per category (to show what is left out).
+    Each word carries the id of its line (group_id): the words of a line, left to right, and the lines, top to
     bottom, give the page's text."""
-    pages = []
+    pages, words = [], []
     for split in ("train", "val", "test"):
         annotations = json.loads((NOTEBOOKS / f"annotations_{split}.json").read_text())
+        names = {c["id"]: c["name"] for c in annotations["categories"]}
         lines: dict = defaultdict(list)
         for a in annotations["annotations"]:
-            if a["category_id"] in STUDENT_TEXT and a.get("group_id") is not None and a["attributes"].get("translation"):
+            text = a.get("attributes", {}).get("translation")  # the paper and line outlines have no attributes
+            words.append({"split": split, "category": names[a["category_id"]], "has_text": bool(text),
+                          "has_line": a.get("group_id") is not None})
+            if a["category_id"] in STUDENT_TEXT and a.get("group_id") is not None and text:
                 xy = np.array(a["segmentation"][0]).reshape(-1, 2)
-                lines[(a["image_id"], a["group_id"])].append((xy[:, 0].mean(), xy[:, 1].mean(), a["attributes"]["translation"]))
+                lines[(a["image_id"], a["group_id"])].append((xy[:, 0].mean(), xy[:, 1].mean(), text))
         for image in annotations["images"]:
-            rows = sorted((np.mean([w[1] for w in words]), " ".join(w[2] for w in sorted(words)))
-                          for (image_id, _), words in lines.items() if image_id == image["id"])
+            rows = sorted((np.mean([w[1] for w in ws]), " ".join(w[2] for w in sorted(ws)))
+                          for (image_id, _), ws in lines.items() if image_id == image["id"])
             truth = clean_truth("\n".join(text for _, text in rows))
             path = NOTEBOOKS / "x" / "images" / image["file_name"]
-            if truth and path.is_file():
-                pages.append({"kind": "notebook", "image": str(path), "truth": truth, "numbers": numbers_in(truth)})
+            pages.append({"kind": "notebook", "image": str(path), "truth": truth, "numbers": numbers_in(truth),
+                          "split": split, "image_exists": path.is_file()})
+    return pages, pd.DataFrame(words)
+
+
+def notebook_pages(rng: random.Random) -> list[dict]:
+    pages = [{k: p[k] for k in ("kind", "image", "truth", "numbers")}
+             for p in notebook_all()[0] if p["truth"] and p["image_exists"]]
     numbered = [p for p in pages if len(p["numbers"]) >= 2]
     others = [p for p in pages if len(p["numbers"]) < 2]
     return numbered + rng.sample(others, N_NOTEBOOK_OTHER)
 
 
+# --------------------------------------------------------------------------- answer sheets, short and blank pages
+
 def answersheet_pages() -> list[dict]:
     """One image per photo of the test booklet (the detector never trained on it), with its number of boxes."""
-    split = pd.read_csv(datasets.ROOT / "artifacts" / "vision" / "split.csv")
+    split = pd.read_csv(datasets.SPLIT_CSV)
     test = split[(split["dataset"] == "answersheet") & (split["our_split"] == "test")].drop_duplicates("source")
     workspace, project, version = datasets.SOURCES["answersheet"]
     folder = datasets.DATASETS / f"{project}-{version}"
