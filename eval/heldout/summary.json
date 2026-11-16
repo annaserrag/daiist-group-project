@@ -1,0 +1,108 @@
+{
+  "exams": 5,
+  "clean": "Students 43, 46, 47, 50; used by no earlier step",
+  "mcq": {
+    "slots": 80,
+    "with_reference": 77,
+    "proposed": 53,
+    "review_share": 0.312,
+    "exact": 53,
+    "within_half": 53,
+    "mean_abs_error": 0,
+    "full_credit_baseline_exact": 51
+  },
+  "written_without_q32": {
+    "slots": 56,
+    "with_reference": 46,
+    "proposed": 2,
+    "review_share": 0.957,
+    "exact": 2,
+    "within_half": 2,
+    "mean_abs_error": 0.0,
+    "full_credit_baseline_exact": 37,
+    "typical_mark_baseline_exact": 7,
+    "typical_mark_baseline_mae": 0.446
+  },
+  "q32_not_clean": {
+    "slots": 5,
+    "with_reference": 2,
+    "proposed": 1,
+    "review_share": 0.5,
+    "exact": 1,
+    "within_half": 1,
+    "mean_abs_error": 0.0,
+    "full_credit_baseline_exact": 0
+  },
+  "student_45_not_clean": {
+    "mcq": {
+      "slots": 20,
+      "with_reference": 20,
+      "proposed": 20,
+      "review_share": 0.0,
+      "exact": 20,
+      "within_half": 20,
+      "mean_abs_error": 0,
+      "full_credit_baseline_exact": 9
+    },
+    "written": {
+      "slots": 15,
+      "with_reference": 7,
+      "proposed": 1,
+      "review_share": 0.857,
+      "exact": 1,
+      "within_half": 1,
+      "mean_abs_error": 0.0,
+      "full_credit_baseline_exact": 5
+    }
+  },
+  "per_exam": [
+    {
+      "exam": "Student_43",
+      "status": "in_scope",
+      "latency_s": 68.6289,
+      "reader_s": 37.0801,
+      "tokens": 5364,
+      "cost_eur": 0.0,
+      "review_count": 14
+    },
+    {
+      "exam": "Student_45",
+      "status": "in_scope",
+      "latency_s": 83.6333,
+      "reader_s": 22.8973,
+      "tokens": 3841,
+      "cost_eur": 0.0,
+      "review_count": 14
+    },
+    {
+      "exam": "Student_46",
+      "status": "in_scope",
+      "latency_s": 117.0335,
+      "reader_s": 38.6124,
+      "tokens": 7756,
+      "cost_eur": 0.0,
+      "review_count": 15
+    },
+    {
+      "exam": "Student_47",
+      "status": "in_scope",
+      "latency_s": 26.7293,
+      "reader_s": 26.7284,
+      "tokens": 0,
+      "cost_eur": 0.0,
+      "review_count": 35
+    },
+    {
+      "exam": "Student_50",
+      "status": "in_scope",
+      "latency_s": 55.0763,
+      "reader_s": 40.8014,
+      "tokens": 5235,
+      "cost_eur": 0.0,
+      "review_count": 17
+    }
+  ],
+  "median_latency_s": 68.6289,
+  "total_tokens": 22196,
+  "total_cost_eur": 0.0
+}

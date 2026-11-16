@@ -1,4 +1,4 @@
-"""The review-threshold bandit (exam_grader/bandit.py): reward, offline counterfactual, learning and logging."""
+"""The review-rule bandit (exam_grader/bandit.py): reward, offline counterfactual, learning and logging."""
 import os
 import random
 import tempfile
@@ -14,28 +14,34 @@ class Reward(unittest.TestCase):
         self.assertEqual(bandit.paper_reward(10, 2, 0), -0.2)
         self.assertEqual(bandit.paper_reward(10, 0, 1), -bandit.WRONG_COST / 10)
 
-    def test_higher_thresholds_refer_more_and_let_fewer_errors_through(self):
-        answers = [{"reading_confidence": 0.75, "proposed": 1, "final": 0},   # misread, low confidence
-                   {"reading_confidence": 0.99, "proposed": 1, "final": 1},
-                   {"reading_confidence": 0.85, "proposed": 2, "final": 2},
-                   {"reading_confidence": 0.99, "proposed": None, "final": 1}]  # sent to review by another rule
-        self.assertEqual(bandit.counterfactual(answers, 0.70), (1, 1))
-        self.assertEqual(bandit.counterfactual(answers, 0.80), (2, 0))
-        self.assertEqual(bandit.counterfactual(answers, 0.90), (3, 0))
+    def test_stricter_rules_refer_more_written_answers_and_let_fewer_errors_through(self):
+        answers = [{"written": True, "proposed": 0, "final": 0.5},     # wrong zero
+                   {"written": True, "proposed": 1, "final": 1},
+                   {"written": True, "proposed": 2, "final": 1.5},     # wrong, but above every cutoff
+                   {"written": True, "proposed": None, "final": 1},    # sent to review by another rule
+                   {"written": False, "proposed": 0, "final": 0}]      # multiple choice: no arm moves it
+        self.assertEqual(bandit.counterfactual(answers, "usual"), (1, 2))
+        self.assertEqual(bandit.counterfactual(answers, "zeros"), (2, 1))
+        self.assertEqual(bandit.counterfactual(answers, "up_to_1"), (3, 1))
+
+    def test_every_arm_is_a_valid_grading_policy(self):
+        from exam_grader.grading import Policy
+        for cutoff in bandit.CUTOFFS.values():
+            Policy(written_review_at_or_below=cutoff)
 
 
 class Learning(unittest.TestCase):
     def test_real_sign_offs_overrule_the_warm_start(self):
         prior = {arm: {"mean": -0.2, "papers": 100} for arm in bandit.ARMS}
-        state = bandit.posterior(prior, {0.70: [-1.0] * 20})
-        self.assertEqual(state[0.70]["warm_start_papers"], bandit.PRIOR_PAPERS)
-        self.assertLess(state[0.70]["mean"], state[0.80]["mean"])
+        state = bandit.posterior(prior, {"usual": [-1.0] * 20})
+        self.assertEqual(state["usual"]["warm_start_papers"], bandit.PRIOR_PAPERS)
+        self.assertLess(state["usual"]["mean"], state["zeros"]["mean"])
 
     def test_thompson_sampling_plays_the_cheapest_arm_most(self):
-        rewards = {0.70: [-0.5] * 10, 0.80: [-0.1] * 10, 0.90: [-0.3] * 10, 0.95: [-0.4] * 10}
+        rewards = {"usual": [-0.5] * 10, "zeros": [-0.1] * 10, "up_to_1": [-0.3] * 10}
         rng = random.Random(0)
         picks = [bandit.choose({}, rewards, rng)[0] for _ in range(300)]
-        self.assertGreater(picks.count(0.80), 250)
+        self.assertGreater(picks.count("zeros"), 250)
 
     def test_with_no_evidence_every_arm_gets_played(self):
         rng = random.Random(1)
@@ -50,10 +56,10 @@ class Logging(unittest.TestCase):
             os.environ["LOG_DIR"] = folder
             try:
                 logbook = importlib.reload(logbook)
-                logbook.log_signoff("paper-1", 0.9, 35, 7, 1, bandit.paper_reward(35, 7, 1))
-                logbook.log_signoff("paper-1", 0.9, 35, 6, 1, bandit.paper_reward(35, 6, 1))  # signed again
+                logbook.log_signoff("paper-1", "zeros", 35, 7, 1, bandit.paper_reward(35, 7, 1))
+                logbook.log_signoff("paper-1", "zeros", 35, 6, 1, bandit.paper_reward(35, 6, 1))  # signed again
                 rewards = bandit.rewards_from_logs(logbook.load_signoffs())
-                self.assertEqual(rewards, {0.9: [bandit.paper_reward(35, 6, 1)]})
+                self.assertEqual(rewards, {"zeros": [bandit.paper_reward(35, 6, 1)]})
             finally:
                 del os.environ["LOG_DIR"]
                 importlib.reload(logbook)

@@ -1,11 +1,18 @@
 """
-Check the bridge's header rule (exam_grader.vision_finetune.is_heading) on development exams only.
+Measure the bridge's header rule (exam_grader.vision_finetune.is_heading) on the 45 Mendeley exams outside the clean
+held-out set.
 
-The clean held-out run showed that one header line ("Data Science") above the first question sends a whole exam to
-review. The rule that drops such lines is checked here on the 45 Mendeley exams that are NOT in the clean held-out
-set (eval/heldout/manifest.csv), so the held-out exams stay unseen by the fix. Each exam is read once; the same read
-goes through the bridge with and without the rule, and is graded locally (multiple choice against the key; nothing is
-sent to Gemini, so written answers are referred in both arms and do not count here).
+Disclosure: this rule was not designed on development data. The team's rule is that every Mendeley exam is for
+evaluation only, and this fix breaks it twice. It was written after the first clean held-out run showed one header
+line ("Data Science", on Student_45) sending a whole exam to review, and it was then measured here on the other 45
+Mendeley exams. The team chose to keep the rule and disclose it: Student_45 is reported apart from the clean
+held-out result (eval/heldout_e2e.py), and these numbers describe the rule's effect on evaluation data, not a
+development result. No threshold was tuned on them: the rule (at most 6 words and 40 characters, before the first
+question, not an option letter or a numbered line) was fixed before this run, and this run was its only measurement.
+
+Each exam is read once; the same read goes through the bridge with and without the rule, and is graded locally
+(multiple choice against the key; nothing is sent to Gemini, so written answers are referred in both arms and do not
+count here).
 
 Only counts are written (eval/header_rule_dev.json): the text of dropped lines can hold a student's name.
 

@@ -1,0 +1,26 @@
+{
+  "source": "eval/bandit_simulator.py (simulated from stated assumptions; no exams, no sign-offs)",
+  "assumptions": {
+    "papers": 200,
+    "seed": 0,
+    "mcq_referred": 0.05,
+    "written_referred": 0.3,
+    "exact": 0.6,
+    "half_off": 0.3,
+    "wrong_cost": 5.0
+  },
+  "arms": {
+    "usual": {
+      "mean": -0.6506,
+      "papers": 200
+    },
+    "zeros": {
+      "mean": -0.6439,
+      "papers": 200
+    },
+    "up_to_1": {
+      "mean": -0.5381,
+      "papers": 200
+    }
+  }
+}

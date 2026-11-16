@@ -1,12 +1,19 @@
 """
-The reinforcement-learning layer (course bonus): a bandit that learns the review threshold from the teacher's
-sign-offs in the app.
+The reinforcement-learning layer (course bonus): a bandit that learns the written-answer review rule from the
+teacher's corrections at sign-off.
 
-The decision. Every answer the reader transcribes has a reading confidence. Below a threshold (Policy.min_read)
-the answer goes to the teacher for review; above it the grader proposes a mark. A low threshold saves the teacher
-reviews but lets more misread answers through; a high one catches them at the price of more reviews. Today the
-threshold is fixed at 0.80, an engineering default nobody calibrated (exam_grader/grading.py). The bandit chooses it
-per paper among ARMS, and learns which one costs the teacher least.
+Why this decision. The course brief lists "choosing the confidence threshold or the review rule and learning from
+reviewers' corrections" as an example, and counts the bonus only if the app visibly behaves differently. A first
+version chose the reader's confidence threshold (0.70 to 0.95); the reader is almost always above 0.95, so every
+choice sent the same answers to review and nothing could be learnt. The written review rule does change what the
+teacher sees on every paper: it decides which of Gemini's proposed marks for Q21-Q35 the teacher must mark
+themselves, and which arrive pre-filled.
+
+The arms (exam_grader.grading.Policy.written_review_at_or_below; the multiple-choice and reading rules stay fixed):
+    usual     only the answers the grader itself is unsure about go to the teacher (no extra cutoff);
+    zeros     also every written answer Gemini proposes 0/2 for;
+    up_to_1   also every written answer Gemini proposes 1/2 or less for (the default before the bandit).
+They are nested: each sends to review everything the one above it does, and more.
 
 The reward arrives at sign-off, when the teacher has checked every mark of the paper:
 
@@ -15,15 +22,20 @@ The reward arrives at sign-off, when the teacher has checked every mark of the p
 An answer sent to review costs one unit of teacher time. A proposal the teacher had to change costs WRONG_COST:
 the time to spot and fix it, plus the risk that a wrong mark is missed. The team set WRONG_COST = 5 reviews.
 
-Exploration: Thompson sampling. Each arm keeps a normal posterior over its mean reward; every paper draws one
-sample per arm and plays the best draw. An arm that is clearly worse is almost never drawn, so exploring costs
-the teacher little once the evidence is in, which matters with a few papers a day.
+What it could reward by accident. A teacher who signs off without reading the proposals changes none of them, so a
+lenient arm looks free: the bandit would learn to send less to review because nobody checks. The reward is only as
+good as the review behind it. The app shows each proposal with its evidence and the time spent, but cannot prove
+it was read; the report discusses this.
 
-Warm start. Before any real traffic, each arm's prior comes from a replay of the team's development packet
-(eval/bandit_warmup.py): one reading of each paper with every answer graded, so the cost under every threshold can
-be counted offline, because the thresholds are nested. That simulated evidence is capped at PRIOR_PAPERS papers per
-arm, so a handful of real sign-offs can overrule it. The real part comes from the app's own logs
-(logbook.load_signoffs).
+Exploration: Thompson sampling. Each arm keeps a normal posterior over its mean reward; every paper draws one
+sample per arm and plays the best draw. An arm that is clearly worse is almost never drawn, so exploring costs the
+teacher little once the evidence is in, which matters with a few papers a day. While it explores, the cost falls on
+the paper graded with a more lenient arm: more pre-filled written marks for the teacher to check, never a mark that
+skips sign-off.
+
+Warm start. Before any real traffic each arm's prior comes from a simulator with stated assumptions
+(eval/bandit_simulator.py), not from student exams. That simulated evidence is capped at PRIOR_PAPERS papers per arm,
+so a handful of real sign-offs overrule it. The real part comes from the app's own logs (logbook.load_signoffs).
 """
 
 from __future__ import annotations
@@ -33,8 +45,12 @@ import math
 import random
 from pathlib import Path
 
-ARMS = (0.70, 0.80, 0.90, 0.95)   # reading-confidence thresholds, chosen by the team around today's 0.80
-DEFAULT_ARM = 0.80                 # what the app used before the bandit, and what the API and checks keep
+CUTOFFS = {"usual": None, "zeros": 0, "up_to_1": 1}   # arm -> Policy.written_review_at_or_below
+ARMS = tuple(CUTOFFS)
+DEFAULT_ARM = "up_to_1"            # what the app used before the bandit, and what the API and checks keep
+LABELS = {"usual": "only answers the grader is unsure about",
+          "zeros": "also every proposed 0/2",
+          "up_to_1": "also every proposed mark of 1/2 or less"}
 REVIEW_COST, WRONG_COST = 1.0, 5.0
 PRIOR_PAPERS = 5                   # the warm start counts as at most this many papers per arm
 NOISE_SD = 0.3                     # spread of one paper's reward around its arm's mean (per-answer cost units)
@@ -49,14 +65,15 @@ def paper_reward(answers: int, referred: int, changed: int) -> float:
     return -(REVIEW_COST * referred + WRONG_COST * changed) / answers
 
 
-def counterfactual(answers: list[dict], threshold: float) -> tuple[int, int]:
-    """Referred and changed answers if the paper had been graded at this threshold. Each answer is a dict with
-    reading_confidence, proposed (the mark proposed when not held back by the threshold, or None when another rule
-    sent it to review) and final (the teacher's mark). Only the reading gate moves with the threshold."""
+def counterfactual(answers: list[dict], arm: str) -> tuple[int, int]:
+    """Referred and changed answers if the paper had been graded under this arm. Each answer is a dict with written
+    (bool), proposed (the mark proposed under the most lenient arm, or None when another rule sent it to review) and
+    final (the teacher's mark). Only written proposals at or below the arm's cutoff move."""
+    cutoff = CUTOFFS[arm]
     referred = changed = 0
     for a in answers:
-        conf = a.get("reading_confidence")
-        if a["proposed"] is None or conf is None or conf < threshold:
+        held = a["written"] and cutoff is not None and a["proposed"] is not None and a["proposed"] <= cutoff
+        if a["proposed"] is None or held:
             referred += 1
         elif a["final"] is not None and a["proposed"] != a["final"]:
             changed += 1
@@ -68,7 +85,7 @@ def load_prior(path: Path = PRIOR_FILE) -> dict:
     if not path.is_file():
         return {}
     data = json.loads(path.read_text(encoding="utf-8"))
-    return {float(k): v for k, v in data["arms"].items()}
+    return {k: v for k, v in data["arms"].items() if k in CUTOFFS}
 
 
 def posterior(prior: dict, rewards: dict) -> dict:
@@ -87,7 +104,7 @@ def posterior(prior: dict, rewards: dict) -> dict:
     return out
 
 
-def choose(prior: dict, rewards: dict, rng: random.Random | None = None) -> tuple[float, dict]:
+def choose(prior: dict, rewards: dict, rng: random.Random | None = None) -> tuple[str, dict]:
     """Thompson sampling: one draw per arm from its posterior, play the highest. Returns the arm and the state."""
     rng = rng or random.Random()
     state = posterior(prior, rewards)
@@ -97,12 +114,13 @@ def choose(prior: dict, rewards: dict, rng: random.Random | None = None) -> tupl
 
 
 def rewards_from_logs(signoffs) -> dict:
-    """{arm: [reward, ...]} from logbook.load_signoffs(), counting each paper's latest sign-off once."""
+    """{arm: [reward, ...]} from logbook.load_signoffs(), counting each paper's latest sign-off once. Sign-offs from
+    before this version (logged with a reading threshold, a different decision) are ignored."""
     out: dict = {}
-    if signoffs is None or len(signoffs) == 0:
+    if signoffs is None or len(signoffs) == 0 or "review_arm" not in signoffs:
         return out
     for row in signoffs.itertuples():
-        arm = getattr(row, "review_threshold", None)
-        if arm is not None and not (isinstance(arm, float) and math.isnan(arm)) and float(arm) in ARMS:
-            out.setdefault(float(arm), []).append(float(row.reward))
+        arm, reward = row.review_arm, row.reward
+        if arm in CUTOFFS and reward is not None and not (isinstance(reward, float) and math.isnan(reward)):
+            out.setdefault(arm, []).append(float(reward))
     return out

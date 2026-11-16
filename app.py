@@ -52,17 +52,17 @@ REVIEW_ACTIONS = {
     "invalid_contract": "Validate the vision export before grading this exam.",
 }
 
-def process_once(raw_input, course_index=None, exam_state=None, review_threshold=None):
-    """Grade one paper and log it. review_threshold is the reading-confidence threshold the bandit chose (App tab
+def process_once(raw_input, course_index=None, exam_state=None, review_arm=None):
+    """Grade one paper and log it. review_arm is the written review rule the bandit chose (App tab, built-in exam
     only); None keeps the fixed default, as the /run API and the acceptance checks expect."""
     started = perf_counter()
     exam, queries = exam_state or (None, None)
     policy = None
-    if review_threshold is not None:
-        policy = Policy(min_read=review_threshold, written_review_at_or_below=None if exam else 1)
+    if review_arm is not None and not exam:
+        policy = Policy(written_review_at_or_below=bandit.CUTOFFS[review_arm])
     views = pipeline.run_views(raw_input, policy=policy, course_index=course_index, written_exam=exam, query_vectors=queries)
     record = views["record"]
-    record["versions"]["review_threshold"] = review_threshold if review_threshold is not None else bandit.DEFAULT_ARM
+    record["versions"]["review_arm"] = None if exam else review_arm or bandit.DEFAULT_ARM
     record["latency_s"] = round(perf_counter() - started, 4)
     return views["teacher"], logbook.log_request(record)
 
@@ -112,10 +112,11 @@ def preview_material(question, library, course=BUILTIN, exam_state=None):
             for hit in index.search(int(question))]
 
 
-def choose_threshold():
-    """The bandit's threshold for the next paper (Thompson sampling over the warm start and real sign-offs), or
-    None when a policy file fixes the policy for an evaluation."""
-    if os.getenv("GRADE_POLICY_FILE") or os.getenv("GRADE_BANDIT", "on") == "off":
+def choose_review_arm(exam_state=None):
+    """The bandit's written review rule for the next paper (Thompson sampling over the warm start and real
+    sign-offs), or None when a policy file fixes the policy for an evaluation, or for a custom exam, whose written
+    questions the rule was not built for."""
+    if exam_state or os.getenv("GRADE_POLICY_FILE") or os.getenv("GRADE_BANDIT", "on") == "off":
         return None
     arm, _ = bandit.choose(bandit.load_prior(), bandit.rewards_from_logs(logbook.load_signoffs()))
     return arm
@@ -124,8 +125,8 @@ def choose_threshold():
 def display(raw_input, library=None, course=BUILTIN, exam_state=None):
     if not raw_input:
         raise gr.Error("Choose an OCR export or a PDF first.")
-    threshold = choose_threshold()
-    teacher, record = process_once(raw_input, selected_index(library, course), exam_state, threshold)
+    arm = choose_review_arm(exam_state)
+    teacher, record = process_once(raw_input, selected_index(library, course), exam_state, arm)
     review_index = None
     evidence, marks = [], []
     referrals = {}
@@ -192,16 +193,16 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         status = f"Exam status: {teacher['exam_status'].replace('_',' ')}. No exam total available."
     else:
         status = f"{len(marks)-count} of {len(marks)} questions have a proposed mark. {count} require review."
-        if threshold is not None:
-            status += (f" Answers read with less than {threshold:.0%} confidence go to you; the review rule chose this"
-                       " threshold from earlier sign-offs.")
+        if arm is not None:
+            status += (f" Written answers sent to you: {bandit.LABELS[arm]}. The review rule chose this from earlier"
+                       " sign-offs.")
         if teacher["near_pass_boundary"]:
             status += " Check the total against the configured pass boundary."
     context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
                "near_boundary": teacher.get("near_pass_boundary", False),
                "limits":[(r["question_id"],r["max_mark"]) for r in teacher["answers"]],
                "referrals":referrals, "review_started":perf_counter(), "proposals":[point for _,point in marks],
-               "review_threshold":threshold,
+               "review_arm":arm,
                # What the teacher needs to check any proposed mark (no student identity, only the reading).
                "details":{item["question_id"]: {
                    "question": item["question"], "reading": " | ".join(item["readings"]), "max": item["max_mark"],
@@ -304,12 +305,12 @@ def sign_off(context, marks):
             "initially_referred":sum(p is None for p in previous),
             "accepted_proposals":sum(p == r["mark"] for p,r in zip(previous, final_marks, strict=True)),
             "changed_proposals":sum(p is not None and p != r["mark"] for p,r in zip(previous, final_marks, strict=True))}
-        # The bandit's reward: what this paper cost the teacher under the threshold it was graded with.
+        # The bandit's reward: what this paper cost the teacher under the review rule it was graded with.
         session = signed["review_session"]
-        threshold = context.get("review_threshold")
+        arm = context.get("review_arm")
         reward = bandit.paper_reward(len(final_marks), session["initially_referred"], session["changed_proposals"])
-        logbook.log_signoff(context["id"], threshold, len(final_marks), session["initially_referred"],
-                            session["changed_proposals"], round(reward, 4) if threshold is not None else None)
+        logbook.log_signoff(context["id"], arm, len(final_marks), session["initially_referred"],
+                            session["changed_proposals"], round(reward, 4) if arm is not None else None)
     return signed
 
 def rate(ctx, value):
@@ -341,12 +342,13 @@ def monitoring():
 
 
 def review_rule():
-    """What the review-threshold bandit has learnt: each arm's posterior and how often it was played."""
+    """What the review-rule bandit has learnt: each arm's posterior and how often it was played."""
     signoffs = logbook.load_signoffs()
     state = bandit.posterior(bandit.load_prior(), bandit.rewards_from_logs(signoffs))
     logs = logbook.load()
-    played = logs["versions"].map(lambda v: v.get("review_threshold")).value_counts() if not logs.empty else {}
-    return pd.DataFrame([{"threshold": arm, "papers graded": int(played.get(arm, 0)),
+    played = logs["versions"].map(lambda v: v.get("review_arm")).value_counts() if not logs.empty else {}
+    return pd.DataFrame([{"rule": arm, "written answers sent to you": bandit.LABELS[arm],
+                          "papers graded": int(played.get(arm, 0)),
                           "papers signed off": s["real_papers"], "warm-start papers": s["warm_start_papers"],
                           "teacher cost per answer (estimate)": round(-s["mean"], 3), "uncertainty": round(s["sd"], 3)}
                          for arm, s in state.items()])
@@ -429,8 +431,8 @@ def paper_view(context, sheet, selected, focus, signed):
     chips = [("proposed by the product", str(sum(p is not None for p in proposals))),
              ("sent to you", str(len(referrals))), ("you changed", str(changed)),
              ("points so far", f"{total:g}/{maximum:g}")]
-    if context.get("review_threshold") is not None:
-        chips.append(("review threshold", f"{context['review_threshold']:.0%}"))
+    if context.get("review_arm") is not None:
+        chips.append(("written review rule", context["review_arm"].replace("_", " ")))
     band = ui.summary_band(title, detail, len(limits) - len(pending), len(limits), chips)
     shown = focus if focus is not None else selected
     return ui.stepper(stage, len(need_you)), band, ui.map_value(context, sheet, shown)
@@ -491,8 +493,7 @@ def monitoring_view():
     drift = pd.DataFrame(columns=["feature", "psi", "threshold", "alert"])
     if reference is not None and len(logs) >= monitor.MIN_WINDOW:
         drift = monitor.drift(reference, monitor.live_features(logs), monitor.MIN_WINDOW)
-    costs = rule.assign(threshold=rule["threshold"].map(lambda v: f"{v:.0%}"),
-                        cost=rule["teacher cost per answer (estimate)"])
+    costs = rule.assign(rule=rule["rule"].str.replace("_", " "), cost=rule["teacher cost per answer (estimate)"])
     return (ui.alert_banner(message, fired), ui.tiles(frame), quality, drift, costs, frame, timeline)
 
 
@@ -675,11 +676,11 @@ def build_app():
                     drift_plot = gr.BarPlot(x="feature", y="psi", show_label=False, height=260, sort="-y")
             with gr.Column(elem_classes="desk-card"):
                 gr.HTML('<h2 class="card-title">Review rule (learning from sign-offs)</h2><p class="card-note">For '
-                        'each paper the app picks the confidence below which an answer goes to the teacher, by '
-                        'Thompson sampling. The cost per answer counts each review as 1 and each proposal the teacher '
+                        'each paper the app picks which written marks from Gemini go to the teacher instead of '
+                        'arriving pre-filled, by Thompson sampling. The cost per answer counts each review as 1 and each proposal the teacher '
                         'changed as 5: lower is better. Warm-start papers are simulated; signed-off papers are real.</p>')
-                rule_plot = gr.BarPlot(x="threshold", y="cost", y_title="cost per answer", show_label=False, height=220)
-                learning = gr.Dataframe(label="Review thresholds", interactive=False)
+                rule_plot = gr.BarPlot(x="rule", y="cost", y_title="cost per answer", show_label=False, height=220)
+                learning = gr.Dataframe(label="Review rules", interactive=False)
             with gr.Accordion("All numbers", open=False):
                 summary = gr.Dataframe(label="Request summary", interactive=False)
                 timeline = gr.Dataframe(label="Hourly quality signals", interactive=False)

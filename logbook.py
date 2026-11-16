@@ -111,12 +111,12 @@ def log_feedback(request_id: str, value: int) -> None:
     })
 
 
-def log_signoff(request_id: str, review_threshold: float | None, answers: int, referred: int, changed: int,
+def log_signoff(request_id: str, review_arm: str | None, answers: int, referred: int, changed: int,
                 reward: float | None) -> None:
-    """The teacher signed off a paper: how many answers the threshold sent to review, how many proposals the
+    """The teacher signed off a paper: how many answers the review rule sent to review, how many proposals the
     teacher changed, and the bandit's reward (exam_grader/bandit.py). Counts only, no marks or text."""
     _append(_signoff_file(), {
-        "id": request_id, "timestamp": datetime.now(timezone.utc).isoformat(), "review_threshold": review_threshold,
+        "id": request_id, "timestamp": datetime.now(timezone.utc).isoformat(), "review_arm": review_arm,
         "answers": int(answers), "referred": int(referred), "changed": int(changed), "reward": reward,
     })
 

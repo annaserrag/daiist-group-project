@@ -1,175 +1,134 @@
 # Group Assignment Report
 
-- **Team** (Blackboard group name):
+- **Team** (Blackboard group name): [team name]
 - **Section**: [BBADBA 5A | BBADBA 5B | PPLEDBA 5A]
-- **Space URL**:
-- **Final commit** (tag `final`):
-
-*At most about 3,000 words, tables excluded. Members and who did what go in CONTRIBUTIONS.md.*
+- **Space URL**: [pending: the Space needs a paid account, which our teacher is looking into]
+- **Final commit** (tag `final`): [to add when tagged]
 
 ## Business case
 
-*Who uses it, which decision or task it supports, what happens today without it (the baseline), the success metric, and a rough value in euros with the assumptions behind it.*
+Our product is for a teacher who has to mark a pile of handwritten exams, and in our case the exam is the Data Science exam of the public Mendeley dataset, which has 35 questions per paper, 20 multiple-choice questions worth one point each and 15 short written answers worth two points each, so 50 points in total. Today the teacher marks every paper by hand, which means checking every letter against the key, reading every written answer, deciding the partial credit and adding up the total, and this is our baseline, because it is what happens if the product doesn't exist. Our product doesn't decide the final mark, it prepares every paper so the teacher only looks carefully at the answers it is not sure about, with the reading, the proposed mark and the reason next to each one, and then signs it off.
+
+We measure success with how many answers still go to the teacher per paper, since that is the work left, and how many proposed marks are wrong, counted as the marks the teacher changes at sign-off, because a wrong mark that nobody catches is much worse for a student than a review, together with the cost and waiting time per paper. We didn't time a teacher marking by hand, so the value is an estimate built on assumptions that we state openly: we are assuming a course of 200 students with three exams a year (600 papers), about 10 minutes of marking per paper and a teacher cost of €40 per hour, which gives 100 hours and €4,000 per course and year. If the product took over the multiple-choice part, which we are assuming is about a third of the marking time, the teacher would save around 33 hours (€1,333) per course and year, while the grading model costs less than one cent per paper (see Cost and latency), so the money is clearly not the problem, the problem is whether the marks can be trusted.
 
 ## Architecture
 
-*The two components and how one feeds the other: a diagram plus a short walk-through of one request from input to output. Which models or APIs, and why those. What you reused from assignments 1–3, and whose it was.*
+The product chains a vision component that reads the scanned exam and an agentic LLM component that grades it, and the output of the first one is the input of the second one: each answer with its question number, its text and a confidence for the reading and another for the number.
 
 ```mermaid
 flowchart LR
-    A[Exam PDF] --> B[Team vision reader]
-    B --> C[Question IDs, readings and two confidence scores]
-    C --> D{Question type and confidence}
-    D --> E[MCQ answer key]
-    D --> F[Retrieve course passages and grade written answer]
-    D --> G[Teacher review]
-    E --> H[Teacher sign-off]
+    A[Scanned exam PDF] --> B[Vision: Qwen3-VL-2B reads each page]
+    B --> C[Bridge: answers under question numbers, header lines dropped]
+    C --> D{Grader}
+    D -->|multiple choice| E[Published answer key]
+    D -->|written| F[Gemini agent with course passages]
+    D -->|unsure| G[Teacher review]
+    E --> H[Teacher signs off]
     F --> H
     F --> G
     G --> H
 ```
 
-The Component 2 interface accepts a versioned handoff. On the bundled engineering example, Q1 contains a clear B, which earns a proposed 1. Q17 contains D on a two-option question and goes to review. The teacher sees the readings, proposed marks, reasons and evidence. A final sheet requires the teacher to complete all 35 marks. The PDF route awaits acceptance with Anna's reader. [Handoff and acceptance procedure](HANDOFF.md)
+When a teacher uploads a paper, Qwen3-VL-2B, a pretrained vision-language model, reads each whole page line by line, and a line that starts with a question number starts that question. Then the bridge turns that read into the hand-off format and drops the short header lines above the first question, because they are not answers and they can hold the student's name. The grader then checks each multiple-choice letter against the published key, and for each written answer it asks Gemini (gemini-3.1-flash-lite, through LangChain) to propose a mark, but only if it can cite a passage of the course notes for every criterion of the rubric, so a mark always comes with its evidence. Anything the grader is not sure about goes to the teacher, like a low reading confidence, a question found twice, a missing question, a proposed written mark of 1/2 or less, or an answer the provider failed to grade, and no paper has a final total until the teacher signs it off. [reuse from assignments 1–3: team to fill in whose code and where]
 
 ## Data
 
-*Where each component's data comes from, with links, licences and sizes. Confirm that there is no personal data in your inputs or logs.*
+The exams come from "A Dataset of Digitized Student Examination Papers" by Dinesh K P on Mendeley Data (CC BY 4.0), which has 50 scanned exams together with their answer key and the teacher's marks. The reader's choices were made on 126 public handwriting images and its fine-tuning used 1,012 pages, and the grader retrieves from 367 paragraphs of public course notes, with every source, licence and size in [SOURCES.md](SOURCES.md) and [vision/README.md](vision/README.md).
 
-The answer catalogue contains 20 multiple-choice and 15 written questions. Recorded teacher marks are used for evaluation. The public teaching index contains 367 paragraphs from 25 pages, also grouped into 157 section chunks. Precomputed Gemini embeddings allow local retrieval. Student text is used locally for lexical matching. External grading requires a server-approved input. Safe request logs omit answer text, filenames and model feedback. [Dataset, licences and attribution](SOURCES.md)
+Then we had to be careful with personal data, because the Mendeley marks file has a Student_Name column that is not anonymised, so we drop it when loading, and the files with names and student IDs never enter the repo. Every paper also has the student's name written in a faint header, which is why the bridge drops the lines above the first question, and for the held-out test we also whitened every faint pixel of the pages before anything reached the reader or Gemini. The logs keep counts, versions, times and costs, but no answer text or names.
 
 ## Evaluation
 
 ### Components
 
-*Each component on its own: the metric, the result, the test data and its size.*
+The vision component took most of the project, 20 tries logged in [artifacts/vision/tries.csv](artifacts/vision/tries.csv) and told in seven chapters in [vision/](vision/README.md). We started by training our own YOLO detectors for question numbers and lines, which worked on their own test data (AP50 0.79 and 0.88) but found only 11% of the questions on the real Mendeley exams, because those answer sheets look nothing like the training images. The honest thing we have to say here is that three of our next tries were then tuned on Mendeley exams by mistake, which contaminated them, so we threw them away and from then on the 50 Mendeley exams became evaluation-only, and every choice was made on a separate development set of 126 public images. There Qwen3-VL-2B reading the whole page was clearly best (7.3% character error and 89% of numbers found, against 19 to 28% and 23 to 56% for line readers), but it found only 43% of the numbers on answer sheets, so we fine-tuned it with LoRA, which gave slightly better text but fewer numbers on answer sheets (39%) and 52 proposals against 60 on the 30 cases, so we kept the base reader and froze it.
 
-| Component 2 measurement | Observed result | Scope |
-|---|---|---|
-| MCQ key replay | 987/987 valid letters scored according to the key. All 13 unusable entries went to review. | 50 papers, 1,000 recorded slots, transcription assumed correct. The teacher total agreed on 13/44 complete sheets. [MCQ evidence](eval/published_mcq_replay.json) |
-| Retrieval | Approved page in top three for 14/14 answerable written questions with both semantic designs. Lexical search reached 11/14 for sections and 10/14 for paragraphs. | Question-only queries on the team's reviewed worksheet. Q34 lacks its figure. Labels identify pages, so a passage may still cover only part of an answer. [Semantic results](eval/written_retrieval_semantic.json) · [Lexical results](eval/written_retrieval_lexical_v3.json) |
-| Written grading | 17/30 proposals, 13/30 reviews. Among the 16 proposals with a numeric teacher mark, 12 agreed exactly and 13 were within half a point. Mean absolute error was 0.25/2. The training-exam question-mean baseline on the same 16 had 3 exact and mean absolute error 0.50/2. | Replayed two previously transcribed papers. One proposal lacks a numeric reference. Both thresholds gave identical decisions with frozen responses. One missing response was referred. [Frozen replay](eval/written_semantic_frozen_thresholds.json) · [Live run](eval/written_semantic_section_replay.json) |
-| Q32 | 45/50 referred. Of five proposals, four had a numeric teacher reference. All four matched and were zero. | Development replay on papers already examined during rule changes. [Q32 evidence](eval/q32_all50_svm_only.json) |
+| Reader on the 50 Mendeley exams (run once, frozen) | Questions found | Letters read | Letters right when read |
+|---|---:|---:|---:|
+| Our YOLO detectors | 11% | 1% | 56% |
+| Line OCR | 27% | 14% | 84% |
+| **Qwen3-VL-2B, whole page (chosen)** | **86%** | **82%** | **99%** |
+| Qwen3-VL-4B, whole page | 83% | 77% | 99% |
 
-### Additional written comparisons
+For the grader, multiple choice is simple once the letter is read (987 recorded letters scored by the key, 13 unusable ones referred), so the hard part is the written answers. On the final frozen test, four papers with 56 written answers (manual transcriptions, so the reading can't affect it), the grader proposed 31 marks, and of the 30 we could compare 16 matched the teacher exactly against 7 for a baseline that gives each question its average mark, but its mean error was about the same (0.55 against 0.52 out of 2) and 12 proposals were a point or more below the teacher. That is why we decided to send every proposed written mark of 1/2 or less to the teacher, because most of the big errors were under-awards, and on those papers that turned 45 of 56 written answers into reviews but left only proposals that matched the teacher (10 out of 10). [Four-paper test](eval/written_validation_four.json) · [Review cutoff](eval/written_review_policies.json) · [Other exams](eval/generalization_unt.json)
 
-The original semantic grader's results varied across papers. On the two pilot papers it matched 9/21 paired marks and had mean absolute error 0.76/2, compared with 0.38/2 for the question-mean baseline. All 12 disagreements were under-awards. One answer described K-nearest-neighbor voting for the K-means question. The published key specifies cluster count, yet the teacher recorded 2/2. [Pilot replay](eval/written_semantic_pilot_frozen.json) · [Published key](exam_grader/data/answerkey.txt)
-
-For a separate test, two further papers were selected by a fixed ordering before reading their marks. It covered 28 written slots after excluding Q32. The grader proposed 13 marks, matched five exactly and sent 15 to review. Seven proposals were at least one point below the teacher. The grader's mean absolute error was 0.65/2, compared with 0.46/2 for the baseline on the same 13. All eleven partial-credit outputs accounted for the points deducted. [Independent evaluation](eval/written_independent_semantic.json)
-
-On a subsequent replay of the same 28 independent-test slots, the revised agent and passage selection produced 15 marks, matched the teacher on 8/15 and referred 13 slots. Five answers left review and three entered review. Of ten answers marked in both runs, two moved closer to the teacher and eight had the same absolute error. The revised grader's mean absolute error and that of the baseline on the same 15 were both 0.50/2. Six revised proposals under-awarded by at least one point. This is a repeat comparison on the same papers. [Revised replay](eval/written_independent_revised.json) · [Score matrix](eval/written_review_policies.json)
-
-The final Component 2 test froze the revised grader at `c4b76bb` and used four further papers from the existing sampling order. Across 56 written slots excluding Q32, 31 received proposals and 25 went to review. Of 30 paired proposals, 16 matched the teacher and 17 were within half a point. The question-mean baseline, trained on 40 other papers, achieved 7 exact matches and 24 within half a point on the same 30. Respective mean absolute errors were 0.55/2 and 0.52/2. Twelve proposals were at least one point below the teacher and one was at least a point above. All 20 below-full-credit proposals accounted for their deductions. The test used manual transcriptions to isolate the grading component. [Four-paper test](eval/written_validation_four.json)
-
-### Generalization to new students and different questions
-
-The teacher can load a new written exam with its own questions, reference answers, two-point rubrics and course materials. A fingerprint binds the reader export to the chosen exam. Each proposed mark needs a body passage for every criterion. A second call to the same model scores the answer without seeing the first mark. A difference of one point or more, an ambiguous second mark or inadequate evidence sends the answer to review. Both calls can still make the same mistake. The checked reader interface and sample physics exam are available in the handoff. [Custom exam workflow](README.md#use-a-different-written-exam)
-
-**Machine-learning exam.** Four papers were sampled before reading their answers. Manual transcriptions isolate grading from handwriting recognition. Of 52 eligible slots, 39 contained readable responses and 13 had no located answer. Q28 and Q32 were excluded because all 50 papers had already informed development on those questions. Both arms used the same four papers and the same model, `gemini-3.1-flash-lite`. The earlier model's daily quota interrupted the first comparison. Its incomplete outputs are preserved separately. Four service or response-format failures remained in each of the comparison arms and count toward reviews. [Sampling, per-question decisions and frozen outputs](eval/generalization_ml_four.json)
-
-| Configuration | Proposed / readable | Reviews / readable | Exact / comparable proposals | Off by ≥1 / comparable proposals | Mean absolute error out of 2 |
-|---|---:|---:|---:|---:|---:|
-| Previous grader | 8/39 | 31/39 | 4/8 | 4/8 | 0.50 |
-| Expanded evidence with ordinary routing | 17/39 | 22/39 | 6/17 | 9/17 | 0.71 |
-| Expanded evidence with low marks referred | 9/39 | 30/39 | 5/9 | 2/9 | 0.33 |
-| Selected policy on two additional papers | 1/20 | 19/20 | 0/1 | 0/1 | 0.50 |
-
-The cutoff was specified before opening these teacher marks and selected using the four-paper comparison. It refers model proposals of 1/2 or below on the built-in ML exam. This preserved one more exact agreement and removed two large disagreements relative to the previous grader, while referring 30 of 39 readable answers. Paper 23/Q21 and paper 38/Q25 both received proposals of 2 where the teacher gave 1. Always awarding 2 on the same nine selected answers would have yielded seven exact agreements and mean error 0.22. Retrieval reached an approved source among the first three results for all 14 source-answerable written questions. Q34 still requires its figure. [Review policy and retrieval](eval/generalization_ml_four.json)
-
-**Independent confirmation.** Papers 16 and 31 were held back until the policy was fixed. Of 26 slots, 20 had readable transcriptions and six had no located answer. Only paper 31/Q31 received a proposal, 2/2 for identifying K as the group count, against the teacher's 1.5/2. Nine of the 19 readable referrals were triggered by the low-mark cutoff. Five of those nine tentative marks would have been wrong by at least a point and two matched exactly. Four further answers lacked evidence, two needed review of the diagnosis, two still had a service or response-format failure after retries, one had conflicting assessments and one needed the figure. One issued proposal provides little evidence about agreement and the 95% review workload is substantial. The confirmation results were kept out of policy tuning. [Frozen confirmation and review reasons](eval/generalization_ml_confirmation.json)
-
-**Other exams.** Four prompts on recursion, divide and conquer, queues and stacks came from two publicly released University of North Texas computing exams. The grader received instructor reference answers, project-authored rubrics and source notes. Numeric reference grades were joined after grading and converted to 0–2 without rounding. The 24 development answers exposed a problem matching the model's evidence to the teacher's criterion names. Requiring the exact names increased proposals from 14 to 23 on those same 24 answers. On these 23, mean error was 0.32, versus 0.16 for awarding full credit throughout. On a disjoint set of 12 response rows, the revised grader proposed 12 marks. Six matched the published grade exactly, ten were within half a point, and none differed by a full point. Mean error was 0.20, versus 0.25 for awarding full credit. The two human raters differed by 0.35 points on average. One short stack answer repeated earlier wording. Removing it leaves five exact matches and nine within half a point among 11. None of the three fresh divide-and-conquer marks matched exactly. [Per-question results and rater comparisons](eval/generalization_unt.json) · [Public source dataset](https://lit.eecs.umich.edu/downloads.html)
-
-**Entirely new questions.** After freezing the production grader, two sorting questions from a third UNT assessment were selected and given new reference-backed rubrics. Four student responses per question were drawn before inspecting the answers or marks. The grader proposed seven out of eight marks. Four matched exactly, all seven were within half a point, and mean error was 0.16/2 against 0.20 for awarding full credit on those same seven. One response went to review after the provider repeatedly returned invalid structured output. This test covers transfer to previously unused prompts about insertion and selection sort. [Sampling, rubrics, sources and scores](eval/generalization_unt.json)
-
-A separately authored physics exam exercised PDF upload, semantic retrieval, page citations, deductions and use of question numbers shared with the stock exam. Five of six synthetic answers received the expected mark and cited the intended page. The sixth went to review. This is an engineering check. The study includes no real physics course marks. [Physics cases and citations](eval/generalization_waves.json)
-
-The evidence supports a teacher-reviewed trial. Partial credit remains sensitive to the instructor's standard, provider failures increase the review load, and measured transfer covers only a few short-answer topics. Handwriting recognition, whole-exam grading time and the deployed two-component pipeline still require a joint test with Anna. Anonymous answer-level results can be recalculated offline. [Evaluation commands](eval/README.md)
-
-### Full-credit answers and teacher review during provider outages
-
-A teacher can configure exact full-credit responses on a custom question and a body quote for each criterion. The local grader checks the whole reading and verifies the quotes against the active course before offering 2/2. Responses outside that list follow the normal grading path. Codex set the test rules using the published instructor answers and teaching notes before opening the held-back marks. An instructor would approve the strings and passages for their own course. [Configuration example](README.md#use-a-different-written-exam)
-
-| Test with generation disabled | Readable | Proposed | Referred | Exact among proposals |
-|---|---:|---:|---:|---:|
-| Remaining responses on three earlier UNT prompts | 59 | 7 | 52 | 7/7 |
-| Two previously unused C++ prompts | 59 | 15 | 44 | 15/15 |
-
-Without the configured answers the offline written path referred every response. On the earlier prompts, all seven matches concerned stack operations. Preserving internal whitespace for code and units removed one match from the initial implementation. The two new C++ questions were tested after that change. On the new questions the grader recognized 1/29 answers about the program entry point and 14/30 about array layout. The exact rule awarded only full credit. Many students gave correct longer answers that needed the normal grading path, and identical short wordings can recur across students. The samples establish coverage for these prompts during an outage. The results do not estimate partial-credit accuracy or time saved. [Frozen rules, sources and all 118 decisions](eval/review_and_exact_transfer.json) · [UNT public dataset](https://web.eecs.umich.edu/~mihalcea/downloads.html)
-
-On three additional ML papers, the comparison covered Q24, Q25, Q26, Q27 and Q30. The default model hit its daily quota. The alternative model's grading requests also hit quota, so the proposed change to evidence prompting has no valid paired mark comparison and was kept out of the default grader. An offline replay through the app entry point gave teachers up to three passages per referral. All 15 readings retrieved a page from the earlier approved source labels. Those page labels measure retrieval relevance. Teachers still need to inspect the passage against each criterion. No mark was issued on those 15 offline ML responses. Paper 30 had previously been inspected for Q32, outside this test's five questions. [Sampling, interrupted arms and retrieval results](eval/review_and_exact_transfer.json)
-
-A grading request now stops making uncached provider calls for an exam once it receives a daily quota rejection. The focused review form shows the reading, active rubric and sources, records the teacher’s mark on the existing sheet, and advances to the next unresolved item. Separately, a reproduced Q26 validation failure involved a model listing a correctly satisfied criterion as a zero-point deduction. The parser now accepts such an annotation only when both scores agree, the criterion IDs are unique and valid, the actual deductions sum correctly, and source coverage passes. The zero-loss annotation does not appear as a deduction. The grading effect of this repair on fresh ML responses remains unmeasured.
-
-### Written feedback and judge agreement
-
-Javi reviewed 23 written feedback examples from four papers graded with the earlier lexical retrieval system. A Pass required the feedback to describe the student's answer accurately, justify the proposed mark under the rubric and cite a passage supporting the explanation. The Gemini judge's predictions were frozen before the review. Javi recorded four decisions after discussing an uncertain citation, then reviewed and approved Codex's recommendations for the remaining 19. These are reviewer-approved, AI-assisted labels. The sample covers the earlier grader.
-
-| Javi's decision | Judge Pass | Judge Fail |
-|---|---:|---:|
-| Pass | 11 | 0 |
-| Fail | 10 | 2 |
-
-Agreement was **13/23 (56.5%)**. The judge flagged two of the 12 examples Javi failed. Q24 accounted for four of the ten disagreements. On paper A, Javi agreed that both points were earned. The cited passage supported the effect of dirty data on accuracy but did not support the student's point about time and memory. The judge passed that feedback. [All 23 reviewer labels](eval/human_labels.csv) · [Frozen judge predictions](eval/judge_results.csv) · [Ten disagreements by item](eval/feedback_agreement.json)
-
-On a separate 20-item feedback packet, Javi approved all 20 recommendations before the frozen judge decisions were revealed. They agreed on 13/20 (65%). Four explanations that Javi failed passed the judge, and three that Javi passed failed the judge. These AI-assisted labels cover an earlier grader. A fresh blind feedback audit of the current model would be needed to measure any change. [Second feedback comparison](eval/current_feedback_agreement.json)
+We checked the LLM judge of the written feedback against 23 labels by Javi (recommended by an AI assistant and then reviewed and approved by him), and it agreed only 13 times (56.5%), mostly passing feedback that Javi failed, and 65% on a second packet of 20, so the judge is too lenient to replace a person, which is one more reason the teacher sees the evidence and not only the mark. [Labels](eval/human_labels.csv) · [Agreement](eval/feedback_agreement.json)
 
 ### End to end
 
-The prepared integration packet has 12 normal PDFs, eight hard cases, seven review cases and three unrelated uploads. Twenty-one contain cropped handwriting from eight public exam papers; nine are constructed controls. Case c20 asks the reader to join a written answer across pages. In c24 one MCQ is readable and the next is obscured, so grading the first and withholding the second are both required. Across 105 expected question slots there are 100 numeric reference marks. An ideal reader that always awards full credit matches 64/100 reference marks and passes 14/30 complete case expectations. These are baseline values. A dry run with the reader unavailable passed zero cases and made zero grading calls. With the integrated reader, a paired run of all 30 PDFs passed 15 cases before the scope check and 18 afterward. All three unrelated uploads were identified and received no marks. All 26 in-scope inputs kept their status, and the obscured sheet remained unreadable. The two arms proposed the same 60 marks; 59 had numeric references and all 59 agreed. [Per-PDF scope comparison](eval/vision_finetune_scope_30.md) Several cases share a source paper, and timings from short excerpts should be reported separately from the multi-page submission. [Case manifest](eval/cases.csv) · [Packet and run instructions](eval/README.md#run-with-annas-reader)
+We wrote 30 cases in [eval/cases.csv](eval/cases.csv) (12 normal, 8 hard, 7 that should go to review and 3 unrelated uploads like a geography worksheet), most of them with real handwriting cropped from eight Mendeley papers. It is an integration test and not a clean estimate, because those papers were also used in development, and the baseline is a perfect reader that gives full credit to every visible answer.
 
-An engineering check sent one image-only printed PDF through the normal PDF entry point using an independent local OCR fixture reader. All three question IDs and readings matched exactly. The grader returned 1/1 for Q1, referred an invalid Q17 letter, and proposed 2/2 with a citation for Q21. The request used 2,360 tokens and took 4.72 seconds, including 0.61 seconds for OCR and 4.11 seconds for grading. Its estimated paid-tier equivalent was €0.000848. The later integrated run on handwriting is reported above. [PDF result](eval/printed_pdf_integration.json) · [Reproduction command](HANDOFF.md)
+| 30 cases, final pipeline | Product | Full-credit baseline |
+|---|---:|---:|
+| Cases fully correct | 23/30 | 14/30 |
+| Proposed marks that match the teacher | 65/65 | 44 of the same 65 |
+| Large mark errors | 0 | – |
+| Answers read exactly | 78/105 | assumed perfect |
 
-With the revised passage rule, the same printed check again returned all three expected outcomes. It took 3.07 seconds, consumed 2,313 tokens and had an estimated paid-tier cost of €0.000859. Each configuration was timed on one PDF request. [Revised PDF result](eval/printed_pdf_finalized.json)
+The product gets more cases right than the baseline and never proposed a wrong mark, but it gets there by sending a lot to review (32.8 of 35 rows per case, partly because most cases are crops with a few questions). [Results](eval/base_written_review_30/summary.json)
+
+Then we ran the whole product once on five Mendeley exams that no earlier step had used (Students 43, 45, 46, 47 and 50). The first run happened during a Gemini outage, so the written answers couldn't be graded and went to review, and four of the five exams were sent entirely to review because one header line ("Data Science") was left above the first question and the grader refers the whole exam if any line can't be placed. On Student_43, the only exam that got through, all 20 multiple-choice marks matched the teacher. That failure is why we added the header rule to the bridge, which drops lines of up to six words above the first question, and when we measured it on the other 45 Mendeley exams the exams sent entirely to review went from 32 to 14 and the multiple-choice marks proposed went from 190 to 457 (453 exact), with no exam getting worse. We have to disclose that this breaks our own rule, because the fix was written after seeing a test exam fail and measured on evaluation exams, so Student_45 is reported apart and the clean result is the other four exams. [Held-out test](eval/heldout_e2e.py) · [Header rule](eval/header_rule_dev.py)
+
+When we ran the five exams again with Gemini working, the multiple-choice part held up, because on the four clean exams the product proposed 56 marks and the 53 we could compare all matched the teacher, while giving full credit to every answer would have matched only 51 of 77. The written part is where it fell short, because only 2 of the 56 written answers got a proposal (both exact), and when we looked at why, most of the referrals came from the reader and not from Gemini, since 32 of them were a low reading confidence, an uncertain or missing question number or a question found twice, and only 4 were the low-mark or evidence rules and 3 a provider failure. Student_47 went entirely to review again, because one line the reader couldn't place was not a header the rule recognises, which is the same failure as before, so we report it as it is and didn't change anything after seeing it.
+
+| Clean held-out (Students 43, 46, 47, 50) | Product | Full credit | Typical mark |
+|---|---:|---:|---:|
+| Multiple choice: proposed marks matching the teacher | 53/53 (24 referred) | 51/77 | – |
+| Written (without Q32): proposed marks matching the teacher | 2/2 (44 referred) | 37/46 | 7/46 |
+| Exams sent entirely to review | 1 of 4 | – | – |
+| Median time per exam | 69 s (reader 37 s) | – | – |
+
+Student_45, which is reported apart, got all 20 multiple-choice marks right and 1 written proposal, also exact. [Summary](eval/heldout/summary.json)
 
 ### Cost and latency
 
-*Per request: tokens, euros and seconds, for each component and in total. What it would cost per month at the volume in your business case.*
+| Per paper | Tokens | Euros | Seconds |
+|---|---:|---:|---:|
+| Vision reader (local, Apple GPU) | – | €0 (runs locally) | about 18 per exam |
+| Vision reader (free Space, 2 CPU threads) | – | €0 | about 85 per page |
+| Grader, one written answer | about 2,300 | about €0.0009 | about 3 |
+| Whole paper, measured on the held-out exams | about 5,500 | about €0.002 | about 69 (median, Apple GPU) |
 
-Three uncached requests on the same synthetic JSON took 2.12, 3.02 and 3.75 seconds and returned 2/2 for Q21. Each included one model-eligible answer. The paid-tier equivalent ranged from €0.000875 to €0.000902 per request. The calculation uses $0.30 per million input tokens, $2.50 per million output tokens and USD 1.1127 per EUR on 11 November 2026. This measures the JSON handoff and grader with resources initialized. The team still needs timings for full PDFs, the reader and teacher sign-off. [Request measurements](eval/component2_live_smoke.json) · [Google standard pricing](https://aistudio.google.com/docs/pricing#gemini-3.5-flash-lite) · [ECB reference rate series](https://data.ecb.europa.eu/data/datasets/EXR/EXR.D.USD.EUR.SP00.A)
-
-The direct-PDF baseline sent the existing generated printed sheet, question catalogue and key to Gemini. Across three measured calls, it read all three answers exactly but scored the invalid Q17 selection zero each time. It awarded the correct Q21 definition 1.5/2 twice and 2/2 once. On the same printed content the local OCR and grading pipeline referred Q17 and awarded a cited 2/2 on Q21 in three of three runs. Both approaches gave Q1 full credit each time. Median elapsed times were 1.99 seconds for the direct request and 6.15 seconds for the pipeline. The median paid-tier equivalents were €0.000883 and €0.000859. One preliminary direct run stopped on a provider 503 before the three measured calls. This comparison uses one synthetic sheet and changes OCR, retrieval, instructions and routing together. Relative performance on real handwriting remains unmeasured. [Direct calls](eval/printed_direct_baseline.json) · [Pipeline calls](eval/printed_pipeline_repeats.json)
+At 600 papers a year the grading costs around €1, so the real cost is the reader's hardware, since on the free Space a four-page exam would take around six minutes and 13 GB of memory, which is why we would run it on a GPU. Prices use $0.30 per million input tokens and $2.50 per million output tokens at USD 1.1127 per EUR on 11 November 2026. [Measured requests](eval/printed_pdf_finalized.json)
 
 ## Operations
 
-*What you log. The quality signal and the drift check you monitor, the reference set, and the alert threshold with its justification. The drift demo: what you shifted, and the result with the alert firing (screenshot or numbers). The rate of false alarms on normal inputs.*
+Every request is logged with the versions, a summary of the input (pages, lines, ink, confidence), each component's output as counts, the time, the tokens, the cost and the teacher's 👍/👎 and sign-off, and the logs go to a private Hugging Face dataset, because a Space loses its disk when it restarts. The Monitoring tab shows the share of answers sent to review and the share of 👎 over time as the quality signals, and the drift check compares five input signals of recent papers with a reference set of 30 papers using the population stability index (PSI), which measures how much a distribution moved. The alert fires when a signal goes above 0.25 or twice the noise we would expect by chance for that number of papers, whichever is larger, because with few papers per window a fixed threshold fired too often (54 of 100 ordinary windows without smoothing, against 1 of 100 after adding half an observation per bin).
 
-A Component 2 engineering replay used 30 published MCQ sheets for reference and 20 held back. Removing Q16–20 detections triggered the reading-count alert. The unsmoothed estimator also fired on the unaltered comparison window. Across 100 overlapping repartitions of the same 50 papers, it alerted on 54 ordinary windows and all 100 shifted windows. Adding half an observation per bin gave 1 ordinary alert and 100 shifted alerts at the same threshold. These repeated splits use the same papers. The integrated app and drift demo now use half-count smoothing. This choice was made from the earlier replay before measuring the scan windows below. [Replay and estimator comparison](eval/monitoring_mcq_replay.json)
-
-The integrated PDF reader was run on 30 reference crops from different source papers, 12 pre-existing normal scans and 10 deliberately faded versions of c01–c10. The reference papers are disjoint from the normal-case sources. The decision is made once per window: the normal window was quiet and the faded window alerted. The table gives the population stability index (PSI) for each signal; larger values indicate a larger distribution change.
+For the drift demo we faded ten scans on purpose, as if a scanner lost contrast, and the alert fired on them and stayed quiet on the 12 normal scans.
 
 | Signal | Normal PSI (threshold 0.933) | Faded PSI (threshold 1.067) |
 |---|---:|---:|
-| Mean reading confidence | 0.254 | **1.561** |
+| Mean reading confidence | 0.753 | **1.561** |
 | Number of readings | 0.035 | **2.185** |
 | Unassigned answers | 0.023 | 0.027 |
 | Ink density | 0.359 | **1.948** |
 | Number of lines | 0.138 | **3.490** |
 
-Ink density is the fraction of rendered pixels at least approximately 60 gray levels darker than their page background, weighted by page size. The median of the ten unchanged parents was 0.588% compared with 0.00193% in their faded versions. Eight faded scans fell below the reader’s low-ink gate; none of their paired parents did. This test covers severe contrast loss on single-page extracts. One normal and one degraded window cannot establish field false-alarm or detection rates. The live Monitoring tab requires 20 recent requests. [Inputs and reproduction commands](eval/README.md#reference-and-shifted-scans-for-monitoring) · [Reference features](monitoring/reference_features.csv)
-
+One normal and one faded window can't give us a real false-alarm rate, and the live tab waits for 20 papers before it judges drift. [Drift results](eval/base_reader_drift.json)
 
 ## Failures
 
-*Failed end-to-end cases grouped by cause (which component, or the hand-off between them), with counts, and what you would fix first.*
+The 7 failed cases out of 30 were mostly the reader, because 6 of them came from the vision component and only 1 from the grader, and none of the 7 ended with a wrong mark, they were all sent to review when a mark was expected or read in a way the case didn't allow. The reader missed ten question numbers on a two-column sheet (c13), read 31 as 34 and 22 as 26 on two written answers (c17 and c25), misread an empty answer box (c12), didn't separate a letter from the same option written in words (c15) and wasn't sure enough of a faint question number to place a written answer the teacher gave 1.5/2 (c19). The grader sent one readable answer the teacher gave 2/2 to review (c18), because it couldn't cite a course passage for one of the two criteria of the rubric. On full exams the main failure was the hand-off, where one line the reader couldn't place sends all 35 questions to review (Student_47). The first thing we would fix is the reader's question numbers, because a wrong number moves a correct answer under the wrong question, and confidence can't catch it (the median confidence is 1.00 for right letters and 0.999 for wrong ones).
 
-In the first independent written run, the 15 reviews comprised six incomplete provider or tool calls, four context gates, four missing detections in the manual exports, and one uncertain reading. On four selected development answers that previously had no saved response, preventing the agent from requesting a second lookup after opening one passage yielded four cited proposals. Three matched the teacher. The original configuration again produced no marks. Both used eight model calls. [Lookup diagnostic](eval/written_lookup_comparison.json)
+We also tried referring only the questions a loose line could belong to instead of the whole exam, but on 150 Roboflow answer pages the pages where it would release questions had extra question numbers 73% of the time against 34% on normal pages (mostly numbered lists inside answers), so it was not safe and we removed it.
 
 ## Decision
 
-*Which cases go to a person: the rule, and how many cases a day that would be. Go / no-go / go with conditions: the conditions, and the evidence behind them.*
+The rule that sends answers to the teacher is the following: a multiple-choice letter is proposed only if it is read with at least 0.80 confidence and it is a valid option, a written answer is proposed only if every criterion has a cited passage and the proposed mark is above 1/2, and anything else, like a missing or repeated question, a line that can't be placed, a question that needs its figure or a provider failure, goes to the teacher, who also signs off every paper. On the 45 exams of the header-rule check a median of 20 of 35 answers per paper went to the teacher, most of them written, so with 200 papers marked over a week (40 a day) that would be about 800 answers a day to review and 40 sign-offs.
 
-On the four new papers, ordinary routing referred 25/56 written slots (45%). Also referring proposed zeros raised that to 39/56 (70%) and retained 13 exact matches on 16 paired marks. Referring proposals at or below 1/2 raised reviews to 45/56 (80%) and retained ten exact matches on ten paired marks. The latter policy retained one additional proposal without a numerical teacher reference. Running the actual policy on the archived model outputs reproduced the simulated routes. The branch now applies this 1/2 cutoff to the built-in ML exam. The team still needs to time teacher review and decide whether that workload is acceptable for deployment. [Policy comparison](eval/written_review_policies.json)
+Our decision is **go with conditions**, because the product can take the multiple-choice part off the teacher's hands, where the marks it proposed matched the teacher almost every time (65/65 on the 30 cases and 453 of 457 on the header-rule check), while the written part is still mostly reviewed. The clean held-out rerun supports this, with 53 of 53 multiple-choice proposals right and only 2 written proposals. The conditions are that every paper is signed off by a teacher, that the reader's question numbers improve before the written part can save real time, that the reader runs on a GPU so a paper takes about a minute and not six, and that before selling it to a school we time the teachers marking with and without it, because a product that still sends more than half of the answers to the teacher is hard to sell if it doesn't save them time. It is a no-go for grading without a teacher, because the written marks are not good enough and confidence doesn't catch the reader's mistakes.
 
 ## Bonus: reinforcement learning
 
-*Delete this section if you did not do it. The loop (feedback → reward → update → behaviour), the reward and what it could reward by accident, the exploration strategy and its cost, the evidence from real logs (and which part was simulated), the risks.*
+We added a bandit that learns the written review rule from the teacher's corrections, which is one of the examples in the brief, and it chooses for each paper between three rules: sending to the teacher only the written answers the grader is unsure about, also every proposed 0/2, or also every proposed mark of 1/2 or less, which is the rule we used before. Our first version chose the reader's confidence threshold (0.70 to 0.95), but the reader is almost always above 0.95, so every threshold sent the same answers to review and there was nothing to learn, which is why we moved it to a decision that visibly changes what the teacher sees. The loop closes at sign-off, when the app computes the reward, logs it with the rule used and draws the next paper's rule from the updated estimates. The reward is minus the teacher's cost per answer, counting each review as 1 and each proposal the teacher changed as 5, because a wrong mark costs the time to spot it plus the risk that nobody does, and it arrives when the paper is signed off, which can be hours or days after the upload.
+
+We explore with Thompson sampling, because it keeps an estimate of each rule's cost with its uncertainty and draws from it, so a clearly worse rule is almost never played, and the cost of exploring falls on the teacher, who gets more pre-filled written marks to check, never on a mark that skips sign-off. Before any real traffic each rule starts from a simulator with written-down assumptions (60% of Gemini's proposals exact, 30% half a point off and 10% a whole point off), not from exams, and it counts as at most five papers per rule, so a few real sign-offs overrule it. The simulator expects the strictest rule to be cheapest (0.54 per answer against 0.64 and 0.65), because a let-through mark that is wrong 40% of the time costs two reviews on average. **[Real part: results of the team's sign-off sessions in the app to add]** The main risk is reward hacking, because a teacher who signs off without reading changes nothing, so a lenient rule would look free and the bandit would learn to send less to review exactly when nobody is checking. Then only the teachers who use the app give feedback, the rule it plays most is the one it ends up knowing best (a feedback loop), and the reward depends on the cost of 5 we chose, since below about 1.5 the lenient rules would win. [Bandit](exam_grader/bandit.py) · [Simulator](eval/bandit_simulator.py)
 
 ## How to run it
 
-*Anything beyond SETUP.md that the professor needs to run it: which keys, any download step, how long the first run takes.*
-
-Both public retrieval indexes are bundled. The synthetic example can run locally without keys. A Gemini API key enables cited written proposals on approved inputs. Use the integration acceptance command after installing the team's reader. [Setup](SETUP.md) · [Worked example](README.md) · [Reader check](HANDOFF.md)
+Follow [SETUP.md](SETUP.md), and then `uv run --locked --no-dev python app.py` starts the app at http://127.0.0.1:7860. The sample paper runs without any key, and a GEMINI_API_KEY in `.env` turns on the written grading. The first run downloads the Qwen3-VL-2B reader (about 4 GB) from Hugging Face, and a paper takes about 18 seconds on an Apple GPU and much longer on a CPU.
 
 ## AI use
 
-Codex assisted with the Component 2 implementation, test harnesses, rubric and retrieval experiments, local transcription and evaluation tooling, and compilation of the technical measurements above. Javi reviewed the retrieval recommendations and approved the feedback labels using the process described in the judge comparison. Each member should record any additional AI use before submission.
+We used AI assistants for code. Codex helped with the grading component, the test harnesses, the rubric and retrieval experiments and the evaluation tooling, and Claude helped with the vision chapters, the integration, the app redesign, the bandit, the evaluation scripts and the first draft of this report, which we then checked and rewrote. The decisions in the report are ours, like the problem, the review rule, the cost of a wrong mark, the drift threshold and keeping the Mendeley exams for evaluation, and Javi's feedback labels were recommended by an AI assistant and then reviewed and approved by him. [each member to add their own AI use]

@@ -1,11 +1,16 @@
 """
-The clean end-to-end test: the whole product, run once, on five Mendeley exams nobody on the team has used.
+The held-out end-to-end test: the whole product, run once, on five Mendeley exams no earlier step used (four clean).
 
 Why these five. Every other Mendeley exam was used somewhere during development: the 30-case packet (8 source
 papers), the drift reference crops (30 papers), or the grader's written-answer work (the papers named in eval/ and
 exam_grader/). A search of every file in eval/, exam_grader/, monitoring/ and tests/ for each exam's ID and file
 hash leaves Students 43, 45, 46, 47 and 50. One exception applies to all 50 exams: the Q32 rule was revised on all
 of them (eval/q32_all50_*.json), so Q32 is reported apart and left out of the clean written score.
+
+Student_45 is no longer clean either. The first run of this test (during a Gemini outage) showed a header line on
+Student_45 sending the whole exam to review, and the bridge's header rule was written in response
+(eval/header_rule_dev.py). The team kept the rule and discloses it: Student_45 is still run, but scored apart, and
+the clean result is the other four exams.
 
 The inputs. eval/heldout/inputs/h<n>.pdf are the full exams with every faint pixel whitened (grey level above 165):
 the student's name and ID number are written faintly in a header and show through from the back of the sheet, and
@@ -40,6 +45,7 @@ env.load_env()  # GEMINI_API_KEY from .env
 TEACHER_CSV = Path.home() / ".cache" / "daiist-vision" / "mendeley" / "Teacher_manual_marks_Anonymized.csv"
 HELDOUT = ROOT / "eval" / "heldout"
 Q32 = 32
+NOT_CLEAN = {"Student_45"}  # the header rule was written after seeing this exam fail (see above)
 
 
 def main() -> None:
@@ -89,15 +95,18 @@ def main() -> None:
                 "mean_abs_error": round(mean(errors), 3) if errors else None,
                 "full_credit_baseline_exact": sum(r["reference"] == r["max"] for r in referenced)}
 
-    written = [r for r in rows if r["type"] == "written" and r["q"] != Q32]
+    clean = [r for r in rows if r["exam"] not in NOT_CLEAN]
+    written = [r for r in clean if r["type"] == "written" and r["q"] != Q32]
     typical = [r for r in written if r["reference"] is not None and r["typical_mark"] is not None]
     summary = {
-        "exams": len(papers), "clean": "Students 43, 45, 46, 47, 50; used by no earlier step",
-        "mcq": score([r for r in rows if r["type"] == "mcq"]),
+        "exams": len(papers), "clean": "Students 43, 46, 47, 50; used by no earlier step",
+        "mcq": score([r for r in clean if r["type"] == "mcq"]),
         "written_without_q32": score(written) | {
             "typical_mark_baseline_exact": sum(r["typical_mark"] == r["reference"] for r in typical),
             "typical_mark_baseline_mae": round(mean(abs(r["typical_mark"] - r["reference"]) for r in typical), 3)},
         "q32_not_clean": score([r for r in rows if r["q"] == Q32]),
+        "student_45_not_clean": {"mcq": score([r for r in rows if r["exam"] in NOT_CLEAN and r["type"] == "mcq"]),
+                                 "written": score([r for r in rows if r["exam"] in NOT_CLEAN and r["type"] == "written"])},
         "per_exam": papers,
         "median_latency_s": sorted(p["latency_s"] for p in papers)[len(papers) // 2],
         "total_tokens": sum(p["tokens"] for p in papers), "total_cost_eur": round(sum(p["cost_eur"] for p in papers), 6),

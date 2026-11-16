@@ -1,0 +1,31 @@
+{
+  "assumptions": {
+    "papers": 200,
+    "seed": 0,
+    "mcq_referred": 0.05,
+    "written_referred": 0.3,
+    "exact": 0.6,
+    "half_off": 0.3,
+    "wrong_cost": 5.0
+  },
+  "arms": {
+    "usual": {
+      "mean": -0.6506,
+      "papers": 200,
+      "mean_referred": 5.52,
+      "mean_changed": 3.45
+    },
+    "zeros": {
+      "mean": -0.6439,
+      "papers": 200,
+      "mean_referred": 7.61,
+      "mean_changed": 2.98
+    },
+    "up_to_1": {
+      "mean": -0.5381,
+      "papers": 200,
+      "mean_referred": 11.71,
+      "mean_changed": 1.43
+    }
+  }
+}
