@@ -33,7 +33,24 @@ When a teacher uploads a paper, Qwen3-VL-2B, a pretrained vision-language model,
 
 ## Data
 
-The exams come from "A Dataset of Digitized Student Examination Papers" by Dinesh K P on Mendeley Data (CC BY 4.0), which has 50 scanned exams together with their answer key and the teacher's marks. The reader's choices were made on 126 public handwriting images and its fine-tuning used 1,012 pages, and the grader retrieves from 367 paragraphs of public course notes, with every source, licence and size in [SOURCES.md](SOURCES.md) and [vision/README.md](vision/README.md).
+The exams come from "A Dataset of Digitized Student Examination Papers" by Dinesh K P on Mendeley Data (CC BY 4.0), which has 50 scanned exams together with their answer key and the teacher's marks, but over the 20 tries of the reader and the work on the grader we used a lot more data than that, so the table below lists every dataset and where we used it, because it is the easiest way to see that the reader's choices were made on public handwriting and not on the exams we evaluate on (the only exception is the mistake in tries 6 to 8). The try numbers are the ones in [artifacts/vision/tries.csv](artifacts/vision/tries.csv), and the links and download steps are in [vision/README.md](vision/README.md) and [SOURCES.md](SOURCES.md).
+
+| Data | Licence | Size | Where we used it |
+|---|---|---|---|
+| Roboflow answer-sheet component detection v1 | CC BY 4.0 | 576 pages from 8 booklets | Training and testing our YOLO question-number detector (tries 1 and 3), 21 pages in the development set (tries 11 to 20), and 150 pages to test the targeted rule we removed |
+| Roboflow handwritten text line dataset v1 | CC BY 4.0 | 1,280 photos | Training and testing our YOLO line detector (tries 2 and 3) |
+| Gazi University question boxes and four other Roboflow sets | not checked | looked at only | Search for public data with handwritten question numbers (try 5), none of it was usable |
+| SMHD, Student Messy Handwritten Dataset (RMIT) | CC BY-NC 4.0 | 39 pages | Development set, to choose the reader and its rules (tries 11 to 14 and 20) |
+| Handwritten ASAP-SAS (Gold and Zesch 2020) | non-commercial research | 40 answers | Development set (tries 11 to 14 and 20) |
+| School Notebooks EN (ai-forever) | MIT | 12 photos | Development set (tries 17 and 20) |
+| Short and blank pages made by us | ours | 14 pages | Development set, mainly for the blank-page rule (try 14) |
+| GNHK (Lee, Chung and Lee 2021) | CC BY 4.0 | 673 pages (512 training, 161 validation) | Fine-tuning the reader with LoRA (tries 18 and 19) |
+| Synthetic exam pages from OpenHand-Synth and EMNIST | CC BY 4.0 | 600 pages (500 training, 100 validation) | Fine-tuning the reader with LoRA (tries 18 and 19) |
+| Mendeley digitized exam papers (Dinesh K P) | CC BY 4.0 | 50 exams, answer key and teacher marks | Evaluating the reader once frozen (tries 4, 15 and 16), and by mistake developing it on 11 exams (tries 6 to 8). Also the grader's multiple-choice replay and written tests on transcriptions, the Q32 rule (all 50), the 30 integration cases (crops of 8 papers), the drift reference (30 crops) and faded scans, the header-rule measurement (45 exams) and the held-out test (5 exams) |
+| Course notes: Google Machine Learning Education, scikit-learn User Guide, Wikipedia and 7 study notes we wrote | Google education terms, BSD, CC BY-SA 4.0 and ours | 367 paragraphs from 25 pages | The retrieval index the grader cites for every written mark |
+| UNT computing exams (Mohler, Bunescu and Mihalcea 2011) | public research release | answers to 8 prompts | Testing the grader on other subjects and on new questions |
+| Physics course and exam made by us | ours | 1 course PDF, 2 questions, 6 answers | Engineering check of a teacher loading their own exam |
+| Our feedback labels (Javi) | ours | 23 and 20 labels | Checking the LLM judge of the written feedback |
 
 Then we had to be careful with personal data, because the Mendeley marks file has a Student_Name column that is not anonymised, so we drop it when loading, and the files with names and student IDs never enter the repo. Every paper also has the student's name written in a faint header, which is why the bridge drops the lines above the first question, and for the held-out test we also whitened every faint pixel of the pages before anything reached the reader or Gemini. The logs keep counts, versions, times and costs, but no answer text or names.
 
