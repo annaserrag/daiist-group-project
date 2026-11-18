@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c21.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 34,
+    "text": "��. In the first graph: + good classification + good distance between the lines ��. In the second graph: + bad classification + good distance between the lines ��. In the third graph: + good classification + bad distance between the lines.",
+    "confidence": 0.52,
+    "id_confidence": 0.887,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 11,
+   "ink_density": 0.012609855174849876
+  }
+ }
+}

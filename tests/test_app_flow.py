@@ -91,7 +91,7 @@ class AppFlow(unittest.TestCase):
             self.assertEqual(context["proposals"], [None, None])
 
     def test_grade_correct_sign_and_log_feedback(self):
-        with tempfile.TemporaryDirectory() as directory, patch.object(logbook,"LOG_DIR",Path(directory)), patch.object(logbook,"ARCHIVE_DIR",Path(directory)/"archive"):
+        with tempfile.TemporaryDirectory() as directory, patch.object(logbook,"LOG_DIR",Path(directory)):
             status,evidence,marks,context,signed = app.display(pipeline.EXAMPLE)
             self.assertIn("33 require review",status)
             self.assertTrue(any("known target labels" in str(row) for row in evidence))

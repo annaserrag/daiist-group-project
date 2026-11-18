@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c08.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 25,
+    "text": "List out any two major applications of data science: + Real Estate price prediction + Medical sector: Heart disease detection/analysis.",
+    "confidence": 0.802,
+    "id_confidence": 0.992,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 3,
+   "ink_density": 0.007733839632638644
+  }
+ }
+}

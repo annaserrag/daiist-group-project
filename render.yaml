@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: daiist-exam-grader
+    runtime: python          # Python version from .python-version, packages from uv.lock
+    plan: free
+    region: frankfurt
+    # Changed from the template's `--no-dev`: the page reader (torch, transformers) doesn't fit in 512 MB, so the
+    # build skips every optional group, `reader` included, and the app uses precomputed readings (exam_grader/precomputed.py).
+    buildCommand: uv sync --frozen --no-default-groups
+    startCommand: uv run --no-sync python app.py
+    healthCheckPath: /
+    autoDeployTrigger: commit   # every push to main redeploys
+    # Render asks for these values when you create the service; leave empty the ones you don't use.
+    # A key you add later goes in the service's Environment page on Render, not here.
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ROBOFLOW_API_KEY
+        sync: false
+      - key: GRADE_APPROVED_HASHES   # the de-identified demo PDFs that may be sent to Gemini (SETUP.md)
+        sync: false
+      - key: DATABASE_URL       # the logs database below; logbook.py writes to it
+        fromDatabase:
+          name: daiist-exam-grader-logs
+          property: connectionString
+
+# The logs database: free Postgres, 1 GB. Render deletes free databases 30 days after
+# they are created (plus 14 days of grace), so export the logs before then (SETUP.md, "Logs").
+databases:
+  - name: daiist-exam-grader-logs
+    plan: free
+    region: frankfurt         # the same region as the app
+    databaseName: logs
+    user: app

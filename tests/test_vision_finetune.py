@@ -1,4 +1,6 @@
 import unittest
+
+from exam_grader.precomputed import reader_installed
 from unittest.mock import patch
 
 from exam_grader.grading import grade_exam
@@ -59,6 +61,7 @@ class VisionFinetuneTests(unittest.TestCase):
         self.assertNotIn("confirmed_number_conf", rows[1])
         self.assertEqual(rows[0]["confirmed_number_conf"], .98)
 
+    @unittest.skipUnless(reader_installed(), "needs the page reader (uv group `reader`), which the online app does not install")
     def test_page_transition_removes_only_the_known_heading(self):
         from vision import reader
         from exam_grader.page_confidence import assemble

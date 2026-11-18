@@ -22,7 +22,7 @@ class WrittenTransfer(unittest.TestCase):
             base = Index()
             with patch.dict(os.environ, {"GEMINI_API_KEY":""}), patch.object(
                     pipeline, "resources", return_value=(base,None,set())), patch.object(
-                    logbook, "LOG_DIR", root), patch.object(logbook, "ARCHIVE_DIR", root / "archive"):
+                    logbook, "LOG_DIR", root):
                 state, info, _ = app.select_exam(DATA / "waves-exam.json")
                 exam, _ = state
                 self.assertIn(exam.exam_id, info)

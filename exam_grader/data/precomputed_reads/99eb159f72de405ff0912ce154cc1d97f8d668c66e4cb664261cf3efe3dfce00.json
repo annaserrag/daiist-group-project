@@ -1,0 +1,53 @@
+{
+ "source": "eval/inputs/c01.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 1,
+    "text": "D",
+    "confidence": 0.903,
+    "id_confidence": 0.903,
+    "state": "read"
+   },
+   {
+    "question_id": 2,
+    "text": "C",
+    "confidence": 0.996,
+    "id_confidence": 0.996,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "C",
+    "confidence": 0.997,
+    "id_confidence": 0.997,
+    "state": "read"
+   },
+   {
+    "question_id": 4,
+    "text": "C",
+    "confidence": 0.934,
+    "id_confidence": 0.934,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 6,
+   "ink_density": 0.0032764040974920523
+  }
+ }
+}

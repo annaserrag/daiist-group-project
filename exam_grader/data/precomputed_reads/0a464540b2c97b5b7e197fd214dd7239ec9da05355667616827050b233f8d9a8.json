@@ -1,0 +1,256 @@
+{
+ "source": "eval/heldout/inputs/h43.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 1,
+    "text": "A",
+    "confidence": 0.995,
+    "id_confidence": 0.993,
+    "state": "read"
+   },
+   {
+    "question_id": 2,
+    "text": "C",
+    "confidence": 0.999,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 4,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 6,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 7,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 8,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 9,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 10,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 11,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 12,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 13,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 14,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 15,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 16,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 17,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 18,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 19,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 20,
+    "text": "C",
+    "confidence": 0.996,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 21,
+    "text": "Supervised learning is a type of machine learning algorithm that used labeled labeled data to train in order to identify relationship between independent variables and predict dependent variables.",
+    "confidence": 0.474,
+    "id_confidence": 0.99,
+    "state": "read"
+   },
+   {
+    "question_id": 22,
+    "text": "I think model ML is not accurate, I think that the data that is used to train the model is wrong or imbalanced.",
+    "confidence": 0.622,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 23,
+    "text": "Challenges of machine learning: . Data collections: data can be impure or forge wrongly and we have to clean missing values and outlier. . Picking algorithm: choosing algorithm that best fit your case can be hard.",
+    "confidence": 0.49,
+    "id_confidence": 0.986,
+    "state": "read"
+   },
+   {
+    "question_id": 25,
+    "text": "Major applications of data science: - E-commerce: use data science to analyze customer behaviour in order to provide better service. - Medical: detect health issues based on symptom that user has.",
+    "confidence": 0.41,
+    "id_confidence": 0.777,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "Structured data",
+    "confidence": 0.999,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 27,
+    "text": "We detect outlier in data by using visualization technique like box plot or scatter plot. Data that is furthest away from a group is an outlier.",
+    "confidence": 0.995,
+    "id_confidence": 0.995,
+    "state": "read"
+   },
+   {
+    "question_id": 28,
+    "text": "Data pre-processing is a technique of cleaning data before usage. The process include handling missing values, detect outliers and remove it, data generalization and data normalization.",
+    "confidence": 0.985,
+    "id_confidence": 0.985,
+    "state": "read"
+   },
+   {
+    "question_id": 29,
+    "text": "Normalization is required in K-NN because the smaller the range of the data value, the better for K-NN to detect similarities and differences between classes.",
+    "confidence": 0.992,
+    "id_confidence": 0.992,
+    "state": "read"
+   },
+   {
+    "question_id": 30,
+    "text": "K in K-means algorithm is the number of centroids or group or classes that has similarity.",
+    "confidence": 0.572,
+    "id_confidence": 0.572,
+    "state": "read"
+   },
+   {
+    "question_id": 31,
+    "text": "The first classifier is good because that distance between two classes of data points is as far as it can be. The second is not good because some data points cross the line. The third is not good because these space between data points of two classes is too small.",
+    "confidence": 0.648,
+    "id_confidence": 0.648,
+    "state": "read"
+   },
+   {
+    "question_id": 23,
+    "text": "Regression analysis is a technique of visualizing data that is continuous. When visualize, you will see the regression will minimize the distance between all data points.",
+    "confidence": 0.704,
+    "id_confidence": 0.704,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "Structured data is data that has clear label and definition and its value has the same format. Semi-structured data is data is partially same value format however some of its value can differ. For example: Date 1 is 11/09/2002 while Date 2 is Jan-05-2003. Both data has same meaning but different format.",
+    "confidence": 0.562,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 30,
+    "text": "Continuous attributes are dese discretized by its time value. Time is usually unique and continuous data is usually time series.",
+    "confidence": 0.667,
+    "id_confidence": 0.667,
+    "state": "read"
+   },
+   {
+    "question_id": 30,
+    "text": "Continuous attributes can be discretized by grouping them into different range.",
+    "confidence": 0.715,
+    "id_confidence": 0.715,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 38,
+   "ink_density": 0.020361793286219083
+  }
+ }
+}

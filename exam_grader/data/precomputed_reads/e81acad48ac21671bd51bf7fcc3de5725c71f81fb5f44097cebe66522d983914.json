@@ -1,0 +1,235 @@
+{
+ "source": "eval/inputs/c16.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 1,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 0.995,
+    "state": "read"
+   },
+   {
+    "question_id": 2,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 4,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 6,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 7,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 8,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 9,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 10,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 11,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 12,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 13,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 14,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 15,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 16,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 17,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 18,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 19,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 20,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 21,
+    "text": "Supervised Learning is a type of machine learning that using label data to predict the output.",
+    "confidence": 0.998,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "+ Structured data is a data that a machine can easily understand. Mostly it's in a spreadsheet form. + Semi-structured data is a data that a machine and human can both understand. Mostly it's in XML, HTML form.",
+    "confidence": 0.929,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 27,
+    "text": "In order to find an outlier in the data we need to set a range of data, so if any data lies an abnormal distance from that range. It will be outlier.",
+    "confidence": 0.999,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 28,
+    "text": "Data pre-processing is a method which take raw data and transform into a meaningful data so that machine can understand. and analyze.",
+    "confidence": 0.829,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 29,
+    "text": "Data normalization is required in k-NN because we need to scale huge data so that it can be presented in a smaller range.",
+    "confidence": 0.603,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 31,
+    "text": "k in k-mean algorithm represent the number number of clusters or subgroups.",
+    "confidence": 0.827,
+    "id_confidence": 0.983,
+    "state": "read"
+   },
+   {
+    "question_id": 34,
+    "text": "��. In the first graph: + good classification + good distance between the lines ��. In the second graph: + bad classification + good distance between the lines ��. In the third graph: + good classification + bad distance between the lines",
+    "confidence": 0.989,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 22,
+    "text": "Model M1 give only 30% accuracy for testing dataset, It's a really low accuracy so it's a bad model.",
+    "confidence": 0.941,
+    "id_confidence": 0.722,
+    "state": "read"
+   },
+   {
+    "question_id": 25,
+    "text": "2 major applications of data science: + predict the stock price + health checking system",
+    "confidence": 0.899,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 24,
+    "text": "2 challenges of Machine Learning: + Collecting the dataset that are correct + Data pre-processing",
+    "confidence": 0.849,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 23,
+    "text": "Regression analysis is a method to evaluate the performance as metrics such as: R-squared, mean absolute error and root mean square error.",
+    "confidence": 0.87,
+    "id_confidence": 1.0,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 50,
+   "ink_density": 0.029392440833627693
+  }
+ }
+}

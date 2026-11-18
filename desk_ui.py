@@ -1,5 +1,5 @@
 """
-The presentation layer of Exam desk: the pieces of HTML the app shows, kept apart from the grading logic in app.py.
+The presentation layer of Exam grader: the pieces of HTML the app shows, kept apart from the grading logic in app.py.
 
 In ten seconds: a teacher drops in a student's scanned exam, sees every question at once on an answer map, and steps
 only through the answers the product was not sure of (reading next to the key) until the paper is signed off.

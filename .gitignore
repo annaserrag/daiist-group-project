@@ -10,3 +10,9 @@ eval/private/
 
 # Gradio writes a type stub next to any module that defines a custom component
 desk_ui.pyi
+
+# Local tool output, never in git
+.claude/
+runs/
+.DS_Store
+.ipynb_checkpoints/

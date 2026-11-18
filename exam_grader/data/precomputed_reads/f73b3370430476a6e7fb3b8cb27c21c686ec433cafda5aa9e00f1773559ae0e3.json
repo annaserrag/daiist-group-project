@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c05.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 31,
+    "text": "K in kmeans algorithm represent number of clusters.",
+    "confidence": 0.836,
+    "id_confidence": 0.899,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 1,
+   "ink_density": 0.004843518191451784
+  }
+ }
+}

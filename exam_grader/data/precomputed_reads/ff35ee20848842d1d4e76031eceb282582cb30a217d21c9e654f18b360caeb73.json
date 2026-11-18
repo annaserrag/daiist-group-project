@@ -1,0 +1,46 @@
+{
+ "source": "eval/inputs/c06.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 18,
+    "text": "C",
+    "confidence": 0.999,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 19,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 20,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 21,
+    "text": "Supervised Learning is a type of machine learning that are used to train and predict data that are labeled.",
+    "confidence": 0.966,
+    "id_confidence": 1.0,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 5,
+   "ink_density": 0.01051872129989403
+  }
+ }
+}

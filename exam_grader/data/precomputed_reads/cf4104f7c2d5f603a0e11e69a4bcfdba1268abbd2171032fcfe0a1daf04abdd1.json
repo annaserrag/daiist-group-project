@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c07.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 21,
+    "text": "Supervised Learning is a type of machine learning that using label data to predict the output.",
+    "confidence": 0.937,
+    "id_confidence": 0.937,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 1,
+   "ink_density": 0.006887142352525609
+  }
+ }
+}

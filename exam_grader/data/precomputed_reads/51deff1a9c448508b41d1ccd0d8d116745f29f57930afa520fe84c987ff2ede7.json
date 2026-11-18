@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c25.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 22,
+    "text": "Model M1 give only 30% accuracy for testing dataset, It's a really low accuracy so it's a bad model.",
+    "confidence": 0.727,
+    "id_confidence": 0.498,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 1,
+   "ink_density": 0.007596079123984458
+  }
+ }
+}

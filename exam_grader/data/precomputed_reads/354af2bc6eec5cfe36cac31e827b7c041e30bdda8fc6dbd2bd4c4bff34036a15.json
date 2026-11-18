@@ -1,0 +1,17 @@
+{
+ "source": "eval/inputs/c29.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": null,
+  "exam_status": "out_of_scope",
+  "answers": [],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 4,
+   "ink_density": 0.0044789826916284
+  }
+ }
+}

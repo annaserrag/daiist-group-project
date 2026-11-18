@@ -186,7 +186,9 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         marks.append([q, item["mark"]])
     count = teacher["review_count"]
     if teacher["input_type"] == "pdf_awaiting_reader":
-        status = "PDF received. Connect the team's vision reader to extract these answers."
+        status = ("PDF received, but this online version can't read new exams: the page reader needs several GB of"
+                  " memory and the free server has 512 MB. Try one of the demo exams, or run the app on a laptop"
+                  " (SETUP.md) to read any PDF.")
     elif teacher.get("reader_failed"):
         status = "The vision reader failed. No exam total available; retry or inspect the reader."
     elif teacher["exam_status"] != "in_scope":
@@ -703,5 +705,6 @@ def launch_app(**options):
 
 
 if __name__ == "__main__":
-    logbook.start()
-    launch_app()
+    print(logbook.start())
+    # Render gives the port in $PORT; locally it is 7860.
+    launch_app(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))

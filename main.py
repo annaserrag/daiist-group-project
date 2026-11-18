@@ -4,10 +4,12 @@ Entry point. Don't rename it or its commands.
     uv run python main.py reference    # features of eval/reference.csv -> monitoring/reference_features.csv
     uv run python main.py evaluate     # evaluate.py or evaluate.ipynb
     uv run python main.py drift-demo   # normal and shifted inputs against the reference
+    uv run python main.py export-logs  # the online app's logs (LOGS_DATABASE_URL) -> logs/
 """
 
 import argparse
 import csv
+import os
 import subprocess
 import sys
 import tempfile
@@ -16,6 +18,7 @@ from pathlib import Path
 import pandas as pd
 
 import env
+import logbook
 import monitor
 import pipeline
 
@@ -80,6 +83,18 @@ def drift_demo() -> None:
     print("OK: quiet on normal inputs, fires on shifted ones.")
 
 
+def export_logs() -> None:
+    url = os.environ.get("LOGS_DATABASE_URL", "").strip()
+    if not url:
+        raise SystemExit(
+            "Set LOGS_DATABASE_URL in .env to your database's External Database URL\n"
+            "(Render: your database -> Connect -> External). See SETUP.md, \"Logs\"."
+        )
+    counts = logbook.export(url)
+    print(f"Copied {counts['requests']} requests and {counts['feedback']} feedback rows to {logbook.LOG_DIR}.")
+    print("Run `uv run python app.py` to see them in the Monitoring tab on your laptop.")
+
+
 def run_entrypoint(name: str) -> None:
     py_path, nb_path = ROOT / f"{name}.py", ROOT / f"{name}.ipynb"
     if py_path.exists() and nb_path.exists():
@@ -104,7 +119,8 @@ def run_entrypoint(name: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["reference", "evaluate", "drift-demo"])
+    parser.add_argument("command", choices=["reference", "evaluate", "drift-demo", "export-logs"])
     args = parser.parse_args()
     env.load_env()
-    {"reference": reference, "evaluate": lambda: run_entrypoint("evaluate"), "drift-demo": drift_demo}[args.command]()
+    {"reference": reference, "evaluate": lambda: run_entrypoint("evaluate"), "drift-demo": drift_demo,
+     "export-logs": export_logs}[args.command]()

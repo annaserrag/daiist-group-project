@@ -1,0 +1,207 @@
+{
+ "source": "eval/heldout/inputs/h45.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 1,
+    "text": "D",
+    "confidence": 0.968,
+    "id_confidence": 0.968,
+    "state": "read"
+   },
+   {
+    "question_id": 2,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "B",
+    "confidence": 0.999,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 4,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 6,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 7,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 8,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 9,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 10,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 11,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 12,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 13,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 14,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 15,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 16,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 17,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 18,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 19,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 20,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 21,
+    "text": "Supervised learning is a type of machine learning algorithm that learn to predict new values based on past observation of a given labeled dataset.",
+    "confidence": 0.777,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 22,
+    "text": "Model M1 is the result of providing enough training data or not splitting the training and testing data set correctly result in a high accuracy for training while it performed poorly on new unseen data.",
+    "confidence": 0.852,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 25,
+    "text": "Major applications of data sciences are - Recommendation system for streaming platform - Image search for e-commerce",
+    "confidence": 0.977,
+    "id_confidence": 0.977,
+    "state": "read"
+   },
+   {
+    "question_id": 29,
+    "text": "Data normalization is important and required for k-NN because k-NN is a type of lazy machine learning algorithm that doesn't need training. All the data are mostly classified based on calculation of the distance between each point on the plane.",
+    "confidence": 0.518,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 28,
+    "text": "Data pre-processing is the process in a data science life cycle that involve cleaning data, handling missing data and/or transforming data so that the data is reliable for analysis and training.",
+    "confidence": 0.841,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 27,
+    "text": "To detect outlier in a data set, which is needed to analyse and produce reliable data we can calculate the z-score for each data row, which will determine if the data is an outlier depending on the result.",
+    "confidence": 0.569,
+    "id_confidence": 0.998,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "Distinguish between Structured and semi-structured data. - Structured data are data that comes with an orderly manner in the form of rows and columns. For example database, spreadsheet. - Semi-structured data are data that is structured but in an unordered manner. It can come in different format as well. For example JSON and XML.",
+    "confidence": 0.622,
+    "id_confidence": 0.622,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 32,
+   "ink_density": 0.011981404593639576
+  }
+ }
+}

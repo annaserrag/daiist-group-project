@@ -1,0 +1,221 @@
+{
+ "source": "eval/heldout/inputs/h47.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 21,
+    "text": "Supervised Learning is used to model labeled data by provide the input and output. Example: we are like a teacher who input all the data that contain information and we tell the machine to know that with these input will produce this desire output. Supervised learning has: + Linear regression + Logistic regression.",
+    "confidence": 0.381,
+    "id_confidence": 0.527,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "Distinguish between the terms Structured - the data is in table form or excel form which computer easy to understand - the data is very organized Example: CSU, spreadsheet, relation database Sem - Structured - the data in some degree of organization Example: JSON, HTML, XML",
+    "confidence": 0.5,
+    "id_confidence": 0.998,
+    "state": "read"
+   },
+   {
+    "question_id": 29,
+    "text": "Outlier is an observation of a data points that lies an abnormal distance from other values in a given population. The odd one will be out. Example: data point (age): 10, 15, 20, 150, 30 It is an objects that deviates significantly from the rest of the objects Example: city: london, parts of france, new york in order to find outlier in need to find + z-score + IQR technique then using following process 2 +Trimming / removing the outlier +Quantile based flooring and capping +Mean I Medrav Imputation",
+    "confidence": 0.396,
+    "id_confidence": 0.895,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "Regression Analysis is used to search for relationships among variable. In Regression Analysis each observation has two or more features. Following the assumption that at least one of the features depends on the other , we try to establish a relation among them. as : + The dependent features are called the dependent variables output or responses + The Independent features are called the independent variables inputs or regressors , or predictors.",
+    "confidence": 0.606,
+    "id_confidence": 0.443,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "Two major applications of data science + Financial application + Medical application",
+    "confidence": 0.995,
+    "id_confidence": 0.96,
+    "state": "read"
+   },
+   {
+    "question_id": 8,
+    "text": "Data pre-processing is a process that takes raw data and transforms it into a format that can be understood and interpretation by computer",
+    "confidence": 0.771,
+    "id_confidence": 0.683,
+    "state": "read"
+   },
+   {
+    "question_id": 9,
+    "text": "The reason data normalization is required in KNN Because that as you know data normalization is a method of scaling data so that it can be represented in a smaller range. And KNN algorithm used for both classification and regression problem based on features similarity approach. As we know in KNN algorithm is applied with large group of data. then we applied K number in order to find which data that are near to K. After that we group those K in the nearest data , then start voting the majority vote consider the prediction data. with the approach we consider it is suitable with Data Normalization.",
+    "confidence": 0.548,
+    "id_confidence": 0.886,
+    "state": "read"
+   },
+   {
+    "question_id": 1,
+    "text": "K in K-mean algorithm is consider cluster center in order help the & group of data set become convergence.",
+    "confidence": 0.474,
+    "id_confidence": 0.474,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "In linear boundaries in these three different SUM below show Based on these linear boundaries we can say that the Third picture is considered the best performance of classifiers because the distance between data points and hyperplane is far than the first and second pictures. If we calculate the margin between hyperplane and datapoints, we also see the third picture is the farther. So with this reason I can say",
+    "confidence": 0.556,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. D",
+    "confidence": 0.56,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. C",
+    "confidence": 0.63,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. A",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. D",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. A",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. C",
+    "confidence": 0.999,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. D",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 0.997,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 0.989,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. C",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 0.99,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. C",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. A",
+    "confidence": 0.998,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. C",
+    "confidence": 0.935,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 1.0,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 0.999,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 0.991,
+    "id_confidence": 0.0,
+    "state": "read"
+   },
+   {
+    "question_id": null,
+    "text": "��. B",
+    "confidence": 0.695,
+    "id_confidence": 0.0,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 64,
+   "ink_density": 0.02554416961130742
+  }
+ }
+}

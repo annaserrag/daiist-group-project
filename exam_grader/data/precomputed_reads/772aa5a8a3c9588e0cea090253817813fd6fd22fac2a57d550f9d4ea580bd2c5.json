@@ -1,0 +1,263 @@
+{
+ "source": "eval/heldout/inputs/h46.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 1,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 2,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 4,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 6,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 7,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 8,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 9,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 10,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 11,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 12,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 13,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 14,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 15,
+    "text": "D",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 16,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 17,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 18,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 19,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 20,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 21,
+    "text": "Supervised machine learning is an algorithm that was trained on label data and try to predict the label of new input.",
+    "confidence": 0.971,
+    "id_confidence": 0.655,
+    "state": "read"
+   },
+   {
+    "question_id": 22,
+    "text": "ML model seem to have good accuracy with training data but It has low accuracy with testing Data, we Can Say that This model is overfitting, we need to do Something to make it more generalize.",
+    "confidence": 0.536,
+    "id_confidence": 0.997,
+    "state": "read"
+   },
+   {
+    "question_id": 23,
+    "text": "Regression analysis is a technique that we use to find the relationship between feature.",
+    "confidence": 0.922,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 24,
+    "text": "two Challenges of machine learning algorithm - Accuracy: the model need to perform well - Resource: Computation Resource needed to make a better model - Data: we need to collect proper Data in order to make our model better.",
+    "confidence": 0.652,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 25,
+    "text": "two major application of Data Science → House price prediction (Regression) → Bad news classification (classification)",
+    "confidence": 0.804,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "Difference between Structure and Semi-Structured data → Structured Data: It is properly store in a specific format like table → Semi-Structured: Data was stored in json or xml.",
+    "confidence": 0.481,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 27,
+    "text": "To Find outlier in Dataset there are multiple technique → plot data in Scatter plot → plot data in Box plot → See the Distribution of the Data.",
+    "confidence": 0.881,
+    "id_confidence": 0.881,
+    "state": "read"
+   },
+   {
+    "question_id": 28,
+    "text": "Data pre-processing is a technique or step in order to process and transform the Data before fitting it to a machine learning algorithm.",
+    "confidence": 0.777,
+    "id_confidence": 0.777,
+    "state": "read"
+   },
+   {
+    "question_id": 29,
+    "text": "In KNN Data need to be normalize because KNN it calculate the Distance between data point and classify the data point into specific class base on it neighbour, if we don't normalize data the model will bias to a specific feature.",
+    "confidence": 0.531,
+    "id_confidence": 0.531,
+    "state": "read"
+   },
+   {
+    "question_id": 30,
+    "text": "we can discretized the Continuous attribute by set the range of each class, Example: Age: 5-10 (kids), (10-18) adult K is the number of Centroid or cluster in K-means.",
+    "confidence": 0.62,
+    "id_confidence": 0.818,
+    "state": "read"
+   },
+   {
+    "question_id": 31,
+    "text": "Few hyperparameter in machine learning: gradient descent, adam.",
+    "confidence": 0.692,
+    "id_confidence": 0.747,
+    "state": "read"
+   },
+   {
+    "question_id": 32,
+    "text": "gradient Descent is an algorithm that use machine learning Model in order to minimize the cost, by adjusting the weight.",
+    "confidence": 0.5,
+    "id_confidence": 0.821,
+    "state": "read"
+   },
+   {
+    "question_id": 33,
+    "text": "Gradient descent is an hyperparameter tuning technique that used used in machine learning that try to optimized the Cost by adjusting the weight.",
+    "confidence": 0.924,
+    "id_confidence": 0.988,
+    "state": "read"
+   },
+   {
+    "question_id": 34,
+    "text": "Comment on SVM classifier → The First model seem to have a good performance because it is properly classify the data and the distance between boundary line is large enough → The Second model performe not well because it missed classified the data not properly was overlap with the boundary line. → The Third model seem to be overfitting because the Distance between the boundary line is small.",
+    "confidence": 0.713,
+    "id_confidence": 0.992,
+    "state": "read"
+   },
+   {
+    "question_id": 35,
+    "text": "Radial Basic function is SVM work by calculate the distance between boundary be point and it's respective class.",
+    "confidence": 0.503,
+    "id_confidence": 1.0,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 60,
+   "ink_density": 0.03346121908127209
+  }
+ }
+}

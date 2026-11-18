@@ -1,5 +1,7 @@
 import tempfile
 import unittest
+
+from exam_grader.precomputed import reader_installed
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -97,6 +99,7 @@ class SelectedPDF(unittest.TestCase):
         self.assertEqual(targets[0]["targets"], {"1": "Current"})
         self.assertEqual(targets[0]["question_id"], 3)
 
+    @unittest.skipUnless(reader_installed(), "needs the page reader (uv group `reader`), which the online app does not install")
     def test_pdf_entry_point_uses_definition_and_fails_closed_on_another_exam(self):
         exam = WrittenExam.model_validate(dict(title="Chemistry", questions=[dict(
             question_id=3, paper_label="A", question="Name the gas.", reference_answer="secret reference",

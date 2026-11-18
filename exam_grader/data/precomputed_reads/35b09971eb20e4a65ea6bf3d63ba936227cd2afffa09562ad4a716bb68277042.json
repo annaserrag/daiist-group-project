@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c20.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 24,
+    "text": "2 challenges of Machine Learning: - Data: This is a major problem, even with the best ML Algorithms with bad data the output would also be bad. - Uncertainties: Despite having enough data to train the model, this still could not determine the performance. Since uncertainties may occur, it may effect it's performance.",
+    "confidence": 0.931,
+    "id_confidence": 0.996,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 6,
+   "ink_density": 0.011547421405863652
+  }
+ }
+}

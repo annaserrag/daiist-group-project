@@ -1,0 +1,263 @@
+{
+ "source": "eval/heldout/inputs/h50.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 1,
+    "text": "D",
+    "confidence": 0.999,
+    "id_confidence": 0.562,
+    "state": "read"
+   },
+   {
+    "question_id": 2,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 3,
+    "text": "D",
+    "confidence": 0.992,
+    "id_confidence": 0.992,
+    "state": "read"
+   },
+   {
+    "question_id": 4,
+    "text": "C",
+    "confidence": 0.999,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 5,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 6,
+    "text": "B",
+    "confidence": 0.923,
+    "id_confidence": 0.923,
+    "state": "read"
+   },
+   {
+    "question_id": 7,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 8,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 9,
+    "text": "A",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 10,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 11,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 0.841,
+    "state": "read"
+   },
+   {
+    "question_id": 12,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 13,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 14,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 15,
+    "text": "B",
+    "confidence": 1.0,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 16,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 17,
+    "text": "A page 1 of 5",
+    "confidence": 0.999,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 18,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 1.0,
+    "state": "read"
+   },
+   {
+    "question_id": 19,
+    "text": "C",
+    "confidence": 1.0,
+    "id_confidence": 0.971,
+    "state": "read"
+   },
+   {
+    "question_id": 20,
+    "text": "C. Answer all questions.",
+    "confidence": 0.7,
+    "id_confidence": 0.984,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "Distinguish between structure and semi-structured data. + structure data. - the data in a proper format row, column or table. Ex. SQL data. + semi-structure data - the data with a structure and format but not in a row or column. Ex. XML,",
+    "confidence": 0.375,
+    "id_confidence": 0.932,
+    "state": "read"
+   },
+   {
+    "question_id": 21,
+    "text": "Supervised learning is a type of learning of Machine learning with the model learn with the label data. and the goal is to find the prediction or an output.",
+    "confidence": 0.662,
+    "id_confidence": 0.662,
+    "state": "read"
+   },
+   {
+    "question_id": 22,
+    "text": "I think the model ML will face the issue or error or fault the evaluation. The Model train very accurate but when we test we will see that the Model is not accurate because of the data set we use to test. page 2 of 5",
+    "confidence": 0.532,
+    "id_confidence": 0.532,
+    "state": "read"
+   },
+   {
+    "question_id": 23,
+    "text": "Regression analysis is the analysis that we use on Regression problem to find the relationship between value and the variable.",
+    "confidence": 0.731,
+    "id_confidence": 0.999,
+    "state": "read"
+   },
+   {
+    "question_id": 24,
+    "text": "Two challenges of Machine learning: - The accuracy of Data set - The model we choose.",
+    "confidence": 0.961,
+    "id_confidence": 0.994,
+    "state": "read"
+   },
+   {
+    "question_id": 25,
+    "text": "Major application of ML. - Self driving car - prediction application like weather",
+    "confidence": 0.499,
+    "id_confidence": 0.995,
+    "state": "read"
+   },
+   {
+    "question_id": 27,
+    "text": "We find out the Outlier in data by using the using the chart or algorithm to show the relationship between data. Example. Scatter plot. If it is different from other it is a outlier.",
+    "confidence": 0.56,
+    "id_confidence": 0.56,
+    "state": "read"
+   },
+   {
+    "question_id": 28,
+    "text": "Data pre-processing is a state that we use to clean the data and transform the data to the accurate and usable data. We do handling the missing data or normalization. page 2 of 5",
+    "confidence": 0.74,
+    "id_confidence": 0.88,
+    "state": "read"
+   },
+   {
+    "question_id": 29,
+    "text": "we need data normalization in k-NN since k-NN we use to point data into group with the closed data. If the data set is big the accurate of grouping or classification is low. So we use use use data normalization, It will help the model must accurate.",
+    "confidence": 0.594,
+    "id_confidence": 0.852,
+    "state": "read"
+   },
+   {
+    "question_id": 30,
+    "text": "Continuous attributes are discretized because the attributes are the data that we can subdeviced if",
+    "confidence": 0.727,
+    "id_confidence": 0.983,
+    "state": "read"
+   },
+   {
+    "question_id": 31,
+    "text": "k in k-means algorithm is the number of cluster which we divided.",
+    "confidence": 0.895,
+    "id_confidence": 0.895,
+    "state": "read"
+   },
+   {
+    "question_id": 32,
+    "text": "hyperparameters of machine learning.",
+    "confidence": 0.992,
+    "id_confidence": 0.992,
+    "state": "read"
+   },
+   {
+    "question_id": 33,
+    "text": "what is gradient descent? - gradient descent is a outlier point which is the data that is out of group. 3U. Based on the given linear boundaries, the classification is more accurate when the distance of a line is a bit far. In sum we can extend the distance of a parallel line to see if we really classify it accurately or not. So the performance of first and third boundaries is accurate.",
+    "confidence": 0.478,
+    "id_confidence": 0.996,
+    "state": "read"
+   },
+   {
+    "question_id": 35,
+    "text": "Radial Basis function kernel work in SVM. page 5 of .3.",
+    "confidence": 0.65,
+    "id_confidence": 0.754,
+    "state": "read"
+   },
+   {
+    "question_id": 26,
+    "text": "",
+    "confidence": 0.0,
+    "id_confidence": 0.977,
+    "state": "unreadable"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 66,
+   "ink_density": 0.019378621908127208
+  }
+ }
+}

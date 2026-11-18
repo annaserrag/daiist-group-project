@@ -5,32 +5,37 @@ description = "DAIIST group assignment: an AI product with two connected compone
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "gradio>=5.0",
-    "huggingface-hub>=0.30",
     "langchain==1.5.0",
     "langchain-google-genai==4.4.3",
     "numpy>=2.0",
     "pandas>=2.2",
+    "psycopg[binary]>=3.2",  # the online app's logs database (logbook.py)
     "pypdf>=6,<8",
-    # the exam reader (vision/reader.py): TrOCR, the YOLO detectors, PDF pages
-    "torch==2.14.1",
-    "torchvision==0.29.1",
-    "transformers>=4.46",
-    "peft>=0.17",   # loads the fine-tuned page reader at inference
-    "ultralytics>=8.4,<8.5",
+    # light image tools: PDF pages, scan features and the handwriting crops
     "opencv-python-headless>=4.10",
     "pypdfium2>=4.30",
     "pillow>=10.0",
 ]
 
-# Only for running evaluate.ipynb locally; not installed on the Space.
+# Only for running evaluate.ipynb locally; not installed on Render.
 [dependency-groups]
 dev = [
     "nbconvert>=7.16",
     "ipykernel>=6.29",
     "jupytext>=1.16",
 ]
-# Only for the vision chapters that train or build data (vision/step1, step5, step6); not installed on the Space.
-# (torch, ultralytics and opencv are already in the main dependencies, for the reader.)
+# The exam reader (vision/reader.py): the Qwen3-VL page reader, TrOCR and the YOLO detectors. Installed by default
+# on a laptop (default-groups below), but not on Render, whose free plan has 512 MB of memory: render.yaml builds with
+# `uv sync --no-default-groups`, so the online app uses the readings in exam_grader/data/precomputed_reads/ instead
+# (exam_grader/precomputed.py).
+reader = [
+    "torch==2.14.1",
+    "torchvision==0.29.1",
+    "transformers>=4.46",
+    "peft>=0.17",   # loads the fine-tuned page reader at inference
+    "ultralytics>=8.4,<8.5",
+]
+# Only for the vision chapters that train or build data (vision/step1, step5, step6); not installed on Render.
 train = [
     "roboflow>=1.7",
     "matplotlib>=3.9",
@@ -38,6 +43,7 @@ train = [
 ]
 
 [tool.uv]
+default-groups = ["dev", "reader"]
 required-environments = [
     "sys_platform == 'darwin' and platform_machine == 'arm64'",
     "sys_platform == 'win32' and platform_machine == 'AMD64'",

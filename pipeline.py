@@ -8,6 +8,7 @@ from pathlib import Path
 from time import perf_counter
 
 import env
+from exam_grader import precomputed
 from exam_grader.catalog import DATA
 from exam_grader.grading import Policy
 from exam_grader.integration import connect, file_sha256
@@ -73,7 +74,15 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
         else:
             module = import_module(module_name)
             reader, version, input_type = module.read_exam, module.VERSION, "pdf"
-            if written_exam is not None and hasattr(module, "read_selected_exam"):
+            if module_name == "exam_grader.vision_finetune" and not precomputed.reader_installed():
+                # Online (Render, 512 MB) the page reader can't run: use the reading stored for this demo PDF.
+                stored = precomputed.lookup(path, version) if written_exam is None else None
+                if stored is None:
+                    reader = lambda _: {"schema_version":"vision.exam.v1", "exam_status":"unreadable", "answers":[]}
+                    version, input_type = "vision-offline", "pdf_awaiting_reader"
+                else:
+                    reader, version = (lambda _: stored), version + "/precomputed"
+            if written_exam is not None and input_type == "pdf" and hasattr(module, "read_selected_exam"):
                 from functools import partial
                 reader = partial(module.read_selected_exam, definition=written_exam.reader_definition)
                 version += "/selected-v3"

@@ -1,0 +1,25 @@
+{
+ "source": "eval/inputs/c09.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "in_scope",
+  "answers": [
+   {
+    "question_id": 23,
+    "text": "Regression analysis is Statistic method that model Relationship between dependent Variable and independent Variable. In data science, we use regression analysis to predict the numerical of Value best on there Variable.",
+    "confidence": 0.847,
+    "id_confidence": 0.999,
+    "state": "read"
+   }
+  ],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 1,
+   "ink_density": 0.011956729070999646
+  }
+ }
+}

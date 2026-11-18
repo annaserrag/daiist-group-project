@@ -1,10 +1,10 @@
 """
-Submission check. `uv run python check.py [--space URL]`
+Submission check. `uv run python check.py [--url URL]`
 
 This is what the professor runs, with their own API keys. It checks the variables
 listed in .env.example, the files in eval/, that the app starts and serves one
 request end to end with a valid log record, and that the drift demo passes.
-With --space it also wakes your Space and sends it one request.
+With --url it also wakes your deployed app and sends it one request.
 
 It never writes to your logs: the test request goes to a temporary folder.
 Don't edit this file to make it pass.
@@ -25,8 +25,8 @@ CASE_COLUMNS = ["id", "input", "kind", "expected", "baseline", "notes"]
 KINDS = {"normal": 1, "hard": 5, "review": 5, "out_of_scope": 3}  # minimum per kind
 MIN_CASES, MIN_REFERENCE, MIN_SHIFTED, MIN_HUMAN_LABELS = 30, 30, 10, 20
 DRIFT_TIMEOUT = 900
-SPACE_TIMEOUT = 600
-SKIP_DIRS = {".git", ".venv", "logs", "logs_archive", "__pycache__", ".ipynb_checkpoints"}
+URL_TIMEOUT = 600
+SKIP_DIRS = {".git", ".venv", "logs", "__pycache__", ".ipynb_checkpoints"}
 
 TOTAL_STEPS = 5
 
@@ -112,7 +112,7 @@ def check_eval() -> str:
 def check_app(test_input: str) -> None:
     log_dir = tempfile.mkdtemp(prefix="check-logs-")
     os.environ["LOG_DIR"] = log_dir
-    os.environ.pop("HF_LOG_REPO", None)  # never push the test request to your dataset
+    # LOG_DIR set means files, so the test request never reaches your online database.
     started = time.perf_counter()
     try:
         import app
@@ -163,41 +163,44 @@ def check_repo() -> None:
             size += path.stat().st_size
     print(f"Repo size without logs and .venv: {size / 1e6:.1f} MB.")
     report = (ROOT / "REPORT.md").read_text(encoding="utf-8")
-    if "**Space URL**:\n" in report or "**Space URL**: \n" in report:
-        warn("REPORT.md has no Space URL yet.")
+    url_line = next((line for line in report.splitlines() if line.startswith("- **App URL**")), "")
+    if "http" not in url_line:
+        warn("REPORT.md has no App URL yet.")
     contributions = (ROOT / "CONTRIBUTIONS.md").read_text(encoding="utf-8")
     if "| | | |\n| | | |" in contributions:
         warn("CONTRIBUTIONS.md still has empty member rows.")
 
 
-def check_space(url: str, test_input: str) -> None:
+def check_url(url: str, test_input: str) -> None:
     from gradio_client import Client, handle_file
 
-    space = url.rstrip("/").split("huggingface.co/spaces/")[-1]
-    deadline = time.time() + SPACE_TIMEOUT
-    print(f"Waking {space} (a sleeping Space can take a few minutes)...")
+    url = url.strip().rstrip("/") + "/"
+    if not url.startswith("http"):
+        url = "https://" + url
+    deadline = time.time() + URL_TIMEOUT
+    print(f"Waking {url} (a sleeping app takes about a minute)...")
     while True:
         try:
-            client = Client(space, verbose=False)
+            client = Client(url, verbose=False)
             break
         except Exception as error:  # noqa: BLE001 - keep trying until the deadline
             if time.time() > deadline:
-                fail(f"Could not reach the Space within {SPACE_TIMEOUT}s: {type(error).__name__}: {error}")
+                fail(f"Could not reach {url} within {URL_TIMEOUT}s: {type(error).__name__}: {error}")
             time.sleep(15)
     argument = handle_file(str(ROOT / test_input)) if (ROOT / test_input).is_file() else test_input
     started = time.perf_counter()
     try:
         result = client.predict(argument, api_name="/run")
     except Exception as error:  # noqa: BLE001
-        fail(f"The Space's /run endpoint failed: {type(error).__name__}: {error}")
-    print(f"The Space answered in {time.perf_counter() - started:.1f}s:\n  {str(result)[:600]}")
+        fail(f"The deployed app's /run endpoint failed: {type(error).__name__}: {error}")
+    print(f"The deployed app answered in {time.perf_counter() - started:.1f}s:\n  {str(result)[:600]}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--space", metavar="URL", help="also send one request to your Space (URL or <user>/<space>)")
+    parser.add_argument("--url", metavar="URL", help="also send one request to your deployed app (https://<name>.onrender.com)")
     args = parser.parse_args()
-    if args.space:
+    if args.url:
         global TOTAL_STEPS
         TOTAL_STEPS += 1
 
@@ -211,9 +214,9 @@ def main() -> None:
     check_drift()
     step(5, "Repo")
     check_repo()
-    if args.space:
-        step(6, "Your Space")
-        check_space(args.space, test_input)
+    if args.url:
+        step(6, "Your deployed app")
+        check_url(args.url, test_input)
     print("\nAll checks passed.")
 
 

@@ -52,7 +52,7 @@ def connect(raw_input, *, read_exam, vision_version, index, agent=None,
         "uncached_cost_eur": grader["uncached_cost_eur"] + vision_usage.cost_eur
             if grader["uncached_cost_eur"] is not None and vision_usage.cost_eur is not None else None,
     }
-    # The course logger requires numeric fields. Incomplete totals carry only observed usage.
+    # The logger requires numeric fields.
     record["tokens"] += vision_usage.tokens or 0
     record["cost_eur"] += vision_usage.cost_eur or 0.0
     result["teacher"]["reader_failed"] = reader_failed

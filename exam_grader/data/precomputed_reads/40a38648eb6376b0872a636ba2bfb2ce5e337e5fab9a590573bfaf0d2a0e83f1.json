@@ -1,0 +1,17 @@
+{
+ "source": "eval/inputs/c27.pdf",
+ "reader_version": "vision-finetune/reader-v3/page/bridge-v12",
+ "payload": {
+  "schema_version": "vision.exam.v1",
+  "exam_id": "mendeley-sf3kvjwknt-v1",
+  "exam_status": "unreadable",
+  "answers": [],
+  "usage": {
+   "cost_eur": 0.0
+  },
+  "features": {
+   "line_count": 1,
+   "ink_density": 0.11508830801836807
+  }
+ }
+}
