@@ -112,9 +112,7 @@ class AppFlow(unittest.TestCase):
             self.assertEqual(app.monitoring()[2].iloc[0]["requests"],1)
 
     def test_monitoring_counts_only_confirmed_bandit_selections(self):
-        with tempfile.TemporaryDirectory() as directory, patch.object(logbook, "LOG_DIR", Path(directory)), patch.object(
-            logbook, "ARCHIVE_DIR", Path(directory) / "archive"
-        ), patch.dict(os.environ, GRADE_BANDIT="on", GRADE_POLICY_FILE=""):
+        with tempfile.TemporaryDirectory() as directory, patch.object(logbook, "LOG_DIR", Path(directory)), patch.dict(os.environ, GRADE_BANDIT="on", GRADE_POLICY_FILE=""):
             policy = Path(directory) / "policy.json"
             policy.write_text('{"written_review_at_or_below": 1}', encoding="utf-8")
             for settings in ({"GRADE_BANDIT": "off"}, {"GRADE_POLICY_FILE": str(policy)}):
