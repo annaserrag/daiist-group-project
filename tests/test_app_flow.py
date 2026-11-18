@@ -1,5 +1,6 @@
 """Test the teacher workflow and evaluation boundary through the same inputs as the UI."""
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -109,6 +110,37 @@ class AppFlow(unittest.TestCase):
             self.assertEqual(logbook.load().iloc[0]["feedback"],1)
             self.assertNotIn("known target labels",next(Path(directory).glob("requests-*")).read_text())
             self.assertEqual(app.monitoring()[2].iloc[0]["requests"],1)
+
+    def test_monitoring_counts_only_confirmed_bandit_selections(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(logbook, "LOG_DIR", Path(directory)), patch.object(
+            logbook, "ARCHIVE_DIR", Path(directory) / "archive"
+        ), patch.dict(os.environ, GRADE_BANDIT="on", GRADE_POLICY_FILE=""):
+            policy = Path(directory) / "policy.json"
+            policy.write_text('{"written_review_at_or_below": 1}', encoding="utf-8")
+            for settings in ({"GRADE_BANDIT": "off"}, {"GRADE_POLICY_FILE": str(policy)}):
+                with patch.dict(os.environ, settings):
+                    _, _, marks, ctx, _ = app.display(pipeline.EXAMPLE)
+                    self.assertIsNone(ctx["review_arm"])
+                    app.sign_off(ctx, [[q, 0] for q, _ in marks])
+            fixed_record = app.serve(pipeline.EXAMPLE)
+            self.assertIsNone(fixed_record["versions"]["review_arm"])
+            for arm in app.bandit.ARMS:
+                with patch.object(app.bandit, "choose", return_value=(arm, {})):
+                    app.display(pipeline.EXAMPLE)
+            rules = app.review_rule().set_index("rule")
+            self.assertEqual(rules["papers graded"].to_dict(), {"usual": 1, "zeros": 1, "up_to_1": 1})
+            self.assertEqual(rules["papers signed off"].sum(), 0)
+            self.assertEqual(len(logbook.load()), 6)
+
+            # Old strict records need sign-off evidence. Other old arms were always adaptive.
+            for request_id, arm in (("confirmed", "up_to_1"), ("fixed", "up_to_1"),
+                                    ("unknown", "up_to_1"), ("lenient", "usual")):
+                logbook.log_request(dict(fixed_record, id=request_id, versions={"review_arm": arm}))
+            logbook.log_signoff("confirmed", "up_to_1", 35, 2, 0, -2 / 35)
+            logbook.log_signoff("fixed", None, 35, 2, 0, None)
+            rules = app.review_rule().set_index("rule")
+            self.assertEqual(rules["papers graded"].to_dict(), {"usual": 2, "zeros": 1, "up_to_1": 2})
+            self.assertEqual(rules["papers signed off"].to_dict(), {"usual": 0, "zeros": 0, "up_to_1": 1})
     def test_focus_review_preserves_the_sheet_and_uses_the_question_scale(self):
         context = {"limits": [(2, 1), (21, 2), (22, 2)],
                    "referrals": {2: {"reading": ""}, 21: {"reading": "student"},

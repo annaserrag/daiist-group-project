@@ -1,4 +1,5 @@
 """Local Component 2 workbench and course-compatible Gradio app."""
+from collections import Counter
 from html import escape
 import math
 import os
@@ -53,16 +54,18 @@ REVIEW_ACTIONS = {
 }
 
 def process_once(raw_input, course_index=None, exam_state=None, review_arm=None):
-    """Grade one paper and log it. review_arm is the written review rule the bandit chose (App tab, built-in exam
-    only); None keeps the fixed default, as the /run API and the acceptance checks expect."""
+    """Grade one paper and record whether the bandit selected its written review rule."""
     started = perf_counter()
     exam, queries = exam_state or (None, None)
     policy = None
-    if review_arm is not None and not exam:
+    if exam is not None:
+        review_arm = None
+    if review_arm is not None:
         policy = Policy(written_review_at_or_below=bandit.CUTOFFS[review_arm])
     views = pipeline.run_views(raw_input, policy=policy, course_index=course_index, written_exam=exam, query_vectors=queries)
     record = views["record"]
-    record["versions"]["review_arm"] = None if exam else review_arm or bandit.DEFAULT_ARM
+    record["versions"]["review_arm"] = review_arm
+    record["versions"]["review_policy_source"] = "bandit" if review_arm is not None else "fixed"
     record["latency_s"] = round(perf_counter() - started, 4)
     return views["teacher"], logbook.log_request(record)
 
@@ -348,7 +351,16 @@ def review_rule():
     signoffs = logbook.load_signoffs()
     state = bandit.posterior(bandit.load_prior(), bandit.rewards_from_logs(signoffs))
     logs = logbook.load()
-    played = logs["versions"].map(lambda v: v.get("review_arm")).value_counts() if not logs.empty else {}
+    signed_arms = dict(zip(signoffs["id"], signoffs["review_arm"])) if not signoffs.empty else {}
+    played = Counter()
+    for request in logs.itertuples():
+        arm = request.versions.get("review_arm")
+        source = request.versions.get("review_policy_source")
+        # Older logs used up_to_1 for both fixed and adaptive runs. Only their sign-off can distinguish them.
+        if source is None and arm == bandit.DEFAULT_ARM:
+            arm = signed_arms.get(request.id)
+        if source in (None, "bandit") and arm in bandit.ARMS:
+            played[arm] += 1
     return pd.DataFrame([{"rule": arm, "written answers sent to you": bandit.LABELS[arm],
                           "papers graded": int(played.get(arm, 0)),
                           "papers signed off": s["real_papers"], "warm-start papers": s["warm_start_papers"],
@@ -678,9 +690,10 @@ def build_app():
                     drift_plot = gr.BarPlot(x="feature", y="psi", show_label=False, height=260, sort="-y")
             with gr.Column(elem_classes="desk-card"):
                 gr.HTML('<h2 class="card-title">Review rule (learning from sign-offs)</h2><p class="card-note">For '
-                        'each paper the app picks which written marks from Gemini go to the teacher instead of '
+                        'each adaptive run the app picks which written marks from Gemini go to the teacher instead of '
                         'arriving pre-filled, by Thompson sampling. The cost per answer counts each review as 1 and each proposal the teacher '
-                        'changed as 5: lower is better. Warm-start papers are simulated; signed-off papers are real.</p>')
+                        'changed as 5: lower is better. Papers graded counts confirmed rule selections. '
+                        'Warm-start papers are simulated; signed-off papers are real.</p>')
                 rule_plot = gr.BarPlot(x="rule", y="cost", y_title="cost per answer", show_label=False, height=220)
                 learning = gr.Dataframe(label="Review rules", interactive=False)
             with gr.Accordion("All numbers", open=False):
