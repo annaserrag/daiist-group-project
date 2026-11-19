@@ -52,6 +52,26 @@ def resources():
     approved.update(os.getenv("GRADE_APPROVED_HASHES", "").lower().split())
     return index, agent, frozenset(approved)
 
+def suggest_written(question_id, reading, index=None):
+    """Gemini's suggested mark for one written answer the reader held back, asked for when the teacher opens it.
+    It grades the uncertain reading with the same evidence checks as a proposal, and returns None when Gemini is
+    off or its mark is not backed by course evidence. Nothing is applied: the teacher still enters the mark."""
+    from exam_grader.catalog import KEY, QUESTIONS
+    from exam_grader.grading import checked
+    default_index, agent, _ = resources()
+    if agent is None or not reading.strip():
+        return None
+    index = index or default_index
+    hits = index.search(question_id, reading) or index.search(question_id)
+    if not hits:
+        return None
+    session = agent.open_session()
+    answer = session.grade(QUESTIONS[question_id], KEY[question_id], reading, hits)
+    visible = session.visible_evidence(hits) if hasattr(session, "visible_evidence") else hits
+    suggestion = checked(question_id, answer, visible, 1, reading)
+    return suggestion if suggestion["mark"] is not None else None
+
+
 def read_export(path):
     if path.stat().st_size > 512_000:
         raise ValueError("OCR export is too large.")

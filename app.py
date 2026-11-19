@@ -260,9 +260,14 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
                 suggestion = dict(mark=item["suggested_mark"], feedback=item.get("suggested_feedback") or "",
                                   source=cite.get("title", "") + (f", p. {cite['page']}" if cite.get("page") else ""),
                                   quote=cite.get("quote", ""))
+            # A written answer the reader held back can get a suggestion when the teacher opens it (question_view).
+            suggestable = (not custom and 21 <= q <= 35 and q not in (32, 34) and len(item["readings"]) == 1
+                           and item["readings"][0].strip() != ""
+                           and item["reason"] in {"uncertain_question_id", "low_read_confidence"})
             referrals[q] = dict(question=item["question"], reading=" | ".join(item["readings"]),
                                 key=key, rubric=rubric, sources=sources, passages=passages, action=action,
-                                reason=item["reason"].replace("_", " "), suggestion=suggestion)
+                                reason=item["reason"].replace("_", " "), suggestion=suggestion,
+                                suggestable=suggestable)
         marks.append([q, item["mark"]])
     count = teacher["review_count"]
     if teacher["input_type"] == "pdf_awaiting_reader":
@@ -281,6 +286,7 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         if teacher["near_pass_boundary"]:
             status += " Check the total against the configured pass boundary."
     context = {"id": record["id"], "in_scope": teacher["exam_status"] == "in_scope",
+               "remote_ok": bool(teacher.get("remote_allowed")),
                "near_boundary": teacher.get("near_pass_boundary", False),
                "limits":[(r["question_id"],r["max_mark"]) for r in teacher["answers"]],
                "referrals":referrals, "review_started":perf_counter(), "proposals":[point for _,point in marks],
@@ -304,14 +310,37 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         context["crop_sha256"] = pipeline.file_sha256(raw_input)
     return status, evidence, marks, context, None
 
+_SUGGESTIONS = {}  # (request id, question) -> suggestion, so reopening a question doesn't ask Gemini again
+
+
+def on_demand_suggestion(context, question, item):
+    """Ask Gemini for one suggestion when the teacher opens a held-back written answer (pipeline.suggest_written)."""
+    if item.get("suggestion") or not item.get("suggestable") or not context.get("remote_ok"):
+        return item.get("suggestion")
+    key = (context.get("id"), question)
+    if key not in _SUGGESTIONS:
+        if len(_SUGGESTIONS) > 500:
+            _SUGGESTIONS.clear()
+        try:
+            found = pipeline.suggest_written(question, item["reading"])
+        except Exception:  # noqa: BLE001 - a failed suggestion leaves the card as it was
+            found = None
+        cite = (found or {}).get("citation") or {}
+        _SUGGESTIONS[key] = None if found is None else dict(
+            mark=found["mark"], feedback=found.get("feedback") or "",
+            source=cite.get("title", "") + (f", p. {cite['page']}" if cite.get("page") else ""),
+            quote=cite.get("quote", ""))
+    return _SUGGESTIONS[key]
+
+
 def suggestion_html(suggestion, maximum):
     """Gemini's suggested mark for an answer the reader held back: shown, never applied, so the teacher decides."""
     if not suggestion:
         return ""
     quote = (f'<blockquote><p>{escape(suggestion["quote"])}</p><cite>{escape(suggestion["source"])}</cite></blockquote>'
              if suggestion.get("quote") else "")
-    return (f'<div class="suggestion"><h4>Gemini suggests {suggestion["mark"]:g}/{maximum:g}</h4>'
-            f'<p>{escape(suggestion["feedback"])}</p>{quote}<p class="suggestion-note">It graded the reading above, '
+    return (f'<div class="suggestion"><h4>We suggest {suggestion["mark"]:g}/{maximum:g}</h4>'
+            f'<p>{escape(suggestion["feedback"])}</p>{quote}<p class="suggestion-note">This is based on the reading above, '
             'which the reader wasn\'t sure about, so check the paper before you accept it.</p></div>')
 
 
@@ -326,7 +355,7 @@ def question_view(context, question):
             '<div class="answer-pair"><div><h4>Student answer</h4>'
             f'<p>{escape(reading)}</p></div><div><h4>Answer key</h4><p>{escape(item["key"])}</p></div></div>'
             f'<p class="review-reason"><strong>What to check</strong> {escape(item["action"])}</p>'
-            f'{suggestion_html(item.get("suggestion"), maximum)}</article>')
+            f'{suggestion_html(on_demand_suggestion(context, question, item), maximum)}</article>')
     support = list(item["sources"])
     if item["passages"]:
         support += ["Retrieved passages for teacher inspection (unverified)", *item["passages"]]

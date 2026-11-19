@@ -252,8 +252,8 @@ body { background: var(--paper); font-family: var(--sans); }
 
 /* marks as big pills */
 .mark-pills .wrap { gap: 8px !important; }
-.mark-pills label { min-width: 56px; justify-content: center; padding: 10px 16px !important; border-radius: 999px !important;
-  border: 1.5px solid var(--line) !important; background: var(--panel) !important; font-size: 17px !important;
+.mark-pills label { min-width: 40px; justify-content: center; padding: 5px 12px !important; border-radius: 999px !important;
+  border: 1px solid var(--line) !important; background: var(--panel) !important; font-size: 14px !important;
   font-variant-numeric: tabular-nums; cursor: pointer; }
 .mark-pills label:hover { border-color: var(--green) !important; }
 .mark-pills label.selected, .mark-pills label:has(input:checked) { background: var(--green) !important;

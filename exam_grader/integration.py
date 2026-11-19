@@ -56,6 +56,7 @@ def connect(raw_input, *, read_exam, vision_version, index, agent=None,
     record["tokens"] += vision_usage.tokens or 0
     record["cost_eur"] += vision_usage.cost_eur or 0.0
     result["teacher"]["reader_failed"] = reader_failed
+    result["teacher"]["remote_allowed"] = approved
     result["record"]["outputs"]["component_b"]["reader_failed"] = reader_failed
     result["record"]["features"]["vision_latency_s"] = round(vision_seconds, 4)
     result["record"]["versions"]["component_a"] = vision_version

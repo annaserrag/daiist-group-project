@@ -210,22 +210,23 @@ class Contract(unittest.TestCase):
         agent=Fake()
         out=result(a(21,"labels",confidence=.3),index=Search(),agent=agent,allow_remote=True)
         held=get(out,21)
-        # The answer stays in review with no mark; Gemini is asked once, only for a suggestion the teacher sees.
-        self.assertEqual((held["reason"],held["searches"],held["mark"],agent.calls),("low_read_confidence",2,None,1))
-        self.assertEqual(held["suggested_mark"],1.5)
-        self.assertEqual(out["teacher"]["proposed_subtotal"],0)
+        # By default grading asks Gemini nothing for a held-back answer; the app asks when the teacher opens it.
+        self.assertEqual((held["reason"],held["searches"],held["mark"],agent.calls),("low_read_confidence",2,None,0))
+        self.assertNotIn("suggested_mark",held)
 
-    def test_suggestions_can_be_switched_off(self):
+    def test_suggestions_during_grading_stay_out_of_the_marks(self):
         agent=Fake()
         out=result(a(21,"labels",confidence=.3),index=Search(),agent=agent,allow_remote=True,
-                   policy=Policy(suggest_held_back=False))
+                   policy=Policy(suggest_held_back=True))
         held=get(out,21)
-        self.assertEqual((held["reason"],held["mark"],agent.calls,"suggested_mark" in held),
-                         ("low_read_confidence",None,0,False))
+        self.assertEqual((held["reason"],held["mark"],held["suggested_mark"],agent.calls),
+                         ("low_read_confidence",None,1.5,1))
+        self.assertEqual(out["teacher"]["proposed_subtotal"],0)
 
     def test_uncertain_question_number_gets_a_suggestion_but_no_mark(self):
         agent=Fake()
-        out=result(a(21,"labels",id_confidence=.5),index=Search(),agent=agent,allow_remote=True)
+        out=result(a(21,"labels",id_confidence=.5),index=Search(),agent=agent,allow_remote=True,
+                   policy=Policy(suggest_held_back=True))
         held=get(out,21)
         self.assertEqual((held["reason"],held["mark"],held["status"]),("uncertain_question_id",None,"review"))
         self.assertEqual(agent.calls,1)

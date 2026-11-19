@@ -22,8 +22,9 @@ class Policy:
     pass_band: float = 0.0
     written_review_at_or_below: float | None = None
     # Written answers the reader holds back (unsure of the text or the question number) still go to the teacher
-    # unmarked, but Gemini's suggested mark comes with them, so the teacher starts from a checked suggestion.
-    suggest_held_back: bool = True
+    # unmarked. When True, Gemini's suggested mark is added here, during grading; the app leaves it False and asks
+    # for one suggestion when the teacher opens the question (pipeline.suggest_written), so grading stays fast.
+    suggest_held_back: bool = False
 
     def __post_init__(self):
         if not all(_prob(x) for x in (self.min_read,self.min_id,self.min_similarity)):
