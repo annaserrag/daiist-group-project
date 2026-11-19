@@ -20,7 +20,14 @@ import gradio as gr
 HEAD = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
         '<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&'
-        'family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">')
+        'family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">'
+        '<script>document.addEventListener("keydown", (e) => {'
+        'const t = e.target; if (t && (t.closest("input, textarea, select, [contenteditable]"))) return;'
+        'const card = document.querySelector("#active-review"); if (!card || !card.offsetParent) return;'
+        'const pills = card.querySelectorAll("#review-point label");'
+        'if (/^[0-9]$/.test(e.key) && pills[Number(e.key)]) { pills[Number(e.key)].click(); e.preventDefault(); }'
+        'else if (e.key === "Enter") { const b = document.querySelector("#save-next"); if (b && !b.disabled) { b.click(); e.preventDefault(); } }'
+        '});</script>')
 
 # What each state of a question means to the teacher, with a symbol so it never depends on colour.
 STATES = {
@@ -101,8 +108,8 @@ def map_value(context: dict | None, sheet: list, selected: int | None) -> dict:
         label, symbol = STATES[state]
         cells.append({"q": q, "state": state, "mark": shown, "label": label, "symbol": symbol, "max": maximum})
     if all(c["max"] == 1 for c in cells[:20]) and len(cells) == 35:  # the built-in exam: choices, then writing
-        groups = [{"title": "Multiple choice", "note": "Q1–20 · 1 point each", "cells": cells[:20]},
-                  {"title": "Written answers", "note": "Q21–35 · 2 points each", "cells": cells[20:]}]
+        groups = [{"title": "Multiple choice", "note": "Q1–20, 1 point each", "cells": cells[:20]},
+                  {"title": "Written answers", "note": "Q21–35, 2 points each", "cells": cells[20:]}]
     else:
         groups = [{"title": "Questions", "note": f"{len(cells)} on this exam", "cells": cells}]
     legend = [{"state": s, "label": l, "symbol": sym} for s, (l, sym) in STATES.items()
@@ -111,13 +118,14 @@ def map_value(context: dict | None, sheet: list, selected: int | None) -> dict:
 
 
 def summary_band(title: str, detail: str, completed: int, total: int, chips: list[tuple[str, str]]) -> str:
-    """The headline of a graded paper: what is left, a progress bar, and a few facts as chips."""
-    bar = (f'<progress aria-label="Questions with a mark" value="{completed}" max="{total}"></progress>'
-           if total else "")
-    chips_html = "".join(f'<li><span class="chip-v">{escape(v)}</span><span class="chip-k">{escape(k)}</span></li>'
-                         for k, v in chips)
-    return (f'<section class="review-summary" aria-live="polite"><div class="summary-text"><h2>{escape(title)}</h2>'
-            f'<p>{escape(detail)}</p>{bar}</div><ul class="chips">{chips_html}</ul></section>')
+    """The slim bar above a graded paper: what is left, a thin progress line and a few facts as small pills."""
+    share = round(100 * completed / total) if total else 0
+    pills = "".join(f'<li><b>{escape(v)}</b> {escape(k)}</li>' for k, v in chips)
+    return (f'<section class="paper-bar" aria-live="polite"><div class="bar-text"><h2>{escape(title)}</h2>'
+            f'<p>{escape(detail)}</p></div>'
+            f'<div class="bar-line" role="progressbar" aria-label="Questions with a mark" aria-valuemin="0" '
+            f'aria-valuemax="{total}" aria-valuenow="{completed}"><span style="width:{share}%"></span></div>'
+            f'<ul class="bar-pills">{pills}</ul></section>')
 
 
 def proposal_card(q: int, detail: dict, mark) -> str:
@@ -127,7 +135,7 @@ def proposal_card(q: int, detail: dict, mark) -> str:
     evidence = (f'<blockquote><p>{escape(quote)}</p><cite>{escape(source)}</cite></blockquote>' if quote
                 else f'<p class="muted">{escape(source)}</p>' if source else "")
     shown = f"{mark:g}" if isinstance(mark, (int, float)) else "–"
-    return (f'<article class="review-question proposal"><h3>Question {q} · proposed {shown}/{detail["max"]:g}</h3>'
+    return (f'<article class="review-question proposal"><h3>Question {q}, proposed {shown}/{detail["max"]:g}</h3>'
             f'<p class="question-prompt">{escape(detail["question"])}</p>'
             f'<div class="answer-pair"><div><h4>Student answer, as read</h4><p>{escape(detail["reading"] or "—")}</p></div>'
             f'<div><h4>Why this mark</h4><p>{escape(detail["feedback"] or detail["reason"])}</p></div></div>'

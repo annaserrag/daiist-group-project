@@ -197,3 +197,79 @@ body { background: var(--paper); font-family: var(--sans); }
 .gradio-container .cell .cell-mark { font-size: 17px !important; font-weight: 600; }
 .gradio-container .cell .cell-q { font-size: 12px !important; }
 .gradio-container button.secondary { border: 1px solid var(--line) !important; }
+
+/* ================= redesign: start screen, paper bar, dot navigator, split workspace ================= */
+#start-box { gap: 16px !important; margin-top: 22px; }
+#sample-papers { gap: 6px !important; }
+#sample-papers .thumbnail-item { border-radius: 10px; border: 1px solid var(--line); background: var(--panel); }
+#sample-papers .thumbnail-item:hover { border-color: var(--green); }
+#guide-thumb { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+#guide-thumb img { object-fit: cover; object-position: top; }
+.guide-accordion { background: var(--panel) !important; }
+#guide-text { max-height: 420px; overflow-y: auto; font-size: 14px; line-height: 1.5; }
+
+/* the slim bar over a graded paper */
+.paper-bar-row { align-items: center; gap: 12px !important; }
+.paper-bar-row > button { max-width: 190px; }
+.paper-bar-row > div:first-child { flex: 1 1 auto !important; min-width: 0; }
+.paper-bar { display: grid; grid-template-columns: minmax(240px, 1fr) auto; gap: 10px 20px; align-items: center; }
+.paper-bar .bar-line { grid-column: 1 / -1; }
+.paper-bar h2 { font: 600 24px/1.15 var(--serif); margin: 0; letter-spacing: -.01em; }
+.paper-bar .bar-text p { margin: 2px 0 0; font-size: 13.5px; color: var(--muted); }
+.bar-line { height: 5px; border-radius: 3px; background: var(--green-soft); overflow: hidden; }
+.bar-line span { display: block; height: 100%; background: var(--green); border-radius: 3px; transition: width .3s ease; }
+.bar-pills { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; justify-content: flex-end; }
+.bar-pills li { font-size: 13px; color: var(--muted); padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); white-space: nowrap; }
+.bar-pills b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* the answer map as a row of dots: colour, symbol and a label on hover tell the state */
+.amap { gap: 8px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.amap-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.amap-group h3 { font: 600 13px/1 var(--sans) !important; margin: 0 !important; min-width: 108px; color: var(--muted); }
+.amap-group h3 span { display: none; }
+.amap-grid { display: flex !important; flex-wrap: wrap; gap: 6px; }
+.gradio-container .amap .cell { width: 32px !important; height: 32px !important; min-width: 32px; min-height: 32px !important;
+  flex: 0 0 32px; padding: 0 !important; border-radius: 50% !important; align-items: center; justify-content: center;
+  border-left-width: 1px !important; }
+.gradio-container .cell .cell-q { font-size: 12px !important; font-weight: 600; color: inherit; }
+.gradio-container .cell .cell-mark { display: none; }
+.cell.proposed { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.cell.teacher { border-color: var(--blue); color: var(--blue); }
+.cell.changed { border-color: var(--rose); color: var(--rose); }
+.cell.selected { outline: 2.5px solid var(--ink); outline-offset: 2px; }
+.amap-legend { font-size: 12px; gap: 4px 14px; }
+.swatch { width: 14px; height: 14px; border-radius: 50%; font-size: 9px; }
+
+/* the workspace: the paper next to the question */
+.workspace { gap: 16px !important; align-items: flex-start; }
+.paper-viewer { position: sticky; top: 12px; padding: 14px 16px; }
+.panel-kicker.quiet { color: var(--muted); }
+.workspace-side { gap: 14px !important; }
+#active-review, .check-panel { padding: 22px 24px; }
+.review-question .question-prompt { font-size: 22px !important; }
+.answer-pair { grid-template-columns: 1fr; }
+
+/* marks as big pills */
+.mark-pills .wrap { gap: 8px !important; }
+.mark-pills label { min-width: 56px; justify-content: center; padding: 10px 16px !important; border-radius: 999px !important;
+  border: 1.5px solid var(--line) !important; background: var(--panel) !important; font-size: 17px !important;
+  font-variant-numeric: tabular-nums; cursor: pointer; }
+.mark-pills label:hover { border-color: var(--green) !important; }
+.mark-pills label.selected, .mark-pills label:has(input:checked) { background: var(--green) !important;
+  border-color: var(--green) !important; color: var(--panel) !important; }
+.mark-pills input[type="radio"] { display: none; }
+.mark-actions { justify-content: space-between; align-items: center !important; }
+.mark-actions > button { max-width: 220px; }
+.key-hint { margin: 0; font-size: 12.5px; color: var(--muted); }
+.done-card { padding: 16px 20px; }
+
+@media (max-width: 900px) {
+  .workspace { flex-direction: column; }
+  .paper-viewer { position: static; }
+  .paper-bar { grid-template-columns: 1fr; }
+  .bar-pills { justify-content: flex-start; }
+}
+.paper-bar-row { flex-wrap: nowrap !important; }
+.paper-bar-row > button { flex: 0 0 auto !important; width: auto !important; align-self: flex-start; }
+.gradio-container .amap .cell { display: grid !important; place-items: center; text-align: center; }

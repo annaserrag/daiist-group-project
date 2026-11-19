@@ -16,6 +16,13 @@ from exam_grader.retrieval import Index
 
 env.load_env()
 EXAMPLE = DATA / "vision-example.json"
+# "Try a sample paper": demo PDFs whose reading is stored in exam_grader/data/precomputed_reads, so they show the
+# real product the same way online and on a laptop, without loading the page reader. Four are full held-out exams
+# (masked) and c06 is a printed test page whose written answer Gemini grades live.
+_EVAL = Path(__file__).resolve().parent / "eval"
+SAMPLE_PAPERS = {name: _EVAL / "heldout" / "inputs" / f"{name}.pdf" for name in ("h46", "h50", "h43", "h47")}
+SAMPLE_PAPERS["c06"] = _EVAL / "inputs" / "c06.pdf"
+SAMPLE_PAPER = SAMPLE_PAPERS["h46"]
 DEFAULT_MODEL = "gemini-3.1-flash-lite"
 
 def final_after_lookup():
@@ -74,7 +81,8 @@ def run_views(raw_input, *, policy=None, evaluation_cache=None, course_index=Non
         else:
             module = import_module(module_name)
             reader, version, input_type = module.read_exam, module.VERSION, "pdf"
-            if module_name == "exam_grader.vision_finetune" and not precomputed.reader_installed():
+            use_stored = not precomputed.reader_installed() or path.resolve() in SAMPLE_PAPERS.values()
+            if module_name == "exam_grader.vision_finetune" and use_stored:
                 # Online (Render, 512 MB) the page reader can't run: use the reading stored for this demo PDF.
                 stored = precomputed.lookup(path, version) if written_exam is None else None
                 if stored is None:

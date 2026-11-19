@@ -94,7 +94,7 @@ def review_lines(page, reader, words, other_words, page_parts, page_number, part
         hits = crop_evidence(words, page_parts, targets.keys(), lines)
         if not hits:
             continue
-        location = f"Part {part_label} · page {page_number} · line {line_number}"
+        location = f"Part {part_label}, page {page_number}, line {line_number}"
         labels = []
         for pos, candidates in sorted(hits.items()):
             found.add(pos)
@@ -103,8 +103,8 @@ def review_lines(page, reader, words, other_words, page_parts, page_number, part
             labels.append(word)
             page_read = word if targets[pos] == word else f"{word} / {targets[pos]}"
             crop_read = ", ".join(f"{value} ({score:.2f})" for value, score in candidates.items())
-            details.append(f"{location} · word {pos+1} · {context}\nPage OCR: {page_read}   Line OCR: {crop_read}")
-        images.append((image, location + " · " + ", ".join(labels)))
+            details.append(f"{location}, word {pos+1}, {context}\nPage OCR: {page_read}   Line OCR: {crop_read}")
+        images.append((image, location + ", " + ", ".join(labels)))
     for pos in sorted(targets.keys() - found):
         details.append(f"Word {pos+1} [{words[pos]}]: no line could be located unambiguously.")
     return images, "\n\n".join(details)

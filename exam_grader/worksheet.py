@@ -30,7 +30,7 @@ def load_row(q):
     status,ids,note=by_q[q]
     progress=sum(s!="open" for s,_,_ in by_q.values())
     return (f"Q{q}. {BLOCKS[q]}\n\nPublished key: {KEY[q]}", status,list(ids),note,
-            (q,status,ids,note),f"{progress}/35 reviewed · {35-progress} open",None,"",passages(None,""),
+            (q,status,ids,note),f"{progress}/35 reviewed, {35-progress} open",None,"",passages(None,""),
             "Start with "+GUIDE[str(q)][0]+". "+GUIDE[str(q)][1])
 
 def commit(q,state,ids,note,seen):
@@ -54,12 +54,12 @@ def build():
                     "A page counts if it explains the answer. A shared keyword or a matching title alone does not count. "
                     "You can accept several pages. Use **gap** for missing teaching evidence, **missing_context** for an absent part of the exam (such as a figure), or **open** if unsure.")
         with gr.Row():
-            q=gr.Dropdown([(f"Q{i} · {'written' if i>20 else 'multiple choice'}",i) for i in ORDER],
+            q=gr.Dropdown([(f"Q{i}, {'written' if i>20 else 'multiple choice'}",i) for i in ORDER],
                           value=initial,label="Question",allow_custom_value=False)
             progress=gr.Textbox(label="Worksheet progress",interactive=False)
         prompt=gr.Textbox(label="Published question and answer",interactive=False,lines=5)
         with gr.Accordion("Optional: read the assistant’s suggestion",open=False):
-            hint=gr.Textbox(label="Reading suggestion · never saved as a label",interactive=False,lines=3)
+            hint=gr.Textbox(label="Reading suggestion (never saved as a label)",interactive=False,lines=3)
         with gr.Row():
             page=gr.Dropdown(CHOICES,label="Read a page (alphabetical)",value=None)
             query=gr.Textbox(label="Find passages by keyword",placeholder="e.g. generalization; clear the page to search all sources")

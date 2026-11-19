@@ -3,6 +3,7 @@ from collections import Counter
 from html import escape
 import math
 import os
+import tempfile
 from pathlib import Path
 from subprocess import SubprocessError
 from time import perf_counter
@@ -15,7 +16,7 @@ import logbook
 import monitor
 import pipeline
 from exam_grader import bandit
-from exam_grader.catalog import KEY, OPTION_TEXTS, QUESTIONS
+from exam_grader.catalog import KEY, KEY_URL, OPTION_TEXTS, QUESTIONS
 from exam_grader.grading import Policy
 from exam_grader.rubric import CRITERIA
 from exam_grader.build import vector
@@ -103,7 +104,7 @@ def select_exam(file):
     except OSError as exc:
         raise gr.Error("Could not read the exam or embed its questions. Try again.") from exc
     choices = [(f"Q{q.question_id}. {q.question}", q.question_id) for q in exam.questions]
-    return (exam, queries), f"{exam.title} · Reader exam_id: {exam.exam_id}", gr.Dropdown(choices=choices, value=choices[0][1])
+    return (exam, queries), f"{exam.title}, reader exam_id: {exam.exam_id}", gr.Dropdown(choices=choices, value=choices[0][1])
 
 
 def preview_material(question, library, course=BUILTIN, exam_state=None):
@@ -125,6 +126,76 @@ def choose_review_arm(exam_state=None):
     return arm
 
 
+# "Try a sample paper": the demo exams, shown as page thumbnails the teacher clicks to grade one (pipeline.SAMPLE_PAPERS).
+SAMPLES = [("h46", "Student 46"), ("h50", "Student 50"), ("h43", "Student 43"), ("h47", "Student 47"),
+           ("c06", "Printed page c06")]
+PAGE_CACHE = Path(tempfile.gettempdir()) / "exam-desk-pages"
+
+
+def page_images(pdf, width=900):
+    """The pages of a PDF as PNG files, so the teacher sees the paper next to its marks. Empty for a JSON export."""
+    pdf = Path(pdf) if pdf else None
+    if pdf is None or pdf.suffix.lower() != ".pdf" or not pdf.is_file():
+        return []
+    folder = PAGE_CACHE / f"{pipeline.file_sha256(pdf)[:16]}-{width}"
+    if not any(folder.glob("page-*.png")):
+        import pypdfium2 as pdfium
+        folder.mkdir(parents=True, exist_ok=True)
+        document = pdfium.PdfDocument(str(pdf))
+        try:
+            for number in range(len(document)):
+                page = document[number]
+                image = page.render(scale=width / page.get_width()).to_pil().convert("RGB")
+                image.save(folder / f"page-{number + 1}.png")
+        finally:
+            document.close()
+    return sorted((str(p) for p in folder.glob("page-*.png")), key=lambda p: int(Path(p).stem.split("-")[1]))
+
+
+def marking_guide() -> str:
+    """The built-in exam's questions with the published answer key (Mendeley), as the teacher would read them."""
+    lines = ["**Data Science Examination**, 35 questions, 50 points. Answer key published with the dataset "
+             f"([Mendeley]({KEY_URL})).", "", "**Part I, multiple choice** (1 point each)", ""]
+    for q in range(1, 21):
+        options = "; ".join(f"{letter}. {text}" for letter, text in OPTION_TEXTS[q].items())
+        lines.append(f"{q}. {QUESTIONS[q]}  \n{options}  \n**Key: {KEY[q]}**")
+    lines += ["", "**Part II, short answers** (2 points each)", ""]
+    for q in range(21, 36):
+        lines.append(f"{q}. {QUESTIONS[q]}  \n**Key:** {KEY[q]}")
+    return "\n".join(lines)
+
+
+def guide_thumbnail():
+    """A small picture of the marking guide's first page, so the card looks like the document it opens."""
+    out = PAGE_CACHE / "marking-guide-v2.png"
+    if not out.is_file():
+        from PIL import Image, ImageDraw, ImageFont
+        PAGE_CACHE.mkdir(parents=True, exist_ok=True)
+        page = Image.new("RGB", (520, 340), "#fffefa")
+        draw = ImageDraw.Draw(page)
+        title, body = ImageFont.load_default(size=22), ImageFont.load_default(size=14)
+        draw.text((28, 22), "Data Science Examination", fill="#1d2b25", font=title)
+        draw.text((28, 54), "Marking guide and answer key", fill="#4d5d55", font=body)
+        y = 88
+        for q in (1, 2, 3, 21, 22):
+            text = f"{q}. {QUESTIONS[q]}"
+            draw.text((28, y), text[:62] + ("…" if len(text) > 62 else ""), fill="#1d2b25", font=body)
+            draw.text((44, y + 19), f"Key: {KEY[q]}"[:60], fill="#22533f", font=body)
+            y += 48
+        page.save(out)
+    return str(out)
+
+
+def sample_gallery():
+    return [(page_images(pipeline.SAMPLE_PAPERS[name], 360)[0], caption) for name, caption in SAMPLES]
+
+
+def grade_sample(library, course, exam_state, evt: gr.SelectData):
+    """Grade the sample paper the teacher clicked, and put it in the upload box so it is clear which one it is."""
+    pdf = pipeline.SAMPLE_PAPERS[SAMPLES[evt.index][0]]
+    return (*display(pdf, library, course, exam_state), str(pdf))
+
+
 def display(raw_input, library=None, course=BUILTIN, exam_state=None):
     if not raw_input:
         raise gr.Error("Choose an OCR export or a PDF first.")
@@ -141,20 +212,20 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
                          item["reason"].replace("_", " "), feedback,
                          source.get("title", ""), source.get("page"), source.get("url", ""), source.get("quote", ""),
                          ", ".join(item.get("opened_passages",[])) or "",
-                         "\n".join(f"{criterion} ({c['coverage']}) · {c['title']}"
+                         "\n".join(f"{criterion} ({c['coverage']}), {c['title']}"
                                    + (f", p. {c['page']}" if "page" in c else "")
-                                   + f" · {c['quote']}" + (f" · Example check: {c['basis']}" if "basis" in c else "")
+                                   + f", {c['quote']}" + (f", Example check: {c['basis']}" if "basis" in c else "")
                                    for criterion,c in item.get("criterion_evidence",{}).items())])
         q = item["question_id"]
         if teacher["exam_status"] == "in_scope" and item["mark"] is None:
             guide = custom[q].guide() if custom else CRITERIA.get(q, {})
             key = custom[q].reference_answer if custom else KEY[q]
-            rubric = [f"{name} ({points:g} points) · {standard}" for name, (points, standard) in guide.items()]
+            rubric = [f"{name} ({points:g} points), {standard}" for name, (points, standard) in guide.items()]
             proofs = item.get("criterion_evidence", {})
             sources = []
             for name, cite in proofs.items():
                 location = cite["title"] + (f", p. {cite['page']}" if "page" in cite else "")
-                sources.append(f"{name} ({cite['coverage']}) · {location} · {cite['quote']}")
+                sources.append(f"{name} ({cite['coverage']}), {location}, {cite['quote']}")
             passages = []
             review_hits = item.get("review_passages", [])
             if (guide and len(item["readings"]) == 1
@@ -171,7 +242,7 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
             for hit in review_hits:
                 location = hit["title"] + (f", p. {hit['page']}" if "page" in hit else "")
                 if hit.get("url"):
-                    location += f" · {hit['url']}"
+                    location += f", {hit['url']}"
                 passages.append(f"{location}\n{hit['excerpt']}")
             # The teacher can assess a large deduction independently. The original
             # model suggestion stays available in the full evidence table.
@@ -179,7 +250,7 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
                       if item["reason"] == "written_mark_review" else feedback)
             choices = {} if custom else OPTION_TEXTS.get(q, {})
             if key in choices:
-                key = f"{key} · {choices[key]}"
+                key = f"{key}, {choices[key]}"
             if choices and item["reason"] == "invalid_choice":
                 action = "Check the original paper. The reader found a choice outside " + ", ".join(
                     f"{letter} ({value})" for letter, value in choices.items()) + "."
@@ -245,7 +316,7 @@ def question_view(context, question):
     choices = [(f"{point:g}", point) for point in
                ([0, 1] if maximum == 1 else [n / 2 for n in range(int(2 * maximum) + 1)])]
     return (card, guide, "\n\n".join(support) or "No verified teaching passage available.",
-            gr.update(choices=choices, value=None, label=f"Your mark · out of {maximum:g}"),
+            gr.update(choices=choices, value=None, label=f"Your mark, out of {maximum:g}"),
             gr.update(interactive=False))
 
 
@@ -399,7 +470,7 @@ def results_view(context, sheet, selected, signed, status):
                   else "Restore the original question rows in the mark sheet.")
     elif ready:
         title = "Paper signed off" if signed_here else "Ready to sign off"
-        detail = f"{total:g} / {sum(limit for _, limit in limits):g} points · {len(limits)} questions marked."
+        detail = f"{total:g} / {sum(limit for _, limit in limits):g} points, {len(limits)} questions marked."
     else:
         title = f"{len(pending)} {'question needs' if len(pending) == 1 else 'questions need'} a mark"
         detail = f"{completed} of {len(limits)} marked."
@@ -476,7 +547,7 @@ def open_question(context, picked, sheet):
     current = marks.get(q)
     return (q, gr.update(), gr.update(visible=True), ui.proposal_card(q, detail, current),
             gr.update(choices=choices, value=current if current not in ("", None) else None,
-                      label=f"Mark for Q{q} · out of {maximum:g}"))
+                      label=f"Mark for Q{q}, out of {maximum:g}"))
 
 
 def apply_check_mark(context, question, point, marks):
@@ -512,7 +583,7 @@ def monitoring_view():
 
 
 def build_app():
-    with gr.Blocks(title="Exam desk · Exam grading assistant") as demo:
+    with gr.Blocks(title="Exam desk, exam grading assistant") as demo:
         masthead = gr.HTML(ui.masthead(bool(os.getenv("GEMINI_API_KEY"))))
         library = gr.State({})
         exam_state = gr.State(None)
@@ -521,67 +592,91 @@ def build_app():
 
         # ------------------------------------------------------------ 1. Grade
         with gr.Tab("Grade", id="grade"):
-            progress_steps = gr.HTML(ui.stepper(0))
-            with gr.Row(elem_classes="desk-columns"):
-                with gr.Column(scale=3, min_width=280, elem_classes="desk-card upload-card"):
-                    gr.HTML('<h2 class="card-title">Student paper</h2><p class="card-note">A scanned PDF, as it '
-                            'comes from the scanner, or the reader’s JSON export.</p>')
-                    upload = gr.File(label="Student paper · PDF or reader JSON", file_types=[".pdf", ".json"],
-                                     type="filepath", height=150, elem_id="paper-drop", show_label=False)
-                    with gr.Row(elem_classes="desk-actions"):
-                        go = gr.Button("Grade paper", variant="primary")
-                        example = gr.Button("Try a sample paper", variant="secondary")
-                with gr.Column(scale=2, min_width=250, elem_classes=["desk-card", "desk-settings"]):
-                    gr.HTML('<h2 class="card-title">Marking setup</h2>')
-                    exam_info = gr.Textbox(label="Exam", value="Built-in ML exam selected.", interactive=False)
-                    course = gr.Dropdown([BUILTIN], value=BUILTIN, label="Course materials")
-                    gr.HTML('<p class="card-note">Add another exam or course PDF in the Materials tab.</p>')
+            progress_steps = gr.HTML(ui.stepper(0), visible=False)  # kept for paper_view; the paper bar replaces it
+            # ---- start: one drop zone, the marking guide next to it, and the sample papers below
+            with gr.Column(elem_id="start-box") as start_box:
+                with gr.Row(elem_classes="desk-columns"):
+                    with gr.Column(scale=3, min_width=280, elem_classes="desk-card upload-card"):
+                        gr.HTML('<h2 class="card-title">Grade a paper</h2><p class="card-note">Drop a scanned exam '
+                                'as a PDF, or the reader’s JSON export.</p>')
+                        upload = gr.File(label="Student paper (PDF or reader JSON)", file_types=[".pdf", ".json"],
+                                         type="filepath", height=150, elem_id="paper-drop", show_label=False)
+                        go = gr.Button("Grade paper", variant="primary", elem_id="grade-button")
+                    with gr.Column(scale=2, min_width=250, elem_classes=["desk-card", "desk-settings"]):
+                        gr.HTML('<h2 class="card-title">Marking guide</h2><p class="card-note">The Data Science '
+                                'exam and its published key (Mendeley).</p>')
+                        gr.Image(value=guide_thumbnail, show_label=False, interactive=False, height=170,
+                                 elem_id="guide-thumb", buttons=[], container=False)
+                        with gr.Accordion("Open the marking guide", open=False, elem_classes="guide-accordion"):
+                            gr.Markdown(marking_guide(), elem_id="guide-text")
+                        exam_info = gr.Textbox(label="Exam", value="Built-in ML exam selected.", interactive=False,
+                                               visible=False)
+                        course = gr.Dropdown([BUILTIN], value=BUILTIN, label="Course materials")
+                with gr.Column(elem_classes="desk-card", elem_id="sample-papers"):
+                    gr.HTML('<h2 class="card-title">Or try a sample paper</h2><p class="card-note">Click a paper '
+                            'to grade it straight away.</p>')
+                    samples = gr.Gallery(value=sample_gallery, columns=5, height=250, allow_preview=False,
+                                         show_label=False, object_fit="contain", interactive=False)
 
             with gr.Column(visible=False, elem_id="grading-results") as results:
                 status = gr.Textbox(visible=False)
-                summary_card = gr.HTML(visible=False)  # kept for results_view; the band below replaces it
-                band = gr.HTML()
+                summary_card = gr.HTML(visible=False)  # kept for results_view; the paper bar below replaces it
+                with gr.Row(elem_classes="paper-bar-row"):
+                    band = gr.HTML(elem_id="paper-bar")
+                    another = gr.Button("Grade another paper", variant="secondary", size="sm", elem_id="another")
                 answer_map = ui.AnswerMap(elem_id="answer-map")
 
-                with gr.Column(visible=False, elem_classes="desk-card check-panel", elem_id="check-panel") as check_panel:
-                    check_card = gr.HTML()
-                    with gr.Row(elem_classes="mark-actions"):
-                        check_point = gr.Radio(label="Mark", choices=[], interactive=True)
-                        check_save = gr.Button("Save mark", variant="primary")
-                        check_close = gr.Button("Close", variant="secondary")
+                # ---- the workspace: the paper on the left, one question at a time on the right
+                with gr.Row(elem_classes="workspace", equal_height=False):
+                    with gr.Column(scale=5, min_width=300, elem_classes="desk-card paper-viewer"):
+                        gr.HTML('<p class="panel-kicker quiet">The paper</p>')
+                        paper_pages = gr.Gallery(columns=4, height=640, show_label=False, object_fit="contain",
+                                                 interactive=False, preview=True, selected_index=0,
+                                                 elem_id="paper-pages")
+                    with gr.Column(scale=6, min_width=320, elem_classes="workspace-side"):
+                        with gr.Column(visible=False, elem_classes="desk-card check-panel", elem_id="check-panel") as check_panel:
+                            check_card = gr.HTML()
+                            check_point = gr.Radio(label="Mark", choices=[], interactive=True, elem_classes="mark-pills")
+                            with gr.Row(elem_classes="mark-actions"):
+                                check_close = gr.Button("Close", variant="secondary")
+                                check_save = gr.Button("Save mark", variant="primary")
 
-                with gr.Column(visible=False, elem_classes="desk-card", elem_id="active-review") as review:
-                    gr.HTML('<p class="panel-kicker">Needs your mark</p>')
-                    reading = gr.HTML()
-                    with gr.Accordion("Marking guide and sources", open=False):
-                        standard = gr.Textbox(label="Marking guide", interactive=False)
-                        support = gr.Textbox(label="Supporting passages", interactive=False)
-                    with gr.Row(elem_classes="mark-actions"):
-                        review_point = gr.Radio(label="Your mark", choices=[], interactive=True)
-                        record_point = gr.Button("Save & next", variant="primary", interactive=False)
-                    with gr.Accordion("Jump to another question that needs you", open=False):
-                        review_q = gr.Dropdown(label="Questions that need you", choices=[], type="value")
+                        with gr.Column(visible=False, elem_classes="desk-card", elem_id="active-review") as review:
+                            gr.HTML('<p class="panel-kicker">Needs your mark</p>')
+                            reading = gr.HTML()
+                            review_point = gr.Radio(label="Your mark", choices=[], interactive=True,
+                                                    elem_classes="mark-pills", elem_id="review-point")
+                            with gr.Row(elem_classes="mark-actions"):
+                                gr.HTML('<p class="key-hint">Number keys pick a mark from the left (0 is the first), Enter saves</p>')
+                                record_point = gr.Button("Save and next →", variant="primary", interactive=False,
+                                                         elem_id="save-next")
+                            with gr.Accordion("Marking guide and sources", open=False):
+                                standard = gr.Textbox(label="Marking guide", interactive=False)
+                                support = gr.Textbox(label="Supporting passages", interactive=False)
+                            with gr.Accordion("Jump to another question that needs you", open=False):
+                                review_q = gr.Dropdown(label="Questions that need you", choices=[], type="value")
 
-                    @gr.render(inputs=[ctx, review_q])
-                    def handwriting(context, question):
-                        item = (context or {}).get("referrals", {}).get(question, {})
-                        if "crop" not in item:
-                            return
-                        key = f"{context['id']}-{question}"
-                        button = gr.Button("Show the handwriting", key=f"crop-button-{key}", size="sm")
-                        crops = gr.Gallery(label="Original scan lines", columns=1, height="auto", format="png",
-                                           interactive=False, key=f"crop-gallery-{key}")
-                        wording = gr.Textbox(label="Disputed words in context", interactive=False, lines=4,
-                                             key=f"crop-text-{key}")
-                        button.click(show_review_lines, [ctx, review_q], [crops, wording], api_name=False)
+                            @gr.render(inputs=[ctx, review_q])
+                            def handwriting(context, question):
+                                item = (context or {}).get("referrals", {}).get(question, {})
+                                if "crop" not in item:
+                                    return
+                                key = f"{context['id']}-{question}"
+                                button = gr.Button("Show the handwriting", key=f"crop-button-{key}", size="sm")
+                                crops = gr.Gallery(label="Original scan lines", columns=1, height="auto", format="png",
+                                                   interactive=False, key=f"crop-gallery-{key}")
+                                wording = gr.Textbox(label="Disputed words in context", interactive=False, lines=4,
+                                                     key=f"crop-text-{key}")
+                                button.click(show_review_lines, [ctx, review_q], [crops, wording], api_name=False)
 
-                with gr.Row(elem_classes="signoff-row"):
-                    approve = gr.Button("Sign off this paper", variant="primary", visible=False, size="lg")
-                with gr.Row(elem_classes="feedback-row"):
-                    gr.HTML('<p class="feedback-q">Was this grading useful?</p>')
-                    up = gr.Button("👍 Useful", size="sm")
-                    down = gr.Button("👎 Not useful", size="sm")
-                    feedback_status = gr.Markdown()
+                        with gr.Column(elem_classes="desk-card done-card", visible=True):
+                            approve = gr.Button("Sign off this paper", variant="primary", visible=False, size="lg")
+                            with gr.Row(elem_classes="feedback-row"):
+                                gr.HTML('<p class="feedback-q">Was this grading useful?</p>')
+                                up = gr.Button("👍 Useful", size="sm")
+                                down = gr.Button("👎 Not useful", size="sm")
+                            feedback_status = gr.Markdown()
+
                 with gr.Accordion("Signed record", open=False, visible=False) as signed_sheet:
                     signed = gr.JSON(label="Teacher-approved marks")
                 with gr.Accordion("Mark sheet and grading evidence", open=False):
@@ -593,7 +688,9 @@ def build_app():
                         evidence = gr.Dataframe(headers=["Q", "Question", "OCR reading", "Out of", "Proposal", "Decision",
                                                          "Feedback", "Source", "PDF page", "Source URL", "Supporting quote",
                                                          "Passage opened by model", "Evidence by rubric point"],
-                                                interactive=False, label="Proposals and evidence", wrap=True)
+                                                interactive=False, label="Proposals and evidence", wrap=True, max_height=560,
+                                                column_widths=["52px", "230px", "200px", "64px", "84px", "150px", "260px",
+                                                               "170px", "72px", "180px", "260px", "200px", "280px"])
 
             outputs = [status, evidence, teacher_marks, ctx, signed]
             detail_outputs = [reading, standard, support, review_point, record_point]
@@ -606,12 +703,19 @@ def build_app():
                                   question_view, [ctx, review_q], detail_outputs, api_name=False).success(
                                   paper_view, [ctx, teacher_marks, review_q, focus, signed], view_outputs, api_name=False)
 
-            refresh_after(go.click(display, [upload, library, course, exam_state], outputs, api_name="run",
-                                   show_progress_on=upload).success(lambda: None, None, focus, api_name=False), scroll=True)
-            refresh_after(example.click(lambda lib, active, state: display(pipeline.EXAMPLE, lib, active, state),
-                                        [library, course, exam_state], outputs, api_name="grade_example",
-                                        show_progress_on=upload).success(lambda: None, None, focus, api_name=False),
-                          scroll=True)
+            graded = go.click(display, [upload, library, course, exam_state], outputs, api_name="run",
+                              show_progress_on=upload)
+            refresh_after(graded.success(lambda: None, None, focus, api_name=False), scroll=True)
+            graded.success(page_images, upload, paper_pages, api_name=False)
+            # A sample paper grades as soon as it is clicked, like the examples of a Gradio demo, and shows its pages.
+            picked = samples.select(grade_sample, [library, course, exam_state], outputs + [upload], api_name=False,
+                                    show_progress_on=samples)
+            refresh_after(picked.success(lambda: None, None, focus, api_name=False), scroll=True)
+            picked.success(page_images, upload, paper_pages, api_name=False)
+            # Once a paper is graded the start area folds away; "Grade another paper" brings it back.
+            for event in (graded, picked):
+                event.success(lambda: gr.update(visible=False), None, start_box, api_name=False)
+            another.click(lambda: gr.update(visible=True), None, start_box, api_name=False)
             review_q.input(question_view, [ctx, review_q], detail_outputs, api_name=False).success(
                 paper_view, [ctx, teacher_marks, review_q, focus, signed], view_outputs, api_name=False)
             review_point.input(lambda point: gr.update(interactive=point is not None),
@@ -648,7 +752,7 @@ def build_app():
                     indexed = gr.Textbox(label="Indexing result", interactive=False)
                 with gr.Column(scale=2, min_width=250, elem_classes=["desk-card", "desk-settings"]):
                     gr.HTML('<h2 class="card-title">Choose a marking guide</h2>')
-                    exam_file = gr.File(label="Exam definition · JSON", file_types=[".json"], type="filepath", height=130)
+                    exam_file = gr.File(label="Exam definition (JSON)", file_types=[".json"], type="filepath", height=130)
                     load_exam = gr.Button("Apply exam definition")
                     material_exam = gr.Textbox(label="Active exam", value="Built-in ML exam selected.", interactive=False)
             with gr.Accordion("Find a supporting passage", open=False):
@@ -661,7 +765,7 @@ def build_app():
             course.change(lambda lib, active: gr.update(choices=[BUILTIN, *lib], value=active),
                           [library, course], material_course, api_name=False)
             material_course.input(lambda value: value, material_course, course, api_name=False)
-            material_exam.change(lambda value: value.split(" · Reader exam_id: ")[0],
+            material_exam.change(lambda value: value.split(", reader exam_id: ")[0],
                                  material_exam, exam_info, api_name=False)
             refresh_after(load_exam.click(select_exam, [exam_file], [exam_state, material_exam, question]).success(
                 lambda: ("", [], [], None, None, []), None, [*outputs, passages], api_name=False))
