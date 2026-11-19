@@ -21,6 +21,9 @@ class Policy:
     pass_mark: float | None = None     # The dataset does not establish a pass rule.
     pass_band: float = 0.0
     written_review_at_or_below: float | None = None
+    # Written answers the reader holds back (unsure of the text or the question number) still go to the teacher
+    # unmarked, but Gemini's suggested mark comes with them, so the teacher starts from a checked suggestion.
+    suggest_held_back: bool = True
 
     def __post_init__(self):
         if not all(_prob(x) for x in (self.min_read,self.min_id,self.min_similarity)):
@@ -235,6 +238,27 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
 
     review_passages = {}
 
+    def suggest(q, txt, held, hits=None):
+        """A suggestion for a written answer the reader held back. The answer stays in review with its reason and
+        no mark: only the suggestion is added, and only when Gemini's mark is backed by course evidence."""
+        if (not p.suggest_held_back or session is None or custom or q <= 20 or q == 32
+                or q in p.figure_questions or index is None or not txt):
+            return held
+        hits = hits or index.search(q, txt) or index.search(q)
+        if not hits:
+            return held
+        try:
+            answer = session.grade(questions[q], KEY[q], txt, hits)
+        except Exception:
+            return held
+        visible = session.visible_evidence(hits) if hasattr(session, "visible_evidence") else hits
+        suggestion = checked(q, answer, visible, 1, txt)
+        if suggestion["mark"] is not None:
+            held.update(suggested_mark=suggestion["mark"], suggested_feedback=suggestion["feedback"],
+                        suggested_citation=suggestion["citation"])
+            review_passages.setdefault(q, hits)
+        return held
+
     def decide(q):
         if issue:
             return row(q,issue)
@@ -246,7 +270,8 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
         if not (_prob(conf) and _prob(idc)) or state not in ("read","confirmed_blank","unreadable") or not isinstance(txt,str) or len(txt)>4000:
             return row(q,"invalid_answer")
         if idc < p.min_id:
-            return row(q,"uncertain_question_id")
+            text = txt.strip() if state == "read" else ""
+            return suggest(q, text, row(q,"uncertain_question_id"))
         if state == "unreadable":
             return row(q,"unreadable")
         txt = txt.strip()
@@ -285,7 +310,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
         score = hits[0]["score"] if hits else None
         fields = dict(score=score, searches=searches)
         if conf < p.min_read:
-            return row(q,"low_read_confidence",**fields)
+            return suggest(q, txt, row(q,"low_read_confidence",**fields), hits)
         if score is None or score < p.min_similarity:
             return row(q,"weak_retrieval",**fields)
         # Keep passages that cleared retrieval available for the teacher even if generation fails.
@@ -361,7 +386,7 @@ def grade_exam(payload, *, index=None, agent=None, policy=None, allow_remote=Fal
     a_summary = {str(q):{"detections":len(items),"mean_confidence":avg([a["confidence"] for a in items if _prob(a.get("confidence"))])} for q,items in buckets.items()}
     b_summary = []
     for answer in out:
-        summary = {k:answer[k] for k in ("question_id","mark","reason","searches","execution_issue") if k in answer}
+        summary = {k:answer[k] for k in ("question_id","mark","reason","searches","execution_issue","suggested_mark") if k in answer}
         summary["source_id"] = answer["citation"]["id"] if answer["citation"] else None
         b_summary.append(summary)
     elapsed = time.perf_counter()-started

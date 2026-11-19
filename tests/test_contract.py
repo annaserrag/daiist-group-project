@@ -209,7 +209,26 @@ class Contract(unittest.TestCase):
     def test_low_read_confidence_stays_review_after_strong_retrieval(self):
         agent=Fake()
         out=result(a(21,"labels",confidence=.3),index=Search(),agent=agent,allow_remote=True)
-        self.assertEqual((get(out,21)["reason"],get(out,21)["searches"],agent.calls),("low_read_confidence",2,0))
+        held=get(out,21)
+        # The answer stays in review with no mark; Gemini is asked once, only for a suggestion the teacher sees.
+        self.assertEqual((held["reason"],held["searches"],held["mark"],agent.calls),("low_read_confidence",2,None,1))
+        self.assertEqual(held["suggested_mark"],1.5)
+        self.assertEqual(out["teacher"]["proposed_subtotal"],0)
+
+    def test_suggestions_can_be_switched_off(self):
+        agent=Fake()
+        out=result(a(21,"labels",confidence=.3),index=Search(),agent=agent,allow_remote=True,
+                   policy=Policy(suggest_held_back=False))
+        held=get(out,21)
+        self.assertEqual((held["reason"],held["mark"],agent.calls,"suggested_mark" in held),
+                         ("low_read_confidence",None,0,False))
+
+    def test_uncertain_question_number_gets_a_suggestion_but_no_mark(self):
+        agent=Fake()
+        out=result(a(21,"labels",id_confidence=.5),index=Search(),agent=agent,allow_remote=True)
+        held=get(out,21)
+        self.assertEqual((held["reason"],held["mark"],held["status"]),("uncertain_question_id",None,"review"))
+        self.assertEqual(agent.calls,1)
 
     def test_partial_credit_accounts_for_each_loss_once_in_teacher_feedback(self):
         good = [{"criterion":"method","points":.5,"reason":"Names grouping without explaining the intervals."},

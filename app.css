@@ -273,3 +273,8 @@ body { background: var(--paper); font-family: var(--sans); }
 .paper-bar-row { flex-wrap: nowrap !important; }
 .paper-bar-row > button { flex: 0 0 auto !important; width: auto !important; align-self: flex-start; }
 .gradio-container .amap .cell { display: grid !important; place-items: center; text-align: center; }
+.suggestion { margin-top: 14px; padding: 12px 15px; border: 1px solid var(--blue); border-radius: 10px; background: var(--blue-soft); }
+.suggestion h4 { margin: 0 0 4px; font: 600 15px var(--sans); color: var(--blue); }
+.suggestion p { margin: 0 0 6px; line-height: 1.45; }
+.suggestion blockquote { margin: 6px 0; padding: 6px 12px; border-left: 3px solid var(--blue); border-radius: 0; }
+.suggestion-note { font-size: 13px; color: var(--muted); margin: 0 !important; }

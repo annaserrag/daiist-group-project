@@ -254,9 +254,15 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
             if choices and item["reason"] == "invalid_choice":
                 action = "Check the original paper. The reader found a choice outside " + ", ".join(
                     f"{letter} ({value})" for letter, value in choices.items()) + "."
+            suggestion = None
+            if item.get("suggested_mark") is not None:
+                cite = item.get("suggested_citation") or {}
+                suggestion = dict(mark=item["suggested_mark"], feedback=item.get("suggested_feedback") or "",
+                                  source=cite.get("title", "") + (f", p. {cite['page']}" if cite.get("page") else ""),
+                                  quote=cite.get("quote", ""))
             referrals[q] = dict(question=item["question"], reading=" | ".join(item["readings"]),
                                 key=key, rubric=rubric, sources=sources, passages=passages, action=action,
-                                reason=item["reason"].replace("_", " "))
+                                reason=item["reason"].replace("_", " "), suggestion=suggestion)
         marks.append([q, item["mark"]])
     count = teacher["review_count"]
     if teacher["input_type"] == "pdf_awaiting_reader":
@@ -298,6 +304,17 @@ def display(raw_input, library=None, course=BUILTIN, exam_state=None):
         context["crop_sha256"] = pipeline.file_sha256(raw_input)
     return status, evidence, marks, context, None
 
+def suggestion_html(suggestion, maximum):
+    """Gemini's suggested mark for an answer the reader held back: shown, never applied, so the teacher decides."""
+    if not suggestion:
+        return ""
+    quote = (f'<blockquote><p>{escape(suggestion["quote"])}</p><cite>{escape(suggestion["source"])}</cite></blockquote>'
+             if suggestion.get("quote") else "")
+    return (f'<div class="suggestion"><h4>Gemini suggests {suggestion["mark"]:g}/{maximum:g}</h4>'
+            f'<p>{escape(suggestion["feedback"])}</p>{quote}<p class="suggestion-note">It graded the reading above, '
+            'which the reader wasn\'t sure about, so check the paper before you accept it.</p></div>')
+
+
 def question_view(context, question):
     item = (context or {}).get("referrals", {}).get(question)
     if not item:
@@ -308,7 +325,8 @@ def question_view(context, question):
             f'<p class="question-prompt">{escape(item["question"])}</p>'
             '<div class="answer-pair"><div><h4>Student answer</h4>'
             f'<p>{escape(reading)}</p></div><div><h4>Answer key</h4><p>{escape(item["key"])}</p></div></div>'
-            f'<p class="review-reason"><strong>What to check</strong> {escape(item["action"])}</p></article>')
+            f'<p class="review-reason"><strong>What to check</strong> {escape(item["action"])}</p>'
+            f'{suggestion_html(item.get("suggestion"), maximum)}</article>')
     support = list(item["sources"])
     if item["passages"]:
         support += ["Retrieved passages for teacher inspection (unverified)", *item["passages"]]
